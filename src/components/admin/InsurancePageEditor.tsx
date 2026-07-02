@@ -31,7 +31,7 @@ interface InsurancePageEditorProps {
       rows: Array<{
         id: string;
         coverageItem: string;
-        planValues: any;
+        planValues: Record<string, string>;
         order: number;
       }>;
     } | null;

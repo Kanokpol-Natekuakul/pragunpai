@@ -3,6 +3,7 @@
 import { siteConfig } from "@/lib/site";
 import { clsx } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 /**
  * Floating contact buttons — visible site-wide on mobile + desktop.
@@ -51,14 +52,14 @@ export function FloatingContactButtons() {
       </a>
 
       {/* Quote */}
-      <a
+      <Link
         href="/quote"
         className={floatingBtn("bg-orange-500 hover:bg-orange-600")}
         aria-label="ขอใบเสนอราคา"
       >
         <QuoteIcon />
         <span className="hidden text-sm font-semibold sm:inline">ขอใบเสนอราคา</span>
-      </a>
+      </Link>
     </div>
   );
 }

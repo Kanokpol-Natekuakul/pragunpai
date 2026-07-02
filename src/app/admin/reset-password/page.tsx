@@ -6,11 +6,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function ResetPasswordPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ token?: string }>;
-}) {
+export default function ResetPasswordPage() {
   // Next.js 15: searchParams is a Promise
   // We render the form and fill token via JS to avoid SSR issues.
   return (

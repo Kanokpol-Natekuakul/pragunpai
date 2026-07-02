@@ -43,9 +43,9 @@ export async function updateInsurancePageAction(id: string, data: InsurancePageU
     revalidatePath(`/`);
     
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[updateInsurancePageAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" };
   }
 }
 
@@ -88,7 +88,7 @@ export async function updateComparisonTableAction(pageId: string, rows: PlanRowI
         data: rows.map((row) => ({
           tableId: table!.id,
           coverageItem: row.coverageItem,
-          planValues: row.planValues as any,
+          planValues: row.planValues,
           order: row.order,
         })),
       });
@@ -100,8 +100,8 @@ export async function updateComparisonTableAction(pageId: string, rows: PlanRowI
     revalidatePath(`/`);
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[updateComparisonTableAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการบันทึกตารางเปรียบเทียบ" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกตารางเปรียบเทียบ" };
   }
 }

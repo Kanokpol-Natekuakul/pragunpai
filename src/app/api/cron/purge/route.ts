@@ -73,10 +73,10 @@ export async function GET(request: Request) {
       filesDeleted: deletedFilesCount,
       filesFailed: failedFilesCount,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("[Purge Cron] Error:", error);
     return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
       { status: 500 }
     );
   }

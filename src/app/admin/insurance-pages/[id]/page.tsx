@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/ui/Container";
 import { InsurancePageEditor } from "@/components/admin/InsurancePageEditor";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -37,12 +38,12 @@ export default async function EditInsurancePageAdmin({ params }: Props) {
     <Container size="wide" className="py-4">
       {/* Breadcrumbs */}
       <div className="mb-6">
-        <a
+        <Link
           href="/admin/insurance-pages"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-600 hover:text-navy-800"
         >
           ← ย้อนกลับไปหน้าจัดการแผนประกัน
-        </a>
+        </Link>
       </div>
 
       <div className="mb-6">
@@ -50,7 +51,7 @@ export default async function EditInsurancePageAdmin({ params }: Props) {
         <p className="text-sm text-navy-500 font-medium">แก้ไขโครงสร้างเนื้อหา ลิงก์ PDF และตารางเปรียบเทียบในหน้าแผนประกัน</p>
       </div>
 
-      <InsurancePageEditor page={page as any} />
+      <InsurancePageEditor page={page} />
     </Container>
   );
 }

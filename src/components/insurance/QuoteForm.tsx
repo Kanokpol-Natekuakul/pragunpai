@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "@google-recaptcha/react";
 import { submitLeadAction } from "@/actions/leads";
@@ -121,7 +121,7 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
   };
 
   const getContactFieldError = (fieldName: "name" | "phone" | "lineId" | "province" | "email" | "note") => {
-    const errors = activeForm.formState.errors as any;
+    const errors = activeForm.formState.errors as Record<string, { message?: string }>;
     return errors[fieldName];
   };
 
@@ -161,7 +161,7 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: Record<string, unknown>) => {
     setSubmitError(null);
 
     startTransition(async () => {
@@ -205,8 +205,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
         } else {
           setSubmitError(result.error || "เกิดข้อผิดพลาดในการส่งข้อมูล");
         }
-      } catch (err: any) {
-        setSubmitError(err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+      } catch (err) {
+        const error = err as Error;
+        setSubmitError(error.message || "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
       }
     });
   };
@@ -804,7 +805,7 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
           {/* Verification and PDPA Consent */}
           <div className="pt-4 border-t border-navy-50 space-y-4">
             <p className="text-xs text-navy-500 leading-relaxed">
-              การคลิก "ส่งข้อมูลขอใบเสนอราคา" แสดงว่าท่านยินยอมให้ Pragunpai.com จัดเก็บและประมวลผลข้อมูลส่วนบุคคล
+              การคลิก &ldquo;ส่งข้อมูลขอใบเสนอราคา&rdquo; แสดงว่าท่านยินยอมให้ Pragunpai.com จัดเก็บและประมวลผลข้อมูลส่วนบุคคล
               เพื่อใช้นำเสนอแผนประกันภัยและติดต่อกลับ ตามเงื่อนไขของ{" "}
               <a href="/privacy-policy" target="_blank" className="underline hover:text-orange-500">
                 นโยบายความเป็นส่วนตัว (PDPA)

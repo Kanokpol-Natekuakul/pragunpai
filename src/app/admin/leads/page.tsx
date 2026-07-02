@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Card } from "@/components/ui/Card";
 import { CsvExportButton } from "@/components/admin/CsvExportButton";
 import { formatThaiDate, leadFormTypeLabel } from "@/lib/format";
+import Link from "next/link";
 import { LeadStatus, LeadFormType } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +38,7 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
   const formType = resolvedParams.formType || "";
 
   // Build Prisma filter query
-  const whereClause: any = {};
+  const whereClause: import("@/generated/prisma/client").Prisma.LeadWhereInput = {};
 
   if (search) {
     whereClause.OR = [
@@ -130,12 +131,12 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
 
           <div className="sm:col-span-4 flex justify-end gap-2 mt-2">
             { (search || status || formType) && (
-              <a
+              <Link
                 href="/admin/leads"
                 className="rounded-lg border border-navy-100 px-4 py-2 text-sm text-navy-600 hover:bg-navy-50 font-medium"
               >
                 ล้างตัวกรอง
-              </a>
+              </Link>
             )}
             <button
               type="submit"
@@ -199,12 +200,12 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <a
+                        <Link
                           href={`/admin/leads/${lead.id}`}
                           className="rounded-lg bg-orange-50 border border-orange-200 px-3 py-1.5 text-xs font-semibold text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition-colors"
                         >
                           เปิดดูรายละเอียด →
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   );

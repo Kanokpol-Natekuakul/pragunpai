@@ -3,15 +3,18 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@/generated/prisma/client";
 
-export async function updateSiteSettingAction(key: string, value: any) {
+export async function updateSiteSettingAction(key: string, value: unknown) {
   try {
     await requireAuth();
 
+    const jsonValue = value as Prisma.InputJsonValue;
+
     await prisma.siteSetting.upsert({
       where: { key },
-      update: { value },
-      create: { key, value },
+      update: { value: jsonValue },
+      create: { key, value: jsonValue },
     });
 
     revalidatePath("/admin/settings");
@@ -20,8 +23,8 @@ export async function updateSiteSettingAction(key: string, value: any) {
     revalidatePath("/contact");
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[updateSiteSettingAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการอัปเดตข้อมูลการตั้งค่า" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปเดตข้อมูลการตั้งค่า" };
   }
 }

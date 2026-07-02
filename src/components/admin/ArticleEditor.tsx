@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createArticleAction, updateArticleAction } from "@/actions/articles";
 import { ArticleCategory } from "@/generated/prisma/client";
 import { Card } from "@/components/ui/Card";
@@ -314,12 +315,12 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
       </div>
 
       <div className="border-t border-gray-100 pt-6 flex justify-end gap-3">
-        <a
+        <Link
           href="/admin/articles"
           className="rounded-lg border border-navy-100 px-6 py-2.5 text-sm font-semibold text-navy-600 hover:bg-navy-50"
         >
           ยกเลิก
-        </a>
+        </Link>
         <Button
           onClick={handleSave}
           disabled={isPending}

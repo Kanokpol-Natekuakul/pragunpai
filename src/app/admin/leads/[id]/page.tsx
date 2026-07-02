@@ -6,6 +6,28 @@ import { Card } from "@/components/ui/Card";
 import { LeadDetailEditor } from "@/components/admin/LeadDetailEditor";
 import { formatThaiDate, leadFormTypeLabel } from "@/lib/format";
 import { LeadStatus } from "@/generated/prisma/client";
+import Link from "next/link";
+
+interface LeadDetails {
+  email?: string;
+  carType?: string;
+  carBrand?: string;
+  carModel?: string;
+  carYear?: string;
+  carPlate?: string;
+  age?: string;
+  occupation?: string;
+  hasExistingIllness?: string;
+  illnessDetails?: string;
+  selectedPlan?: string;
+  propertyType?: string;
+  constructionType?: string;
+  floorsCount?: string;
+  propertyValue?: string;
+  securitySystems?: string[];
+  requestType?: string;
+  description?: string;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -39,18 +61,18 @@ export default async function LeadDetailPage({ params }: Props) {
     notFound();
   }
 
-  const details = (lead.details as Record<string, any>) || {};
+  const details = (lead.details as unknown as LeadDetails) || {};
 
   return (
     <Container size="wide" className="py-4">
       {/* Breadcrumbs / Back button */}
       <div className="mb-6">
-        <a
+        <Link
           href="/admin/leads"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-600 hover:text-navy-800"
         >
           ← ย้อนกลับไปหน้าจัดการ Lead
-        </a>
+        </Link>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

@@ -92,7 +92,7 @@ export async function submitLeadAction(formData: FormData) {
     }
 
     // Parse base fields
-    const rawData: Record<string, any> = {
+    const rawData: Record<string, unknown> = {
       name: formData.get("name"),
       phone: formData.get("phone"),
       lineId: formData.get("lineId"),
@@ -109,7 +109,7 @@ export async function submitLeadAction(formData: FormData) {
     }
 
     let formType: LeadFormType;
-    let details: Record<string, any> = {};
+    let details: Record<string, unknown> = {};
 
     // Validate type-specific fields
     if (formTypeStr === "CAR_ACT") {
@@ -181,8 +181,9 @@ export async function submitLeadAction(formData: FormData) {
         try {
           const uploadResult = await uploadAttachment(file);
           uploadedAttachments.push(uploadResult);
-        } catch (uploadErr: any) {
-          return { success: false, error: uploadErr.message || "เกิดข้อผิดพลาดในการอัปโหลดไฟล์" };
+        } catch (uploadErr) {
+          const err = uploadErr as Error;
+          return { success: false, error: err.message || "เกิดข้อผิดพลาดในการอัปเดตไฟล์" };
         }
       }
     }
@@ -198,7 +199,7 @@ export async function submitLeadAction(formData: FormData) {
         phone: rawData.phone,
         lineId: rawData.lineId || null,
         province: rawData.province || null,
-        details: details as any,
+        details,
         expiresAt,
         attachments: {
           create: uploadedAttachments.map((att) => ({
@@ -234,13 +235,14 @@ export async function submitLeadAction(formData: FormData) {
     }
 
     return { success: true, leadId: lead.id };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[submitLeadAction] Error:", error);
     if (error instanceof z.ZodError) {
       const firstError = error.issues[0]?.message || "ข้อมูลไม่ถูกต้อง";
       return { success: false, error: firstError };
     }
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง" };
+    const err = error as Error;
+    return { success: false, error: err.message || "เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง" };
   }
 }
 
@@ -257,9 +259,10 @@ export async function updateLeadAction(id: string, status: LeadStatus, notes: st
     });
 
     return { success: true, leadId: lead.id };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[updateLeadAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" };
+    const err = error as Error;
+    return { success: false, error: err.message || "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" };
   }
 }
 
@@ -272,8 +275,9 @@ export async function deleteLeadAction(id: string) {
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[deleteLeadAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล" };
+    const err = error as Error;
+    return { success: false, error: err.message || "เกิดข้อผิดพลาดในการลบข้อมูล" };
   }
 }

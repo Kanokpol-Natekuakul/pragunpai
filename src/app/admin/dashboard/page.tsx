@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Card } from "@/components/ui/Card";
 import { prisma } from "@/lib/prisma";
 import { formatThaiDate } from "@/lib/format";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -57,9 +58,9 @@ export default async function DashboardPage() {
       <div className="mt-8">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-navy-800">Lead ล่าสุด</h2>
-          <a href="/admin/leads" className="text-sm text-navy-600 hover:text-navy-800">
+          <Link href="/admin/leads" className="text-sm text-navy-600 hover:text-navy-800">
             ดูทั้งหมด →
-          </a>
+          </Link>
         </div>
         <Card className="overflow-hidden">
           {recentLeads.length === 0 ? (
@@ -83,9 +84,9 @@ export default async function DashboardPage() {
                       {formatThaiDate(lead.createdAt)}
                     </td>
                     <td className="px-4 py-3 font-medium text-navy-800">
-                      <a href={`/admin/leads/${lead.id}`} className="hover:underline">
+                      <Link href={`/admin/leads/${lead.id}`} className="hover:underline">
                         {lead.name}
-                      </a>
+                      </Link>
                     </td>
                     <td className="px-4 py-3 text-navy-600">{lead.formType}</td>
                     <td className="px-4 py-3">

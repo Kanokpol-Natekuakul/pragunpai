@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/ui/Container";
 import { ArticleEditor } from "@/components/admin/ArticleEditor";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function EditArticleAdminPage({ params }: Props) {
     orderBy: { type: "asc" },
   });
 
-  let article = null;
+  let article: import("@/generated/prisma/client").Article | null = null;
 
   if (id !== "new") {
     article = await prisma.article.findUnique({
@@ -37,12 +38,12 @@ export default async function EditArticleAdminPage({ params }: Props) {
     <Container size="wide" className="py-4">
       {/* Breadcrumbs */}
       <div className="mb-6">
-        <a
+        <Link
           href="/admin/articles"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-600 hover:text-navy-800"
         >
           ← ย้อนกลับไปหน้าจัดการบทความ
-        </a>
+        </Link>
       </div>
 
       <div className="mb-6">
@@ -52,7 +53,7 @@ export default async function EditArticleAdminPage({ params }: Props) {
         <p className="text-sm text-navy-500 font-medium">เขียน ปรับเปลี่ยนโครงสร้างเนื้อหา SEO สำหรับระบบบล็อกความรู้</p>
       </div>
 
-      <ArticleEditor article={article as any} insurancePages={insurancePages} />
+      <ArticleEditor article={article} insurancePages={insurancePages} />
     </Container>
   );
 }

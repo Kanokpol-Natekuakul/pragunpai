@@ -44,8 +44,8 @@ export async function updateSeoMetaAction(pageKey: string, data: SeoMetaInput) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[updateSeoMetaAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล SEO" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล SEO" };
   }
 }

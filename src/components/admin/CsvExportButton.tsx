@@ -14,7 +14,7 @@ interface CsvExportButtonProps {
     createdAt: Date | string;
     notes: string | null;
     emailSent: boolean;
-    details: any;
+    details: Record<string, unknown> | null;
   }>;
 }
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "ลืมรหัสผ่าน",

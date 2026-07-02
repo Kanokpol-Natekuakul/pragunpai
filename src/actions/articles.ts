@@ -55,9 +55,9 @@ export async function createArticleAction(data: ArticleInput) {
     revalidatePath("/");
     
     return { success: true, articleId: article.id };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[createArticleAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
   }
 }
 
@@ -98,9 +98,9 @@ export async function updateArticleAction(id: string, data: ArticleInput) {
     revalidatePath("/");
 
     return { success: true, articleId: article.id };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[updateArticleAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
   }
 }
 
@@ -118,8 +118,8 @@ export async function deleteArticleAction(id: string) {
     revalidatePath("/");
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("[deleteArticleAction] Error:", error);
-    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล" };
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการลบข้อมูล" };
   }
 }

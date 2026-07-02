@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Card } from "@/components/ui/Card";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd } from "@/lib/jsonld";
 import { siteConfig } from "@/lib/site";
@@ -83,12 +84,12 @@ export default function ContactPage() {
 
           {/* Quick CTA */}
           <div className="mt-8 text-center">
-            <a
+            <Link
               href="/quote"
               className="inline-block rounded-lg bg-orange-500 px-6 py-3 font-semibold text-white hover:bg-orange-600"
             >
               หรือกรอกฟอร์มขอใบเสนอราคา →
-            </a>
+            </Link>
           </div>
         </Container>
       </section>

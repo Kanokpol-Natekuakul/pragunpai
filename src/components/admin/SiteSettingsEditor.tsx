@@ -5,11 +5,40 @@ import { updateSiteSettingAction } from "@/actions/settings";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
+interface ContactVal {
+  phone?: string;
+  phoneDisplay?: string;
+  line?: string;
+  lineUrl?: string;
+  email?: string;
+}
+
+interface NapVal {
+  name?: string;
+  phone?: string;
+  email?: string;
+  addressRegion?: string;
+  addressCountry?: string;
+}
+
+interface HeroVal {
+  headline?: string;
+  subheadline?: string;
+  ctaPrimary?: { label?: string; href?: string };
+  ctaSecondary?: { label?: string; href?: string };
+}
+
+interface FloatingButtonsVal {
+  phone?: boolean;
+  line?: boolean;
+  quote?: boolean;
+}
+
 interface SiteSettingsEditorProps {
-  contactVal: any;
-  napVal: any;
-  heroVal: any;
-  floatingButtonsVal: any;
+  contactVal: ContactVal | null;
+  napVal: NapVal | null;
+  heroVal: HeroVal | null;
+  floatingButtonsVal: FloatingButtonsVal | null;
 }
 
 export function SiteSettingsEditor({
@@ -49,7 +78,7 @@ export function SiteSettingsEditor({
   const [floatLine, setFloatLine] = useState(!!floatingButtonsVal?.line);
   const [floatQuote, setFloatQuote] = useState(!!floatingButtonsVal?.quote);
 
-  const saveSetting = (key: string, payload: any) => {
+  const saveSetting = (key: string, payload: unknown) => {
     setActiveSection(key);
     setSuccessMsg(null);
 
