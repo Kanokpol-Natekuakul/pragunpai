@@ -3,7 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { uploadAttachment, UploadResult } from "@/lib/upload";
 import { sendLeadAlertEmail } from "@/lib/email";
-import { LeadFormType } from "@/generated/prisma/client";
+import { LeadFormType, LeadStatus } from "@/generated/prisma/client";
+import { requireAuth } from "@/lib/auth";
 import { z } from "zod";
 
 // ---------------------------------------------------------------------------
@@ -240,5 +241,39 @@ export async function submitLeadAction(formData: FormData) {
       return { success: false, error: firstError };
     }
     return { success: false, error: error.message || "เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง" };
+  }
+}
+
+export async function updateLeadAction(id: string, status: LeadStatus, notes: string | null) {
+  try {
+    await requireAuth();
+
+    const lead = await prisma.lead.update({
+      where: { id },
+      data: {
+        status,
+        notes,
+      },
+    });
+
+    return { success: true, leadId: lead.id };
+  } catch (error: any) {
+    console.error("[updateLeadAction] Error:", error);
+    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" };
+  }
+}
+
+export async function deleteLeadAction(id: string) {
+  try {
+    await requireAuth();
+
+    await prisma.lead.delete({
+      where: { id },
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("[deleteLeadAction] Error:", error);
+    return { success: false, error: error.message || "เกิดข้อผิดพลาดในการลบข้อมูล" };
   }
 }
