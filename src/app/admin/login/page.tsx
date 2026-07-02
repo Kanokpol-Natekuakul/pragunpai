@@ -1,14 +1,45 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "เข้าสู่ระบบหลังบ้าน",
-  robots: { index: false, follow: false },
-};
-
 export default function AdminLoginPage() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+
+    try {
+      const res = await fetch("/api/auth/login-step1", {
+        method: "POST",
+        body: form,
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data.error || "เกิดข้อผิดพลาด กรุณาลองใหม่");
+        setLoading(false);
+        return;
+      }
+
+      // Store email for step 2
+      sessionStorage.setItem("otp_email", form.get("email") as string);
+      router.push("/admin/login/verify");
+    } catch {
+      setError("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่");
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-navy-50">
       <Container size="prose">
@@ -24,8 +55,15 @@ export default function AdminLoginPage() {
             <p className="mt-1 text-sm text-navy-500">{siteConfig.name}</p>
           </div>
 
+          {/* Error message */}
+          {error && (
+            <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
           {/* Login form — Step 1 */}
-          <form id="login-step1" action="/api/auth/login-step1" method="POST">
+          <form id="login-step1" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-navy-700">
@@ -56,8 +94,8 @@ export default function AdminLoginPage() {
                   className="w-full rounded-lg border border-navy-200 bg-white px-4 py-2.5 text-sm text-navy-800 placeholder:text-navy-300 focus:border-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-100"
                 />
               </div>
-              <Button type="submit" variant="primary" size="md" className="w-full">
-                เข้าสู่ระบบ
+              <Button type="submit" variant="primary" size="md" className="w-full" disabled={loading}>
+                {loading ? "กำลังตรวจสอบ..." : "เข้าสู่ระบบ"}
               </Button>
             </div>
           </form>
@@ -73,3 +111,4 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
