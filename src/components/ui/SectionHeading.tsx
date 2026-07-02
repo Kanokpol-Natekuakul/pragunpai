@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 type SectionHeadingProps = {
   /** Title text — rendered as the H2/H3. */
-  children: ReactNode;
+  title: ReactNode;
   /** Optional eyebrow/kicker above the title (small orange text). */
   eyebrow?: string;
   /** Optional supporting paragraph below the title. */
@@ -15,7 +15,7 @@ type SectionHeadingProps = {
 };
 
 export function SectionHeading({
-  children,
+  title,
   eyebrow,
   subtitle,
   as: Tag = "h2",
@@ -35,7 +35,7 @@ export function SectionHeading({
           {eyebrow}
         </p>
       )}
-      <Tag className="text-2xl font-bold text-navy-800 sm:text-3xl">{children}</Tag>
+      <Tag className="text-2xl font-bold text-navy-800 sm:text-3xl">{title}</Tag>
       {subtitle && (
         <p className="mt-3 text-base leading-relaxed text-navy-500">{subtitle}</p>
       )}
