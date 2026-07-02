@@ -12,6 +12,7 @@
  *
  * NOTE: This script connects directly via Prisma (not the app singleton).
  */
+import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
