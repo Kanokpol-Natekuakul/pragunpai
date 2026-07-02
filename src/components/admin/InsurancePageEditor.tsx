@@ -31,7 +31,7 @@ interface InsurancePageEditorProps {
       rows: Array<{
         id: string;
         coverageItem: string;
-        planValues: Record<string, string>;
+        planValues: import("@/generated/prisma/client").Prisma.JsonValue;
         order: number;
       }>;
     } | null;
@@ -90,7 +90,7 @@ export function InsurancePageEditor({ page }: InsurancePageEditorProps) {
   const getInitialColumns = (): string[] => {
     const firstRow = page.comparisonTable?.rows[0];
     if (firstRow && firstRow.planValues) {
-      return Object.keys(firstRow.planValues);
+      return Object.keys(firstRow.planValues as Record<string, string>);
     }
     return ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
   };

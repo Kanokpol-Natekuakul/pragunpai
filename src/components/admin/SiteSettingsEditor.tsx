@@ -5,7 +5,7 @@ import { updateSiteSettingAction } from "@/actions/settings";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
-interface ContactVal {
+export interface ContactVal {
   phone?: string;
   phoneDisplay?: string;
   line?: string;
@@ -13,7 +13,7 @@ interface ContactVal {
   email?: string;
 }
 
-interface NapVal {
+export interface NapVal {
   name?: string;
   phone?: string;
   email?: string;
@@ -21,14 +21,14 @@ interface NapVal {
   addressCountry?: string;
 }
 
-interface HeroVal {
+export interface HeroVal {
   headline?: string;
   subheadline?: string;
   ctaPrimary?: { label?: string; href?: string };
   ctaSecondary?: { label?: string; href?: string };
 }
 
-interface FloatingButtonsVal {
+export interface FloatingButtonsVal {
   phone?: boolean;
   line?: boolean;
   quote?: boolean;

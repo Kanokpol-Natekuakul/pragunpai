@@ -2,7 +2,13 @@ import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/ui/Container";
-import { SiteSettingsEditor } from "@/components/admin/SiteSettingsEditor";
+import {
+  SiteSettingsEditor,
+  ContactVal,
+  NapVal,
+  HeroVal,
+  FloatingButtonsVal,
+} from "@/components/admin/SiteSettingsEditor";
 
 export const dynamic = "force-dynamic";
 
@@ -43,10 +49,10 @@ export default async function SettingsAdminPage() {
     quote: true,
   };
 
-  const contactVal = settingsMap.get("contact") ?? defaultContact;
-  const napVal = settingsMap.get("nap") ?? defaultNap;
-  const heroVal = settingsMap.get("hero") ?? defaultHero;
-  const floatingButtonsVal = settingsMap.get("floatingButtons") ?? defaultFloatingButtons;
+  const contactVal = (settingsMap.get("contact") ?? defaultContact) as ContactVal;
+  const napVal = (settingsMap.get("nap") ?? defaultNap) as NapVal;
+  const heroVal = (settingsMap.get("hero") ?? defaultHero) as HeroVal;
+  const floatingButtonsVal = (settingsMap.get("floatingButtons") ?? defaultFloatingButtons) as FloatingButtonsVal;
 
   return (
     <Container size="wide" className="py-4">

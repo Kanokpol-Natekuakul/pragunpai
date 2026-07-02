@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { uploadAttachment, UploadResult } from "@/lib/upload";
 import { sendLeadAlertEmail } from "@/lib/email";
-import { LeadFormType, LeadStatus } from "@/generated/prisma/client";
+import { LeadFormType, LeadStatus, Prisma } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth";
 import { z } from "zod";
 
@@ -91,15 +91,32 @@ export async function submitLeadAction(formData: FormData) {
       return { success: false, error: "ไม่พบประเภทฟอร์ม" };
     }
 
-    // Parse base fields
-    const rawData: Record<string, unknown> = {
-      name: formData.get("name"),
-      phone: formData.get("phone"),
-      lineId: formData.get("lineId"),
-      province: formData.get("province"),
-      email: formData.get("email"),
-      note: formData.get("note"),
-      gRecaptchaToken: formData.get("gRecaptchaToken"),
+    // Parse all fields upfront with proper type casting to avoid compiler errors
+    const rawData = {
+      name: formData.get("name") as string,
+      phone: formData.get("phone") as string,
+      lineId: formData.get("lineId") as string | null,
+      province: formData.get("province") as string | null,
+      email: formData.get("email") as string | null,
+      note: formData.get("note") as string | null,
+      gRecaptchaToken: formData.get("gRecaptchaToken") as string | null,
+      carType: formData.get("carType") as string | null,
+      carBrand: formData.get("carBrand") as string | null,
+      carModel: formData.get("carModel") as string | null,
+      carYear: formData.get("carYear") as string | null,
+      carPlate: formData.get("carPlate") as string | null,
+      age: formData.get("age") as string | null,
+      occupation: formData.get("occupation") as string | null,
+      hasExistingIllness: formData.get("hasExistingIllness") as string | null,
+      illnessDetails: formData.get("illnessDetails") as string | null,
+      selectedPlan: formData.get("selectedPlan") as string | null,
+      propertyType: formData.get("propertyType") as string | null,
+      constructionType: formData.get("constructionType") as string | null,
+      floorsCount: formData.get("floorsCount") as string | null,
+      propertyValue: formData.get("propertyValue") as string | null,
+      securitySystems: formData.getAll("securitySystems") as string[],
+      requestType: formData.get("requestType") as string | null,
+      description: formData.get("description") as string | null,
     };
 
     // Verify reCAPTCHA
@@ -109,17 +126,11 @@ export async function submitLeadAction(formData: FormData) {
     }
 
     let formType: LeadFormType;
-    let details: Record<string, unknown> = {};
+    let details: Prisma.InputJsonValue = {};
 
     // Validate type-specific fields
     if (formTypeStr === "CAR_ACT") {
       formType = LeadFormType.CAR_ACT;
-      rawData.carType = formData.get("carType");
-      rawData.carBrand = formData.get("carBrand");
-      rawData.carModel = formData.get("carModel");
-      rawData.carYear = formData.get("carYear");
-      rawData.carPlate = formData.get("carPlate");
-
       const validated = carActSchema.parse(rawData);
       details = {
         carType: validated.carType,
@@ -130,12 +141,6 @@ export async function submitLeadAction(formData: FormData) {
       };
     } else if (formTypeStr === "ACCIDENT") {
       formType = LeadFormType.ACCIDENT;
-      rawData.age = formData.get("age");
-      rawData.occupation = formData.get("occupation");
-      rawData.hasExistingIllness = formData.get("hasExistingIllness");
-      rawData.illnessDetails = formData.get("illnessDetails");
-      rawData.selectedPlan = formData.get("selectedPlan");
-
       const validated = accidentSchema.parse(rawData);
       details = {
         age: validated.age,
@@ -146,12 +151,6 @@ export async function submitLeadAction(formData: FormData) {
       };
     } else if (formTypeStr === "PROPERTY") {
       formType = LeadFormType.PROPERTY;
-      rawData.propertyType = formData.get("propertyType");
-      rawData.constructionType = formData.get("constructionType");
-      rawData.floorsCount = formData.get("floorsCount");
-      rawData.propertyValue = formData.get("propertyValue");
-      rawData.securitySystems = formData.getAll("securitySystems");
-
       const validated = propertySchema.parse(rawData);
       details = {
         propertyType: validated.propertyType,
@@ -162,9 +161,6 @@ export async function submitLeadAction(formData: FormData) {
       };
     } else {
       formType = LeadFormType.OTHER;
-      rawData.requestType = formData.get("requestType");
-      rawData.description = formData.get("description");
-
       const validated = otherSchema.parse(rawData);
       details = {
         requestType: validated.requestType,

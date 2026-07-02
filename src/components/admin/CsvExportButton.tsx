@@ -14,7 +14,7 @@ interface CsvExportButtonProps {
     createdAt: Date | string;
     notes: string | null;
     emailSent: boolean;
-    details: Record<string, unknown> | null;
+    details: import("@/generated/prisma/client").Prisma.JsonValue;
   }>;
 }
 
@@ -44,8 +44,8 @@ export function CsvExportButton({ data }: CsvExportButtonProps) {
     const rows = data.map((lead) => {
       // Clean details JSON for readable single column text or key-value list
       let detailsStr = "";
-      if (lead.details) {
-        detailsStr = Object.entries(lead.details)
+      if (lead.details && typeof lead.details === "object" && !Array.isArray(lead.details)) {
+        detailsStr = Object.entries(lead.details as Record<string, unknown>)
           .map(([k, v]) => `${k}: ${v}`)
           .join(" | ");
       }

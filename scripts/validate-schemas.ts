@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Schema.org JSON-LD validator script.
  * Runs in development/test environments to prevent rich-results and GEO metadata regressions.
@@ -57,7 +58,7 @@ async function runTests() {
   const crumbs = breadcrumbJsonLd([
     { name: "หน้าแรก", url: "https://pragunpai.com" },
     { name: "พ.ร.บ. รถยนต์", url: "https://pragunpai.com/car-act" },
-  ]);
+  ]) as any;
   assert(crumbs["@type"] === "BreadcrumbList", "Breadcrumbs type must be BreadcrumbList");
   assert(Array.isArray(crumbs.itemListElement) && crumbs.itemListElement.length === 2, "Breadcrumbs list should contain 2 items");
   assert(crumbs.itemListElement[0].position === 1, "First breadcrumb position should be 1");
@@ -66,7 +67,7 @@ async function runTests() {
   const faq = faqPageJsonLd([
     { question: "Q1?", answer: "A1" },
     { question: "Q2?", answer: "A2" },
-  ]);
+  ]) as any;
   assert(faq["@type"] === "FAQPage", "FAQ Page type must be FAQPage");
   assert(Array.isArray(faq.mainEntity) && faq.mainEntity.length === 2, "FAQ mainEntity should contain 2 items");
   assert(faq.mainEntity[0].acceptedAnswer.text === "A1", "First FAQ answer must match");
@@ -97,7 +98,7 @@ async function runTests() {
   const howto = howToJsonLd({
     name: "ขั้นตอนการทำประกัน",
     steps: ["กรอกฟอร์ม", "แนบเอกสาร", "ชำระเงิน"],
-  });
+  }) as any;
   assert(howto["@type"] === "HowTo", "HowTo type must be HowTo");
   assert(Array.isArray(howto.step) && howto.step.length === 3, "HowTo should have 3 steps");
   assert(howto.step[1].position === 2, "Second step position should be 2");
