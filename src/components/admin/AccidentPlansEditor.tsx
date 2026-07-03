@@ -368,6 +368,29 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
           </button>
         </div>
 
+        {/* Plan Names Inputs inside Table Section */}
+        <div className="bg-navy-50/50 p-4 rounded-xl border border-navy-100/50 space-y-3">
+          <h3 className="text-xs font-bold text-navy-800 uppercase tracking-wide flex items-center gap-1.5">
+            <span>🏷️</span> ชื่อคอลัมน์แผนประกันภัย (Plan Names)
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {planNames.map((name, idx) => (
+              <div key={idx}>
+                <label className="block text-[10px] font-bold text-navy-600 uppercase mb-1">
+                  ชื่อคอลัมน์ที่ {idx + 1}
+                </label>
+                <input
+                  type="text"
+                  value={name || ""}
+                  onChange={(e) => handlePlanNameChange(idx, e.target.value)}
+                  placeholder={`เช่น ${idx === 0 ? "แผนเริ่มต้น" : idx === 1 ? "แผนแนะนำ" : "แผนสูงสุด"}`}
+                  className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-bold text-navy-800"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
         {comparisonPlans.length === 0 ? (
           <p className="p-8 text-center text-sm text-navy-450 font-semibold bg-gray-50 border border-dashed border-gray-200 rounded-lg">
             ยังไม่มีข้อมูลรายละเอียดตารางเปรียบเทียบแผน
