@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { updateSiteSettingAction } from "@/actions/settings";
+import { updateSiteSettingAction, uploadSiteLogoAction } from "@/actions/settings";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
@@ -39,6 +39,7 @@ interface SiteSettingsEditorProps {
   napVal: NapVal | null;
   heroVal: HeroVal | null;
   floatingButtonsVal: FloatingButtonsVal | null;
+  logoConfigVal: { logoUrl?: string; faviconUrl?: string } | null;
 }
 
 export function SiteSettingsEditor({
@@ -46,10 +47,63 @@ export function SiteSettingsEditor({
   napVal,
   heroVal,
   floatingButtonsVal,
+  logoConfigVal,
 }: SiteSettingsEditorProps) {
   const [isPending, startTransition] = useTransition();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // Logo and Favicon Settings State
+  const [logoUrl, setLogoUrl] = useState(logoConfigVal?.logoUrl || "");
+  const [faviconUrl, setFaviconUrl] = useState(logoConfigVal?.faviconUrl || "");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingLogo(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await uploadSiteLogoAction(formData);
+      if (res.success && res.url) {
+        setLogoUrl(res.url);
+        setSuccessMsg("อัปโหลดโลโก้สำเร็จแล้ว (อย่าลืมกดบันทึกข้อมูล)");
+        setTimeout(() => setSuccessMsg(null), 3000);
+      } else {
+        alert(res.error || "เกิดข้อผิดพลาดในการอัปโหลด");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingFavicon(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await uploadSiteLogoAction(formData);
+      if (res.success && res.url) {
+        setFaviconUrl(res.url);
+        setSuccessMsg("อัปโหลด Favicon สำเร็จแล้ว (อย่าลืมกดบันทึกข้อมูล)");
+        setTimeout(() => setSuccessMsg(null), 3000);
+      } else {
+        alert(res.error || "เกิดข้อผิดพลาดในการอัปโหลด");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+    } finally {
+      setUploadingFavicon(false);
+    }
+  };
 
   // 1. Contact Settings State
   const [phone, setPhone] = useState(contactVal?.phone || "");
@@ -101,6 +155,113 @@ export function SiteSettingsEditor({
           ✓ {successMsg}
         </div>
       )}
+
+      {/* Card 0: Logo & Favicon Settings */}
+      <Card className="p-6 bg-white border border-gray-200 space-y-4">
+        <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
+          <span>🖼️ โลโก้และไอคอนของเว็บไซต์ (Web Logo & Favicon)</span>
+          {activeSection === "siteLogoConfig" && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+        </h2>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Logo Field */}
+          <div className="space-y-3">
+            <div>
+              <span className="block text-xs font-bold text-navy-600 uppercase mb-1">
+                โลโก้เว็บไซต์ (Header / Footer Logo)
+              </span>
+              <p className="text-[11px] text-navy-400 mb-2 leading-relaxed">
+                <strong className="text-orange-500">ขนาดแนะนำ: 200px x 48px</strong> (แนวนอน อัตราส่วนประมาณ 4:1) แนะนำใช้ไฟล์ภาพ PNG โปร่งใส (Transparent) หรือ SVG เพื่อให้กลมกลืนกับแถบเมนูและพื้นหลัง
+              </p>
+            </div>
+
+            {/* Logo Preview */}
+            <div className="h-16 w-full max-w-[250px] overflow-hidden rounded-lg bg-navy-50 border border-gray-200 flex items-center justify-center p-2 relative">
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="โลโก้เว็บไซต์" className="max-h-full max-w-full object-contain" />
+              ) : (
+                <span className="text-xs text-navy-400 font-semibold">ยังไม่มีรูปโลโก้ (ใช้ชื่อข้อความแทน)</span>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <input
+                type="file"
+                onChange={handleLogoUpload}
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                disabled={uploadingLogo}
+                className="w-full text-xs text-navy-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-navy-50 file:text-navy-700 hover:file:bg-navy-100 cursor-pointer disabled:opacity-50"
+              />
+              {uploadingLogo && <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลดโลโก้...</span>}
+              <div>
+                <label className="block text-[10px] font-bold text-navy-500 uppercase mb-1">หรือป้อนลิงก์โลโก้โดยตรง</label>
+                <input
+                  type="text"
+                  value={logoUrl}
+                  onChange={(e) => setLogoUrl(e.target.value)}
+                  placeholder="เช่น /images/logo.png หรือ https://..."
+                  className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-mono text-navy-700"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Favicon Field */}
+          <div className="space-y-3">
+            <div>
+              <span className="block text-xs font-bold text-navy-600 uppercase mb-1">
+                ไอคอนเว็บสำหรับแท็บเบราว์เซอร์ (Favicon / Site Icon)
+              </span>
+              <p className="text-[11px] text-navy-400 mb-2 leading-relaxed">
+                <strong className="text-orange-500">ขนาดแนะนำ: 32px x 32px หรือ 48px x 48px</strong> (สี่เหลี่ยมจัตุรัส 1:1) คมชัดสัดส่วนจัตุรัส แนะนำไฟล์ประเภท ICO หรือ PNG
+              </p>
+            </div>
+
+            {/* Favicon Preview */}
+            <div className="h-16 w-16 overflow-hidden rounded-lg bg-navy-50 border border-gray-200 flex items-center justify-center p-2 relative">
+              {faviconUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={faviconUrl} alt="Favicon" className="h-8 w-8 object-contain" />
+              ) : (
+                <span className="text-[10px] text-navy-400 font-semibold text-center leading-none">ไม่มีไอคอน</span>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <input
+                type="file"
+                onChange={handleFaviconUpload}
+                accept="image/x-icon,image/png,image/jpeg,image/webp,image/svg+xml"
+                disabled={uploadingFavicon}
+                className="w-full text-xs text-navy-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-navy-50 file:text-navy-700 hover:file:bg-navy-100 cursor-pointer disabled:opacity-50"
+              />
+              {uploadingFavicon && <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลดไอคอน...</span>}
+              <div>
+                <label className="block text-[10px] font-bold text-navy-500 uppercase mb-1">หรือป้อนลิงก์ไอคอนโดยตรง</label>
+                <input
+                  type="text"
+                  value={faviconUrl}
+                  onChange={(e) => setFaviconUrl(e.target.value)}
+                  placeholder="เช่น /favicon.ico หรือ https://..."
+                  className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-mono text-navy-700"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-2 border-t border-gray-50">
+          <Button
+            onClick={() => saveSetting("siteLogoConfig", { logoUrl, faviconUrl })}
+            disabled={isPending || uploadingLogo || uploadingFavicon}
+            variant="secondary"
+            className="text-xs py-1.5 px-6 font-semibold cursor-pointer"
+          >
+            บันทึกโลโก้และไอคอน
+          </Button>
+        </div>
+      </Card>
 
       {/* Card 1: Brand Contact */}
       <Card className="p-6 bg-white border border-gray-200 space-y-4">

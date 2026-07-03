@@ -9,8 +9,10 @@ import { Header } from "@/components/layout/Header";
 
 export function PublicSiteChrome({
   children,
+  logoUrl,
 }: {
   children: ReactNode;
+  logoUrl?: string;
 }) {
   const pathname = usePathname();
 
@@ -20,9 +22,9 @@ export function PublicSiteChrome({
 
   return (
     <>
-      <Header />
+      <Header logoUrl={logoUrl} />
       <main className="flex-1">{children}</main>
-      <Footer />
+      <Footer logoUrl={logoUrl} />
       <FloatingContactButtons />
     </>
   );

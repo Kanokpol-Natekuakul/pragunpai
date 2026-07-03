@@ -7,6 +7,7 @@ import { GoogleAnalytics } from "@/components/seo/Analytics";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 import { siteConfig } from "@/lib/site";
+import { prisma } from "@/lib/prisma";
 
 const notoThai = Noto_Sans_Thai({
   variable: "--font-noto-thai",
@@ -77,17 +78,37 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let logoUrl = "";
+  let faviconUrl = "/favicon.ico";
+
+  try {
+    const setting = await prisma.siteSetting.findUnique({
+      where: { key: "siteLogoConfig" },
+    });
+    if (setting && typeof setting.value === "object" && setting.value !== null) {
+      const val = setting.value as { logoUrl?: string; faviconUrl?: string };
+      logoUrl = val.logoUrl || "";
+      faviconUrl = val.faviconUrl || "/favicon.ico";
+    }
+  } catch (error) {
+    console.error("[RootLayout] Failed to load logo config:", error);
+  }
+
   return (
     <html lang="th" data-scroll-behavior="smooth" className={`${notoThai.variable} h-full`}>
+      <head>
+        <link rel="icon" href={faviconUrl} />
+        <link rel="shortcut icon" href={faviconUrl} />
+      </head>
       <body className="min-h-full flex flex-col bg-white text-navy-800 antialiased">
         <GoogleAnalytics />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
-        <PublicSiteChrome>{children}</PublicSiteChrome>
+        <PublicSiteChrome logoUrl={logoUrl}>{children}</PublicSiteChrome>
       </body>
     </html>
   );

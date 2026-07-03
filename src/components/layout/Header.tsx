@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { mainMenu } from "@/lib/navigation";
 import { siteConfig } from "@/lib/site";
 
-export function Header() {
+export function Header({ logoUrl }: { logoUrl?: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,10 +16,17 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" aria-label={`${siteConfig.name} หน้าแรก`}>
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-600 text-white font-bold">
-              P
-            </span>
-            <span className="text-lg font-bold text-navy-800">{siteConfig.name}</span>
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-[180px] object-contain" />
+            ) : (
+              <>
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-600 text-white font-bold">
+                  P
+                </span>
+                <span className="text-lg font-bold text-navy-800">{siteConfig.name}</span>
+              </>
+            )}
           </Link>
 
           {/* Desktop nav */}

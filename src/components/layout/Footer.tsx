@@ -4,7 +4,7 @@ import { footerLinks } from "@/lib/navigation";
 import { siteConfig } from "@/lib/site";
 import { formatThaiDate } from "@/lib/format";
 
-export function Footer() {
+export function Footer({ logoUrl }: { logoUrl?: string }) {
   const year = formatThaiDate(new Date()).split(" ").pop();
 
   return (
@@ -14,10 +14,17 @@ export function Footer() {
           {/* Brand + contact */}
           <div>
             <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-500 text-white font-bold">
-                P
-              </span>
-              <span className="text-lg font-bold text-white">{siteConfig.name}</span>
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-[180px] object-contain brightness-0 invert" />
+              ) : (
+                <>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-500 text-white font-bold">
+                    P
+                  </span>
+                  <span className="text-lg font-bold text-white">{siteConfig.name}</span>
+                </>
+              )}
             </div>
             <p className="mt-3 text-sm leading-relaxed text-navy-200">
               ที่ปรึกษาและเปรียบเทียบแผนประกันภัย เพื่อช่วยให้คุณเลือกความคุ้มครองที่เหมาะสมก่อนตัดสินใจ
