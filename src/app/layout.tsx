@@ -2,9 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { FloatingContactButtons } from "@/components/layout/FloatingContactButtons";
+import { PublicSiteChrome } from "@/components/layout/PublicSiteChrome";
 import { GoogleAnalytics } from "@/components/seo/Analytics";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
@@ -89,10 +87,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white text-navy-800 antialiased">
         <GoogleAnalytics />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <FloatingContactButtons />
+        <PublicSiteChrome>{children}</PublicSiteChrome>
       </body>
     </html>
   );
