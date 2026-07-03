@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqPageJsonLd } from "@/lib/jsonld";
+import { getFaqSection } from "@/lib/faqs";
 
 export const metadata: Metadata = {
   title: "ประกันบ้าน คอนโด หอพัก — คุ้มครองทรัพย์สิน ขอใบเสนอราคา",
@@ -58,7 +59,8 @@ const faqs = [
   },
 ];
 
-export default function PropertyInsurancePage() {
+export default async function PropertyInsurancePage() {
+  const faqSection = await getFaqSection("property", faqs);
   return (
     <>
       <Container size="wide" className="pt-6">
@@ -126,9 +128,9 @@ export default function PropertyInsurancePage() {
 
       <section className="bg-white py-16">
         <Container size="prose">
-          <SectionHeading eyebrow="คำถามที่พบบ่อย" title="คำถามเกี่ยวกับประกันทรัพย์สิน" />
+          <SectionHeading eyebrow={faqSection.eyebrow} title={faqSection.title} />
           <div className="mt-8 divide-y divide-navy-100">
-            {faqs.map((faq) => (
+            {faqSection.items.map((faq) => (
               <details key={faq.question} className="group py-5">
                 <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-navy-800">
                   {faq.question}
@@ -152,7 +154,7 @@ export default function PropertyInsurancePage() {
         </Container>
       </section>
 
-      <JsonLd data={faqPageJsonLd(faqs)} />
+      <JsonLd data={faqPageJsonLd(faqSection.items)} />
     </>
   );
 }

@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { faqPageJsonLd } from "@/lib/jsonld";
 import { prisma } from "@/lib/prisma";
 import { AccidentPlansView } from "@/components/insurance/AccidentPlansView";
+import { getFaqSection } from "@/lib/faqs";
 
 export const metadata: Metadata = {
   title: "ประกันอุบัติเหตุ — เปรียบเทียบแผน ครอบคลุมเด็กถึงผู้สูงอายุ",
@@ -49,9 +50,12 @@ const faqs = [
 ];
 
 export default async function AccidentInsurancePage() {
-  const setting = await prisma.siteSetting.findUnique({
-    where: { key: "accidentPlansConfig" },
-  });
+  const [setting, faqSection] = await Promise.all([
+    prisma.siteSetting.findUnique({
+      where: { key: "accidentPlansConfig" },
+    }),
+    getFaqSection("accident", faqs),
+  ]);
 
   const defaultImages = [
     "/images/mockups/accident_plan_basic.jpg",
@@ -126,9 +130,9 @@ export default async function AccidentInsurancePage() {
 
       <section className="bg-white py-16">
         <Container size="prose">
-          <SectionHeading eyebrow="คำถามที่พบบ่อย" title="คำถามเกี่ยวกับประกันอุบัติเหตุ" />
+          <SectionHeading eyebrow={faqSection.eyebrow} title={faqSection.title} />
           <div className="mt-8 divide-y divide-navy-100">
-            {faqs.map((faq) => (
+            {faqSection.items.map((faq) => (
               <details key={faq.question} className="group py-5">
                 <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-navy-800">
                   {faq.question}
@@ -152,7 +156,7 @@ export default async function AccidentInsurancePage() {
         </Container>
       </section>
 
-      <JsonLd data={faqPageJsonLd(faqs)} />
+      <JsonLd data={faqPageJsonLd(faqSection.items)} />
     </>
   );
 }

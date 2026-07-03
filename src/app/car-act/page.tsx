@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { faqPageJsonLd } from "@/lib/jsonld";
+import { FaqSectionBlock } from "@/components/faq/FaqSectionBlock";
+import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
@@ -52,6 +52,8 @@ export default async function CarActPage() {
         { item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ", amount: "สูงสุด 200 บาท/วัน (จำกัด 20 วัน)" },
         { item: "ระยะเวลาคุ้มครอง", amount: "1 ปี" },
       ];
+  const faqSection = await getFaqSection("car-act", faqs);
+
   return (
     <>
       <Container size="wide" className="pt-6">
@@ -127,23 +129,7 @@ export default async function CarActPage() {
         </Container>
       </section>
 
-      {/* FAQ */}
-      <section className="bg-white py-16">
-        <Container size="prose">
-          <SectionHeading eyebrow="คำถามที่พบบ่อย" title="คำถามเกี่ยวกับ พ.ร.บ." />
-          <div className="mt-8 divide-y divide-navy-100">
-            {faqs.map((faq) => (
-              <details key={faq.question} className="group py-5">
-                <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-navy-800">
-                  {faq.question}
-                  <span className="text-orange-500 transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-3 text-sm leading-relaxed text-navy-600">{faq.answer}</p>
-              </details>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <FaqSectionBlock section={faqSection} />
 
       {/* CTA */}
       <section className="bg-orange-500 py-12">
@@ -157,7 +143,6 @@ export default async function CarActPage() {
         </Container>
       </section>
 
-      <JsonLd data={faqPageJsonLd(faqs)} />
     </>
   );
 }
