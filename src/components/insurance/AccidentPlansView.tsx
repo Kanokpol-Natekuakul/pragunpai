@@ -14,10 +14,11 @@ interface PlanRow {
 interface AccidentPlansViewProps {
   viewMode: string; // "table" | "images" | "both"
   images: string[];
+  planNames?: string[];
   comparisonPlans: PlanRow[];
 }
 
-export function AccidentPlansView({ viewMode, images, comparisonPlans }: AccidentPlansViewProps) {
+export function AccidentPlansView({ viewMode, images, planNames: customPlanNames, comparisonPlans }: AccidentPlansViewProps) {
   const [activeTab, setActiveTab] = useState<"images" | "table">(
     viewMode === "table" ? "table" : "images"
   );
@@ -26,7 +27,7 @@ export function AccidentPlansView({ viewMode, images, comparisonPlans }: Acciden
   // If viewMode is "table" only or "images" only, we don't show tabs. We just show the content directly.
   const showTabs = viewMode === "both";
 
-  const planNames = ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
+  const planNames = customPlanNames && customPlanNames.length === 3 ? customPlanNames : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
   const planColors = ["border-navy-200", "border-orange-400 ring-2 ring-orange-400/20", "border-navy-800"];
   const planBadges = [
     { label: "ประหยัด", style: "bg-navy-50 text-navy-700 border-navy-100" },
@@ -169,9 +170,9 @@ export function AccidentPlansView({ viewMode, images, comparisonPlans }: Acciden
               <thead className="bg-navy-600 text-white">
                 <tr>
                   <th className="px-6 py-4 font-bold text-sm">รายการคุ้มครอง</th>
-                  <th className="px-6 py-4 font-bold text-sm">แผนพื้นฐาน</th>
-                  <th className="px-6 py-4 font-bold text-sm">แผนมาตรฐาน</th>
-                  <th className="px-6 py-4 font-bold text-sm">แผนพรีเมียม</th>
+                  <th className="px-6 py-4 font-bold text-sm">{planNames[0]}</th>
+                  <th className="px-6 py-4 font-bold text-sm">{planNames[1]}</th>
+                  <th className="px-6 py-4 font-bold text-sm">{planNames[2]}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-navy-50">

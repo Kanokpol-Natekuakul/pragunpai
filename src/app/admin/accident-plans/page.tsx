@@ -23,13 +23,15 @@ export default async function AccidentPlansAdminPage() {
   let initialConfig = {
     viewMode: "both",
     images: defaultImages,
+    planNames: ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"],
   };
 
   if (setting && typeof setting.value === "object" && setting.value !== null) {
-    const val = setting.value as { viewMode?: string; images?: string[] };
+    const val = setting.value as { viewMode?: string; images?: string[]; planNames?: string[] };
     initialConfig = {
       viewMode: val.viewMode || "both",
       images: Array.isArray(val.images) && val.images.length === 3 ? val.images : defaultImages,
+      planNames: Array.isArray(val.planNames) && val.planNames.length === 3 ? val.planNames : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"],
     };
   }
 

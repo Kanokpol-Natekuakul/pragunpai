@@ -65,11 +65,13 @@ export default async function AccidentInsurancePage() {
 
   let viewMode = "both";
   let images = defaultImages;
+  let planNames = ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
 
   if (setting && typeof setting.value === "object" && setting.value !== null) {
-    const val = setting.value as { viewMode?: string; images?: string[] };
+    const val = setting.value as { viewMode?: string; images?: string[]; planNames?: string[] };
     viewMode = val.viewMode || "both";
     images = Array.isArray(val.images) && val.images.length === 3 ? val.images : defaultImages;
+    planNames = Array.isArray(val.planNames) && val.planNames.length === 3 ? val.planNames : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
   }
   return (
     <>
@@ -123,6 +125,7 @@ export default async function AccidentInsurancePage() {
           <AccidentPlansView
             viewMode={viewMode}
             images={images}
+            planNames={planNames}
             comparisonPlans={comparisonPlans}
           />
         </Container>

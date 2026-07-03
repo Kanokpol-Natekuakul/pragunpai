@@ -9,6 +9,7 @@ interface AccidentPlansEditorProps {
   initialConfig: {
     viewMode: string;
     images: string[];
+    planNames: string[];
   };
 }
 
@@ -23,6 +24,11 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
           "/images/mockups/accident_plan_premium.jpg",
         ]
   );
+  const [planNames, setPlanNames] = useState<string[]>(
+    initialConfig.planNames && initialConfig.planNames.length === 3
+      ? initialConfig.planNames
+      : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"]
+  );
 
   const [isPending, startTransition] = useTransition();
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -34,10 +40,16 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
     useRef<HTMLInputElement>(null),
   ];
 
+  const handlePlanNameChange = (index: number, val: string) => {
+    const updated = [...planNames];
+    updated[index] = val;
+    setPlanNames(updated);
+  };
+
   const handleSaveConfig = () => {
     setSuccessMsg(null);
     startTransition(async () => {
-      const res = await updateAccidentPlansConfigAction({ viewMode, images });
+      const res = await updateAccidentPlansConfigAction({ viewMode, images, planNames });
       if (res.success) {
         setSuccessMsg("บันทึกการตั้งค่าแผนประกันอุบัติเหตุสำเร็จแล้ว");
         setTimeout(() => setSuccessMsg(null), 3000);
@@ -202,7 +214,7 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
             <Card key={idx} className="p-5 bg-white border border-gray-200 flex flex-col justify-between space-y-4">
               <div>
                 <h3 className="text-sm font-bold text-navy-800 border-b border-gray-100 pb-2.5 mb-3 flex items-center justify-between">
-                  <span>🖼️ {plan.name}</span>
+                  <span>🖼️ {planNames[idx]}</span>
                   {uploadingIndex === idx && <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลด...</span>}
                 </h3>
 
@@ -212,7 +224,7 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={currentUrl}
-                      alt={`พรีวิว ${plan.name}`}
+                      alt={`พรีวิว ${planNames[idx]}`}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -224,6 +236,19 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
 
                 {/* Upload Section */}
                 <div className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-navy-600 uppercase mb-1">
+                      ชื่อแผนประกัน (แสดงบนหน้าเว็บ)
+                    </label>
+                    <input
+                      type="text"
+                      value={planNames[idx] || ""}
+                      onChange={(e) => handlePlanNameChange(idx, e.target.value)}
+                      placeholder="เช่น แผนเริ่มต้น, แผนแนะนำ"
+                      className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-bold text-navy-800"
+                    />
+                  </div>
+
                   <div>
                     <label className="block text-[10px] font-bold text-navy-600 uppercase mb-1">
                       อัปโหลดรูปภาพใหม่ (จำกัดเฉพาะ JPG, PNG, WEBP ไม่เกิน 5MB)

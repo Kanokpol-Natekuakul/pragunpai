@@ -5,7 +5,7 @@ import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { uploadAttachment } from "@/lib/upload";
 
-export async function updateAccidentPlansConfigAction(config: { viewMode: string; images: string[] }) {
+export async function updateAccidentPlansConfigAction(config: { viewMode: string; images: string[]; planNames: string[] }) {
   try {
     await requireAuth();
 
@@ -51,13 +51,15 @@ export async function uploadAccidentPlanImageAction(formData: FormData) {
         "/images/mockups/accident_plan_standard.jpg",
         "/images/mockups/accident_plan_premium.jpg",
       ],
+      planNames: ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"],
     };
 
     if (setting && typeof setting.value === "object" && setting.value !== null) {
-      const val = setting.value as { viewMode?: string; images?: string[] };
+      const val = setting.value as { viewMode?: string; images?: string[]; planNames?: string[] };
       currentConfig = {
         viewMode: val.viewMode || "both",
         images: Array.isArray(val.images) ? [...val.images] : [...currentConfig.images],
+        planNames: Array.isArray(val.planNames) && val.planNames.length === 3 ? [...val.planNames] : [...currentConfig.planNames],
       };
     }
 
