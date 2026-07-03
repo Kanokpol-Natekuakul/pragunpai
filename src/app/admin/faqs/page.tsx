@@ -3,6 +3,7 @@ import { FaqEditor } from "@/components/admin/FaqEditor";
 import { Container } from "@/components/ui/Container";
 import {
   FAQ_CATEGORIES,
+  DEFAULT_FAQS,
   parseFaqSectionSettings,
   type FaqCategory,
   type FaqSectionView,
@@ -26,20 +27,28 @@ export default async function FaqAdminPage() {
   const settings = parseFaqSectionSettings(setting?.value);
   const sections: FaqSectionView[] = FAQ_CATEGORIES.map((config) => {
     const category = config.category as FaqCategory;
+    const dbItems = items.filter((item) => item.category === category);
+    const finalItems =
+      dbItems.length > 0
+        ? dbItems.map((item) => ({
+            id: item.id,
+            question: item.question,
+            answer: item.answer,
+            order: item.order,
+          }))
+        : DEFAULT_FAQS[category].map((item, index) => ({
+            question: item.question,
+            answer: item.answer,
+            order: index,
+          }));
+
     return {
       category,
       label: config.label,
       path: config.path,
       eyebrow: "คำถามที่พบบ่อย",
       title: settings[category]?.title?.trim() || config.defaultTitle,
-      items: items
-        .filter((item) => item.category === category)
-        .map((item) => ({
-          id: item.id,
-          question: item.question,
-          answer: item.answer,
-          order: item.order,
-        })),
+      items: finalItems,
     };
   });
 

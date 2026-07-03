@@ -275,10 +275,10 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
       </div>
 
       {/* Global Action Footer */}
-      <Card className="p-4 bg-navy-950 border border-orange-500/30 flex items-center justify-between text-white flex-col sm:flex-row gap-3 shadow-xl">
+      <Card className="p-5 bg-white border border-gray-200 flex items-center justify-between text-navy-800 flex-col sm:flex-row gap-3 shadow-sm">
         <div className="text-center sm:text-left">
-          <p className="text-sm font-bold text-white">💾 บันทึกรูปภาพแผนและลิงก์ทั้งหมด</p>
-          <p className="text-[12px] text-orange-200 mt-1 font-semibold">
+          <p className="text-sm font-bold text-navy-800">💾 บันทึกรูปภาพแผนและลิงก์ทั้งหมด</p>
+          <p className="text-xs text-navy-500 mt-1 font-medium">
             กดปุ่มสีส้มขวามือเพื่อบันทึกการเปลี่ยนแปลงลิงก์รูปภาพแผนทั้งหมดลงฐานข้อมูล
           </p>
         </div>
@@ -286,8 +286,7 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
           onClick={handleSaveConfig}
           disabled={isPending}
           variant="accent"
-          size="lg"
-          className="w-full sm:w-auto px-8 cursor-pointer font-extrabold shadow-md hover:scale-105 active:scale-95 transition-all"
+          className="w-full sm:w-auto px-8 cursor-pointer font-bold shadow-sm"
         >
           {isPending ? "กำลังบันทึก..." : "💾 บันทึกรูปภาพและโครงสร้างทั้งหมด"}
         </Button>
