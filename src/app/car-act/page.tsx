@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqPageJsonLd } from "@/lib/jsonld";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "พ.ร.บ. ประกันภัยรถยนต์ — ขอใบเสนอราคา ต่อ พ.ร.บ. ง่าย",
@@ -19,13 +20,6 @@ export const metadata: Metadata = {
     type: "article",
   },
 };
-
-const coverageTable = [
-  { item: "ค่ารักษาพยาบาล (ต่อคน)", amount: "สูงสุด 30,000 บาท" },
-  { item: "ทุนประกันกรณีเสียชีวิต/สูญเสียอวัยวะ/ทุพพลภาพถาวร", amount: "สูงสุด 500,000 บาท" },
-  { item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ", amount: "สูงสุด 200 บาท/วัน (จำกัด 10 วัน)" },
-  { item: "ระยะเวลาคุ้มครอง", amount: "1 ปี" },
-];
 
 const faqs = [
   {
@@ -45,7 +39,19 @@ const faqs = [
   },
 ];
 
-export default function CarActPage() {
+export default async function CarActPage() {
+  const setting = await prisma.siteSetting.findUnique({
+    where: { key: "carActCoverage" },
+  });
+
+  const coverageTable = Array.isArray(setting?.value)
+    ? (setting.value as Array<{ item: string; amount: string }>)
+    : [
+        { item: "ค่ารักษาพยาบาล (ต่อคน)", amount: "สูงสุด 80,000 บาท" },
+        { item: "ทุนประกันกรณีเสียชีวิต/สูญเสียอวัยวะ/ทุพพลภาพถาวร", amount: "สูงสุด 500,000 บาท" },
+        { item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ", amount: "สูงสุด 200 บาท/วัน (จำกัด 20 วัน)" },
+        { item: "ระยะเวลาคุ้มครอง", amount: "1 ปี" },
+      ];
   return (
     <>
       <Container size="wide" className="pt-6">
@@ -116,7 +122,7 @@ export default function CarActPage() {
             </div>
           </Card>
           <p className="mt-4 text-xs text-navy-500">
-            * จำนวนเงินคุ้มครองเป็นไปตามเกณฑ์ของพ.ร.บ. อาจมีการปรับปรุงตามประกาศทางการ
+            * จำนวนเงินคุ้มครองเป็นไปตามเกณฑ์ของ พ.ร.บ. อาจมีการปรับปรุงตามประกาศทางการ
           </p>
         </Container>
       </section>

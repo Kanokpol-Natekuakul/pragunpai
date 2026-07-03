@@ -18,9 +18,11 @@ export async function updateSiteSettingAction(key: string, value: unknown) {
     });
 
     revalidatePath("/admin/settings");
+    revalidatePath("/admin/car-act-coverage");
     revalidatePath("/");
     revalidatePath("/about");
     revalidatePath("/contact");
+    revalidatePath("/car-act");
 
     return { success: true };
   } catch (error) {
