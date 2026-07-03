@@ -5,11 +5,20 @@ import { updateAccidentPlansConfigAction, uploadAccidentPlanImageAction } from "
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
+interface ComparisonPlanRow {
+  id: string;
+  feature: string;
+  plan1: string;
+  plan2: string;
+  plan3: string;
+}
+
 interface AccidentPlansEditorProps {
   initialConfig: {
     viewMode: string;
     images: string[];
     planNames: string[];
+    comparisonPlans: ComparisonPlanRow[];
   };
 }
 
@@ -28,6 +37,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
     initialConfig.planNames && initialConfig.planNames.length === 3
       ? initialConfig.planNames
       : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"]
+  );
+  const [comparisonPlans, setComparisonPlans] = useState<ComparisonPlanRow[]>(
+    initialConfig.comparisonPlans || []
   );
 
   const [isPending, startTransition] = useTransition();
@@ -49,7 +61,7 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
   const handleSaveConfig = () => {
     setSuccessMsg(null);
     startTransition(async () => {
-      const res = await updateAccidentPlansConfigAction({ viewMode, images, planNames });
+      const res = await updateAccidentPlansConfigAction({ viewMode, images, planNames, comparisonPlans });
       if (res.success) {
         setSuccessMsg("บันทึกการตั้งค่าแผนประกันอุบัติเหตุสำเร็จแล้ว");
         setTimeout(() => setSuccessMsg(null), 3000);
@@ -57,6 +69,42 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
         alert(res.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       }
     });
+  };
+
+  const handleAddRow = () => {
+    const newId = `row-${Date.now()}`;
+    setComparisonPlans([
+      ...comparisonPlans,
+      { id: newId, feature: "รายการความคุ้มครองใหม่", plan1: "", plan2: "", plan3: "" },
+    ]);
+  };
+
+  const handleRemoveRow = (id: string) => {
+    setComparisonPlans(comparisonPlans.filter((r) => r.id !== id));
+  };
+
+  const handleRowFieldChange = (id: string, field: "feature" | "plan1" | "plan2" | "plan3", val: string) => {
+    setComparisonPlans(
+      comparisonPlans.map((r) => (r.id === id ? { ...r, [field]: val } : r))
+    );
+  };
+
+  const moveRowUp = (idx: number) => {
+    if (idx === 0) return;
+    const updated = [...comparisonPlans];
+    const temp = updated[idx];
+    updated[idx] = updated[idx - 1];
+    updated[idx - 1] = temp;
+    setComparisonPlans(updated);
+  };
+
+  const moveRowDown = (idx: number) => {
+    if (idx === comparisonPlans.length - 1) return;
+    const updated = [...comparisonPlans];
+    const temp = updated[idx];
+    updated[idx] = updated[idx + 1];
+    updated[idx + 1] = temp;
+    setComparisonPlans(updated);
   };
 
   const handleImageUrlChange = (index: number, val: string) => {
@@ -298,6 +346,127 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
           );
         })}
       </div>
+
+      {/* Dynamic Comparison Table Editor */}
+      <Card className="p-6 bg-white border border-gray-200 space-y-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end justify-between border-b border-gray-100 pb-5">
+          <div>
+            <h2 className="text-base font-bold text-navy-800">
+              📊 จัดการตารางเปรียบเทียบข้อมูลแผนประกันอุบัติเหตุ
+            </h2>
+            <p className="text-xs text-navy-500 mt-1 font-medium">
+              เพิ่ม ลด หรือเรียงลำดับหัวข้อความคุ้มครองและจำนวนเงินที่จะไปแสดงในตารางเปรียบเทียบหน้าเว็บจริง
+            </p>
+          </div>
+          
+          <button
+            type="button"
+            onClick={handleAddRow}
+            className="rounded-lg bg-orange-500 hover:bg-orange-600 px-4 py-2 text-sm font-semibold text-white cursor-pointer transition-colors"
+          >
+            เพิ่มหัวข้อความคุ้มครอง +
+          </button>
+        </div>
+
+        {comparisonPlans.length === 0 ? (
+          <p className="p-8 text-center text-sm text-navy-450 font-semibold bg-gray-50 border border-dashed border-gray-200 rounded-lg">
+            ยังไม่มีข้อมูลรายละเอียดตารางเปรียบเทียบแผน
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {comparisonPlans.map((row, idx) => (
+              <div
+                key={row.id}
+                className="flex flex-col md:flex-row gap-3 items-start border border-gray-250 bg-gray-50/50 p-4 rounded-xl relative hover:border-gray-300 transition-colors"
+              >
+                {/* Row Item Name */}
+                <div className="w-full md:w-1/3">
+                  <label className="block text-[10px] uppercase font-bold text-navy-500 mb-1">
+                    หัวข้อความคุ้มครอง / รายการ
+                  </label>
+                  <input
+                    type="text"
+                    value={row.feature}
+                    onChange={(e) => handleRowFieldChange(row.id, "feature", e.target.value)}
+                    className="w-full rounded-lg border border-navy-200 bg-white px-3 py-2 text-sm font-bold text-navy-850 focus:outline-none focus:border-orange-400"
+                    placeholder="เช่น ค่ารักษาพยาบาลต่ออุบัติเหตุ"
+                  />
+                </div>
+
+                {/* Plan Values inside Grid */}
+                <div className="w-full md:flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[10px] uppercase font-bold text-navy-450 truncate mb-1">
+                      {planNames[0] || "แผนที่ 1"}
+                    </label>
+                    <input
+                      type="text"
+                      value={row.plan1}
+                      onChange={(e) => handleRowFieldChange(row.id, "plan1", e.target.value)}
+                      placeholder="เช่น 10,000 บาท"
+                      className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 focus:outline-none focus:border-orange-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-bold text-navy-450 truncate mb-1">
+                      {planNames[1] || "แผนที่ 2"}
+                    </label>
+                    <input
+                      type="text"
+                      value={row.plan2}
+                      onChange={(e) => handleRowFieldChange(row.id, "plan2", e.target.value)}
+                      placeholder="เช่น 30,000 บาท"
+                      className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 focus:outline-none focus:border-orange-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase font-bold text-navy-450 truncate mb-1">
+                      {planNames[2] || "แผนที่ 3"}
+                    </label>
+                    <input
+                      type="text"
+                      value={row.plan3}
+                      onChange={(e) => handleRowFieldChange(row.id, "plan3", e.target.value)}
+                      placeholder="เช่น 50,000 บาท"
+                      className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 focus:outline-none focus:border-orange-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Row Operations */}
+                <div className="flex gap-1.5 self-end md:self-center mt-3 md:mt-0 pt-2 md:pt-0">
+                  <button
+                    type="button"
+                    onClick={() => moveRowUp(idx)}
+                    disabled={idx === 0}
+                    className="rounded border border-gray-250 hover:bg-gray-150 h-7 w-7 inline-flex items-center justify-center disabled:opacity-30 cursor-pointer text-xs"
+                    title="เลื่อนขึ้น"
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveRowDown(idx)}
+                    disabled={idx === comparisonPlans.length - 1}
+                    className="rounded border border-gray-250 hover:bg-gray-150 h-7 w-7 inline-flex items-center justify-center disabled:opacity-30 cursor-pointer text-xs"
+                    title="เลื่อนลง"
+                  >
+                    ▼
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveRow(row.id)}
+                    className="rounded border border-red-200 hover:bg-red-50 text-red-500 h-7 w-7 inline-flex items-center justify-center cursor-pointer font-bold text-xs"
+                    title="ลบแถว"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Global Action Footer */}
       <Card className="p-5 bg-white border border-gray-200 flex items-center justify-between text-navy-800 flex-col sm:flex-row gap-3 shadow-sm">

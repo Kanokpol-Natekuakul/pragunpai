@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 // Comparison table — GEO-friendly (AI loves structured comparison data)
-const comparisonPlans = [
+const defaultComparisonPlans = [
   { feature: "ค่ารักษาพยาบาลจากอุบัติเหตุ (ต่อปี)", plan1: "10,000 บาท", plan2: "30,000 บาท", plan3: "50,000 บาท" },
   { feature: "ทุนประกันอุบัติเหตุ", plan1: "50,000 บาท", plan2: "100,000 บาท", plan3: "200,000 บาท" },
   { feature: "เงินชดเชยรายได้ (ต่อวัน)", plan1: "200 บาท", plan2: "500 บาท", plan3: "1,000 บาท" },
@@ -66,12 +66,19 @@ export default async function AccidentInsurancePage() {
   let viewMode = "both";
   let images = defaultImages;
   let planNames = ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
+  let comparisonPlans = defaultComparisonPlans;
 
   if (setting && typeof setting.value === "object" && setting.value !== null) {
-    const val = setting.value as { viewMode?: string; images?: string[]; planNames?: string[] };
+    const val = setting.value as {
+      viewMode?: string;
+      images?: string[];
+      planNames?: string[];
+      comparisonPlans?: Array<{ feature: string; plan1: string; plan2: string; plan3: string }>;
+    };
     viewMode = val.viewMode || "both";
     images = Array.isArray(val.images) && val.images.length === 3 ? val.images : defaultImages;
     planNames = Array.isArray(val.planNames) && val.planNames.length === 3 ? val.planNames : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
+    comparisonPlans = Array.isArray(val.comparisonPlans) ? val.comparisonPlans : defaultComparisonPlans;
   }
   return (
     <>
