@@ -4,29 +4,31 @@
  * Used by metadata, JSON-LD (LocalBusiness / NAP), floating buttons, footer.
  */
 
-function required(name: string, fallback = ""): string {
-  const v = process.env[name];
-  return v && v.length > 0 ? v : fallback;
+function formatPhone(phone: string): string {
+  if (phone.length === 10) {
+    return `${phone.slice(0, 3)} ${phone.slice(3, 6)} ${phone.slice(6)}`;
+  }
+  return phone;
 }
 
 export const siteConfig = {
-  name: required("NEXT_PUBLIC_SITE_NAME", "Pragunpai"),
+  name: process.env.NEXT_PUBLIC_SITE_NAME || "Pragunpai",
   domain: "pragunpai.com",
-  url: required("NEXT_PUBLIC_SITE_URL", "http://localhost:3000").replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
   // NAP — name, address, phone (Local SEO consistency)
-  phone: required("NEXT_PUBLIC_PHONE", "0819416620"),
-  phoneDisplay: required("NEXT_PUBLIC_PHONE", "081 941 6620"),
-  line: required("NEXT_PUBLIC_LINE", "0819416620"),
-  email: required("NEXT_PUBLIC_EMAIL", "service@pragunpai.com"),
+  phone: process.env.NEXT_PUBLIC_PHONE || "0819416620",
+  phoneDisplay: process.env.NEXT_PUBLIC_PHONE ? formatPhone(process.env.NEXT_PUBLIC_PHONE) : "081 941 6620",
+  line: process.env.NEXT_PUBLIC_LINE || "0819416620",
+  email: process.env.NEXT_PUBLIC_EMAIL || "service@pragunpai.com",
   serviceArea: "ทั่วประเทศ",
   country: "TH",
   // LINE official link (line://) plus a fallback to LINE.me add-friend URL
-  lineUrl: `https://line.me/R/ti/p/~${required("NEXT_PUBLIC_LINE", "0819416620")}`,
-  telUrl: `tel:${required("NEXT_PUBLIC_PHONE", "0819416620").replace(/\s/g, "")}`,
-  mailUrl: `mailto:${required("NEXT_PUBLIC_EMAIL", "service@pragunpai.com")}`,
+  lineUrl: `https://line.me/R/ti/p/~${process.env.NEXT_PUBLIC_LINE || "0819416620"}`,
+  telUrl: `tel:${(process.env.NEXT_PUBLIC_PHONE || "0819416620").replace(/\s/g, "")}`,
+  mailUrl: `mailto:${process.env.NEXT_PUBLIC_EMAIL || "service@pragunpai.com"}`,
   tracking: {
-    gaId: required("NEXT_PUBLIC_GA_ID"),
-    gscVerification: required("NEXT_PUBLIC_GSC_VERIFICATION"),
+    gaId: process.env.NEXT_PUBLIC_GA_ID || "",
+    gscVerification: process.env.NEXT_PUBLIC_GSC_VERIFICATION || "",
   },
 } as const;
 

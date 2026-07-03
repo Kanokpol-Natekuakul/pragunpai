@@ -14,6 +14,7 @@ const navItems = [
   { label: "จัดการ Lead", href: "/admin/leads", icon: "👥" },
   { label: "จัดการหน้าประกัน", href: "/admin/insurance-pages", icon: "📋" },
   { label: "คุ้มครอง พ.ร.บ.", href: "/admin/car-act-coverage", icon: "🛡️" },
+  { label: "แผนอุบัติเหตุ", href: "/admin/accident-plans", icon: "🩹" },
   { label: "จัดการบทความ", href: "/admin/articles", icon: "✍️" },
   { label: "จัดการ SEO", href: "/admin/seo", icon: "🔍" },
   { label: "ตั้งค่าเว็บไซต์", href: "/admin/settings", icon: "⚙️" },

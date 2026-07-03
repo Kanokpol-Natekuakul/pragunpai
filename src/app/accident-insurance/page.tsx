@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqPageJsonLd } from "@/lib/jsonld";
+import { prisma } from "@/lib/prisma";
+import { AccidentPlansView } from "@/components/insurance/AccidentPlansView";
 
 export const metadata: Metadata = {
   title: "ประกันอุบัติเหตุ — เปรียบเทียบแผน ครอบคลุมเด็กถึงผู้สูงอายุ",
@@ -47,7 +48,25 @@ const faqs = [
   },
 ];
 
-export default function AccidentInsurancePage() {
+export default async function AccidentInsurancePage() {
+  const setting = await prisma.siteSetting.findUnique({
+    where: { key: "accidentPlansConfig" },
+  });
+
+  const defaultImages = [
+    "/images/mockups/accident_plan_basic.jpg",
+    "/images/mockups/accident_plan_standard.jpg",
+    "/images/mockups/accident_plan_premium.jpg",
+  ];
+
+  let viewMode = "both";
+  let images = defaultImages;
+
+  if (setting && typeof setting.value === "object" && setting.value !== null) {
+    const val = setting.value as { viewMode?: string; images?: string[] };
+    viewMode = val.viewMode || "both";
+    images = Array.isArray(val.images) && val.images.length === 3 ? val.images : defaultImages;
+  }
   return (
     <>
       <Container size="wide" className="pt-6">
@@ -90,37 +109,18 @@ export default function AccidentInsurancePage() {
         </Container>
       </section>
 
-      {/* Comparison table (GEO-friendly) */}
+      {/* Comparison section */}
       <section className="bg-navy-50 py-16">
         <Container size="prose">
-          <SectionHeading eyebrow="เปรียบเทียบแผน" title="ตารางเปรียบเทียบแผนประกันอุบัติเหตุ" />
-          <p className="mt-3 text-sm text-navy-500">
+          <SectionHeading eyebrow="เปรียบเทียบแผน" title="แผนประกันอุบัติเหตุ" />
+          <p className="mt-3 text-sm text-navy-500 mb-6">
             * ตัวอย่างแผนเพื่อการเปรียบเทียบเบื้องต้น รายละเอียดแผนจริงอาจแตกต่างกันไปตามบริษัทประกันและเงื่อนไข
           </p>
-          <Card className="mt-6 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-navy-600 text-left text-white">
-                  <tr>
-                    <th className="px-4 py-3 font-medium">รายการคุ้มครอง</th>
-                    <th className="px-4 py-3 font-medium">แผนพื้นฐาน</th>
-                    <th className="px-4 py-3 font-medium">แผนมาตรฐาน</th>
-                    <th className="px-4 py-3 font-medium">แผนพรีเมียม</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-navy-100">
-                  {comparisonPlans.map((row) => (
-                    <tr key={row.feature}>
-                      <td className="px-4 py-3 text-navy-700">{row.feature}</td>
-                      <td className="px-4 py-3 text-navy-600">{row.plan1}</td>
-                      <td className="px-4 py-3 font-semibold text-navy-900">{row.plan2}</td>
-                      <td className="px-4 py-3 font-semibold text-orange-600">{row.plan3}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+          <AccidentPlansView
+            viewMode={viewMode}
+            images={images}
+            comparisonPlans={comparisonPlans}
+          />
         </Container>
       </section>
 

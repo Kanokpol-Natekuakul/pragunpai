@@ -16,6 +16,7 @@ export default function VerifyOtpPage() {
       router.replace("/admin/login");
       return;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEmail(stored);
   }, [router]);
 

@@ -49,9 +49,9 @@ export function Footer() {
 
           {/* Quick links */}
           <div className="md:col-span-2">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-white">
+            {/* <h2 className="text-sm font-semibold uppercase tracking-wide text-white">
               ลิงก์ด่วน
-            </h2>
+            </h2> */}
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
               {footerLinks.map((link) => (
                 <li key={link.href}>

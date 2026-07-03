@@ -86,3 +86,16 @@ export function truncate(text: string, max = 160): string {
   if (text.length <= max) return text;
   return text.slice(0, max - 1).trimEnd() + "…";
 }
+
+/** Format a numeric premium into Thai Baht string. */
+export function formatThaiCurrency(amount: number, decimals = 2): string {
+  if (typeof amount !== "number" || Number.isNaN(amount)) {
+    return "ติดต่อเจ้าหน้าที่";
+  }
+  const formatted = amount.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+  return `${formatted} บาท`;
+}
+

@@ -1,0 +1,82 @@
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
+import { uploadAttachment } from "@/lib/upload";
+
+export async function updateAccidentPlansConfigAction(config: { viewMode: string; images: string[] }) {
+  try {
+    await requireAuth();
+
+    await prisma.siteSetting.upsert({
+      where: { key: "accidentPlansConfig" },
+      update: { value: config },
+      create: { key: "accidentPlansConfig", value: config },
+    });
+
+    revalidatePath("/admin/accident-plans");
+    revalidatePath("/accident-insurance");
+
+    return { success: true };
+  } catch (error) {
+    console.error("[updateAccidentPlansConfigAction] Error:", error);
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
+  }
+}
+
+export async function uploadAccidentPlanImageAction(formData: FormData) {
+  try {
+    await requireAuth();
+
+    const file = formData.get("file") as File;
+    const planIndexStr = formData.get("planIndex") as string;
+    
+    if (!file) {
+      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
+    }
+
+    const result = await uploadAttachment(file);
+    const planIndex = parseInt(planIndexStr, 10);
+
+    // Get current config
+    const setting = await prisma.siteSetting.findUnique({
+      where: { key: "accidentPlansConfig" },
+    });
+
+    let currentConfig = {
+      viewMode: "both",
+      images: [
+        "/images/mockups/accident_plan_basic.jpg",
+        "/images/mockups/accident_plan_standard.jpg",
+        "/images/mockups/accident_plan_premium.jpg",
+      ],
+    };
+
+    if (setting && typeof setting.value === "object" && setting.value !== null) {
+      const val = setting.value as { viewMode?: string; images?: string[] };
+      currentConfig = {
+        viewMode: val.viewMode || "both",
+        images: Array.isArray(val.images) ? [...val.images] : [...currentConfig.images],
+      };
+    }
+
+    if (planIndex >= 0 && planIndex <= 2) {
+      currentConfig.images[planIndex] = result.url;
+    }
+
+    await prisma.siteSetting.upsert({
+      where: { key: "accidentPlansConfig" },
+      update: { value: currentConfig },
+      create: { key: "accidentPlansConfig", value: currentConfig },
+    });
+
+    revalidatePath("/admin/accident-plans");
+    revalidatePath("/accident-insurance");
+
+    return { success: true, url: result.url };
+  } catch (error) {
+    console.error("[uploadAccidentPlanImageAction] Error:", error);
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
+  }
+}
