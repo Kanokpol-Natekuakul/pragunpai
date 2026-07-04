@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createArticleAction, updateArticleAction } from "@/actions/articles";
+import { createArticleAction, updateArticleAction, uploadArticleImageAction } from "@/actions/articles";
 import { ArticleCategory } from "@/generated/prisma/client";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -32,6 +32,11 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [dimensions, setDimensions] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Inputs
   const [title, setTitle] = useState(article?.title || "");
   const [slug, setSlug] = useState(article?.slug || "");
@@ -39,6 +44,58 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
   const [content, setContent] = useState(article?.content || "");
   const [coverImage, setCoverImage] = useState(article?.coverImage || "");
   const [coverAlt, setCoverAlt] = useState(article?.coverAlt || "");
+
+  // Measure dimensions of current cover image URL
+  useEffect(() => {
+    if (coverImage) {
+      const img = new Image();
+      img.onload = () => {
+        setDimensions(`${img.width} x ${img.height} px`);
+      };
+      img.onerror = () => {
+        setDimensions(null);
+      };
+      img.src = coverImage;
+    } else {
+      setDimensions(null);
+    }
+  }, [coverImage]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Display client-side file size
+    const sizeInKb = (file.size / 1024).toFixed(1);
+    const sizeString = file.size > 1024 * 1024 
+      ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` 
+      : `${sizeInKb} KB`;
+    setFileSize(sizeString);
+
+    // Display client-side image dimensions
+    const img = new Image();
+    img.onload = () => {
+      setDimensions(`${img.width} x ${img.height} px`);
+    };
+    img.src = URL.createObjectURL(file);
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await uploadArticleImageAction(formData);
+      if (res.success && res.url) {
+        setCoverImage(res.url);
+      } else {
+        alert(res.error || "เกิดข้อผิดพลาดในการอัปโหลด");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
   const [category, setCategory] = useState<ArticleCategory>(article?.category || "GENERAL");
   const [insurancePageId, setInsurancePageId] = useState(article?.insurancePageId || "");
   const [publishedAt, setPublishedAt] = useState(
@@ -198,31 +255,123 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 border-t border-gray-100 pt-5">
-        <div>
-          <label className="block text-sm font-bold text-navy-800 mb-1">
-            ลิงก์รูปภาพหน้าปก (Cover Image URL)
-          </label>
-          <input
-            type="text"
-            value={coverImage}
-            onChange={(e) => setCoverImage(e.target.value)}
-            placeholder="เช่น /images/blog/car-insurance.jpg"
-            className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
-          />
-        </div>
+      <div className="border-t border-gray-100 pt-5 space-y-4">
+        <h3 className="text-sm font-bold text-navy-800 uppercase tracking-wide">
+          รูปภาพหน้าปกบทความ (Cover Image)
+        </h3>
 
-        <div>
-          <label className="block text-sm font-bold text-navy-800 mb-1">
-            ข้อความอธิบายรูปปก (Cover Image Alt)
-          </label>
-          <input
-            type="text"
-            value={coverAlt}
-            onChange={(e) => setCoverAlt(e.target.value)}
-            placeholder="คำบรรยายสั้นๆ เกี่ยวกับรูปปก (ดีต่อ SEO)"
-            className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
-          />
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* Left/Middle: Image upload and preview */}
+          <div className="md:col-span-2 space-y-2">
+            <label className="block text-xs font-bold text-navy-600 uppercase">
+              อัปโหลดไฟล์รูปภาพปก
+            </label>
+            
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 relative overflow-hidden bg-navy-50/50 hover:bg-navy-50 ${
+                coverImage ? 'border-navy-300 bg-white' : 'border-navy-200 hover:border-orange-400'
+              }`}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/png,image/jpeg,image/webp,image/jpg"
+                disabled={uploadingImage}
+                className="hidden"
+              />
+
+              {uploadingImage ? (
+                <div className="flex flex-col items-center space-y-2 py-4">
+                  <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm text-navy-600 font-bold">กำลังอัปโหลดรูปภาพ...</span>
+                </div>
+              ) : coverImage ? (
+                <div className="w-full flex flex-col sm:flex-row gap-4 items-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={coverImage}
+                    alt="Preview"
+                    className="h-24 w-40 object-cover rounded-lg border border-navy-100 shadow-sm bg-white"
+                  />
+                  <div className="flex-1 text-left space-y-1">
+                    <p className="text-xs font-semibold text-navy-500 truncate max-w-[280px]">
+                      ลิงก์: <span className="font-mono text-navy-700">{coverImage}</span>
+                    </p>
+                    {dimensions && (
+                      <p className="text-xs text-navy-600">
+                        📐 มิติรูปภาพ: <span className="font-bold text-navy-850">{dimensions}</span>
+                      </p>
+                    )}
+                    {fileSize && (
+                      <p className="text-xs text-navy-600">
+                        💾 ขนาดไฟล์: <span className="font-bold text-navy-850">{fileSize}</span>
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCoverImage("");
+                        setFileSize(null);
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="mt-2 text-xs font-bold text-red-500 hover:text-red-700 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      🗑️ ลบรูปภาพปก
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center space-y-2 text-center py-4">
+                  <svg className="w-10 h-10 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <span className="text-sm font-bold text-navy-700">คลิกเพื่อเลือกไฟล์รูปภาพปก</span>
+                    <p className="text-xs text-navy-400 mt-1">รองรับ JPG, PNG, WEBP (ไม่เกิน 5MB)</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right side: direct URL and Alt text */}
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
+                หรือใส่ลิงก์รูปภาพโดยตรง (Cover Image URL)
+              </label>
+              <input
+                type="text"
+                value={coverImage}
+                onChange={(e) => setCoverImage(e.target.value)}
+                placeholder="เช่น /images/blog/car-insurance.jpg"
+                className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400 font-mono text-navy-700"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
+                ข้อความอธิบายรูปปก (Cover Image Alt) <span className="text-orange-500 font-bold">(ดีต่อ SEO)</span>
+              </label>
+              <input
+                type="text"
+                value={coverAlt}
+                onChange={(e) => setCoverAlt(e.target.value)}
+                placeholder="เช่น รูปภาพรถยนต์สีขาวบนถนนยางมะตอย"
+                className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="rounded-lg bg-orange-50/50 border border-orange-100 p-3 text-xs text-navy-600 flex gap-2">
+          <span>💡</span>
+          <span>
+            <strong>คำแนะนำสำหรับรูปปกบทความ:</strong> แนะนำขนาด <strong>1200 x 630 พิกเซล</strong> (อัตราส่วน 1.91:1 หรือ 16:9) เพื่อความคมชัดสูงสุดเมื่อแชร์ผ่าน Social Media เช่น Facebook หรือ LINE
+          </span>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { ArticleCategory } from "@/generated/prisma/client";
+import { uploadAttachment } from "@/lib/upload";
 
 interface ArticleInput {
   title: string;
@@ -121,5 +122,22 @@ export async function deleteArticleAction(id: string) {
   } catch (error) {
     console.error("[deleteArticleAction] Error:", error);
     return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการลบข้อมูล" };
+  }
+}
+
+export async function uploadArticleImageAction(formData: FormData) {
+  try {
+    await requireAuth();
+
+    const file = formData.get("file") as File;
+    if (!file) {
+      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
+    }
+
+    const result = await uploadAttachment(file);
+    return { success: true, url: result.url };
+  } catch (error) {
+    console.error("[uploadArticleImageAction] Error:", error);
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
   }
 }
