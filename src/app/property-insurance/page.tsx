@@ -9,6 +9,7 @@ import { faqPageJsonLd } from "@/lib/jsonld";
 import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { siteConfig } from "@/lib/site";
 import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { getPageBannerSlides } from "@/lib/banners";
@@ -124,8 +125,8 @@ export default async function PropertyInsurancePage() {
               {brochures.length > 0 && (
                 <BrochureDownloadButton brochures={brochures} />
               )}
-              <Button href="/tel:0819416620" variant="secondary" size="lg">
-                📞 โทรสอบถาม
+              <Button href={siteConfig.telUrl} variant="secondary" size="lg">
+                📞 โทรปรึกษา {siteConfig.phoneDisplay}
               </Button>
             </div>
           </Container>

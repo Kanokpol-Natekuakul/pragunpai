@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqPageJsonLd } from "@/lib/jsonld";
 import { prisma } from "@/lib/prisma";
+import { siteConfig } from "@/lib/site";
 import { AccidentPlansView } from "@/components/insurance/AccidentPlansView";
 import { getFaqSection } from "@/lib/faqs";
 import { redirect } from "next/navigation";
@@ -140,8 +141,8 @@ export default async function AccidentInsurancePage() {
               {brochures.length > 0 && (
                 <BrochureDownloadButton brochures={brochures} />
               )}
-              <Button href="/tel:0819416620" variant="secondary" size="lg">
-                📞 โทรสอบถาม
+              <Button href={siteConfig.telUrl} variant="secondary" size="lg">
+                📞 โทรปรึกษา {siteConfig.phoneDisplay}
               </Button>
             </div>
           </Container>
