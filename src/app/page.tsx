@@ -1,6 +1,6 @@
 import { Hero } from "@/components/home/Hero";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { getPageBannerSlides } from "@/lib/banners";
+import { getPageBanners } from "@/lib/banners";
 import { InsuranceCategories } from "@/components/home/InsuranceCategories";
 import { ServiceHighlights } from "@/components/home/ServiceHighlights";
 import { QuoteSteps } from "@/components/home/QuoteSteps";
@@ -10,7 +10,7 @@ import { LatestArticles } from "@/components/home/LatestArticles";
 import { CallToAction } from "@/components/home/CallToAction";
 
 export default async function HomePage() {
-  const bannerSlides = await getPageBannerSlides("/");
+  const { slides: bannerSlides } = await getPageBanners("/");
 
   return (
     <>

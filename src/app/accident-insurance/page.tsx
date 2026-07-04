@@ -12,7 +12,8 @@ import { getFaqSection } from "@/lib/faqs";
 import { redirect } from "next/navigation";
 import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { getPageBannerSlides } from "@/lib/banners";
+import { PromoImages } from "@/components/PromoImages";
+import { getPageBanners } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "ประกันอุบัติเหตุ — เปรียบเทียบแผน ครอบคลุมเด็กถึงผู้สูงอายุ",
@@ -55,7 +56,7 @@ const faqs = [
 ];
 
 export default async function AccidentInsurancePage() {
-  const [page, setting, faqSection, bannerSlides] = await Promise.all([
+  const [page, setting, faqSection, banners] = await Promise.all([
     prisma.insurancePage.findUnique({
       where: { slug: "accident-insurance" },
     }),
@@ -63,7 +64,7 @@ export default async function AccidentInsurancePage() {
       where: { key: "accidentPlansConfig" },
     }),
     getFaqSection("accident", faqs),
-    getPageBannerSlides("/accident-insurance"),
+    getPageBanners("/accident-insurance"),
   ]);
 
   if (!page || !page.published) {
@@ -121,7 +122,7 @@ export default async function AccidentInsurancePage() {
         <Breadcrumbs items={[{ name: "ประกันอุบัติเหตุ", href: "/accident-insurance" }]} />
       </Container>
 
-      <HeroCarousel slides={bannerSlides}>
+      <HeroCarousel slides={banners.slides}>
         <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="wide" className="text-center">
             <span className="text-5xl">🩹</span>
@@ -148,6 +149,8 @@ export default async function AccidentInsurancePage() {
           </Container>
         </section>
       </HeroCarousel>
+
+      <PromoImages images={banners.promos} />
 
       <section className="bg-white py-16">
         <Container size="prose">

@@ -6,7 +6,8 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { siteConfig } from "@/lib/site";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { getPageBannerSlides } from "@/lib/banners";
+import { PromoImages } from "@/components/PromoImages";
+import { getPageBanners } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "เกี่ยวกับเรา — Pragunpai ที่ปรึกษาประกันภัยที่โปร่งใส",
@@ -23,7 +24,7 @@ const values = [
 ];
 
 export default async function AboutPage() {
-  const bannerSlides = await getPageBannerSlides("/about");
+  const banners = await getPageBanners("/about");
 
   return (
     <>
@@ -31,7 +32,7 @@ export default async function AboutPage() {
         <Breadcrumbs items={[{ name: "เกี่ยวกับเรา", href: "/about" }]} />
       </Container>
 
-      <HeroCarousel slides={bannerSlides}>
+      <HeroCarousel slides={banners.slides}>
         <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="prose" className="text-center">
             <h1 className="text-3xl font-bold sm:text-4xl">เกี่ยวกับ Pragunpai</h1>
@@ -42,6 +43,8 @@ export default async function AboutPage() {
           </Container>
         </section>
       </HeroCarousel>
+
+      <PromoImages images={banners.promos} />
 
       {/* Story / positioning */}
       <section className="bg-white py-16">

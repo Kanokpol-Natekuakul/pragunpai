@@ -7,7 +7,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd } from "@/lib/jsonld";
 import { siteConfig } from "@/lib/site";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { getPageBannerSlides } from "@/lib/banners";
+import { PromoImages } from "@/components/PromoImages";
+import { getPageBanners } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "ติดต่อเรา — Pragunpai ประกันภัย โทร LINE Email",
@@ -41,7 +42,7 @@ const contactMethods = [
 ];
 
 export default async function ContactPage() {
-  const bannerSlides = await getPageBannerSlides("/contact");
+  const banners = await getPageBanners("/contact");
 
   return (
     <>
@@ -49,7 +50,7 @@ export default async function ContactPage() {
         <Breadcrumbs items={[{ name: "ติดต่อเรา", href: "/contact" }]} />
       </Container>
 
-      <HeroCarousel slides={bannerSlides}>
+      <HeroCarousel slides={banners.slides}>
         <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="wide" className="text-center">
             <h1 className="text-3xl font-bold sm:text-4xl">ติดต่อเรา</h1>
@@ -59,6 +60,8 @@ export default async function ContactPage() {
           </Container>
         </section>
       </HeroCarousel>
+
+      <PromoImages images={banners.promos} />
 
       <section className="bg-white py-16">
         <Container size="wide">

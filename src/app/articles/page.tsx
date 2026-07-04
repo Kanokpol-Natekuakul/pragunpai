@@ -7,7 +7,8 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { prisma } from "@/lib/prisma";
 import { formatThaiDate, articleCategoryLabel } from "@/lib/format";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
-import { getPageBannerSlides } from "@/lib/banners";
+import { PromoImages } from "@/components/PromoImages";
+import { getPageBanners } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "บทความความรู้ประกันภัย — พ.ร.บ. ประกันอุบัติเหตุ ประกันบ้าน",
@@ -34,7 +35,7 @@ export default async function ArticlesPage() {
     articles = [];
   }
 
-  const bannerSlides = await getPageBannerSlides("/articles");
+  const banners = await getPageBanners("/articles");
 
   return (
     <>
@@ -43,7 +44,7 @@ export default async function ArticlesPage() {
       </Container>
 
       {/* Hero */}
-      <HeroCarousel slides={bannerSlides}>
+      <HeroCarousel slides={banners.slides}>
         <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="wide" className="text-center">
             <span className="text-5xl">📚</span>
@@ -55,6 +56,8 @@ export default async function ArticlesPage() {
           </Container>
         </section>
       </HeroCarousel>
+
+      <PromoImages images={banners.promos} />
 
       {/* Article grid */}
       <section className="bg-navy-50 py-16">
