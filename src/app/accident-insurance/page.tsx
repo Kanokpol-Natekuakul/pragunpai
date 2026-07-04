@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { AccidentPlansView } from "@/components/insurance/AccidentPlansView";
 import { getFaqSection } from "@/lib/faqs";
 import { redirect } from "next/navigation";
+import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
 
 export const metadata: Metadata = {
   title: "ประกันอุบัติเหตุ — เปรียบเทียบแผน ครอบคลุมเด็กถึงผู้สูงอายุ",
@@ -65,6 +66,28 @@ export default async function AccidentInsurancePage() {
     redirect("/");
   }
 
+  interface BrochureItem {
+    name: string;
+    url: string;
+  }
+
+  const parseBrochures = (urlStr: string | null): BrochureItem[] => {
+    if (!urlStr) return [];
+    try {
+      if (urlStr.trim().startsWith("[")) {
+        const parsed = JSON.parse(urlStr);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(item => item.url && item.url.trim() !== "");
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to parse pdfUrl JSON:", e);
+    }
+    return [{ name: "ดาวน์โหลดโบรชัวร์", url: urlStr }];
+  };
+
+  const brochures = parseBrochures(page.pdfUrl);
+
   const defaultImages = [
     "/images/mockups/accident_plan_basic.jpg",
     "/images/mockups/accident_plan_standard.jpg",
@@ -110,10 +133,8 @@ export default async function AccidentInsurancePage() {
             <Button href="/quote/accident" variant="accent" size="lg">
               ขอใบเสนอราคา
             </Button>
-            {page.pdfUrl && (
-              <Button href={page.pdfUrl} target="_blank" variant="secondary" size="lg" className="border border-white/20">
-                📄 ดาวน์โหลดโบรชัวร์ (PDF)
-              </Button>
+            {brochures.length > 0 && (
+              <BrochureDownloadButton brochures={brochures} />
             )}
             <Button href="/tel:0819416620" variant="secondary" size="lg">
               📞 โทรสอบถาม

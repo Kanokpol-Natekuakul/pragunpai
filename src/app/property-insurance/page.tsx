@@ -9,6 +9,7 @@ import { faqPageJsonLd } from "@/lib/jsonld";
 import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
 
 export const metadata: Metadata = {
   title: "ประกันบ้าน คอนโด หอพัก — คุ้มครองทรัพย์สิน ขอใบเสนอราคา",
@@ -72,6 +73,28 @@ export default async function PropertyInsurancePage() {
   if (!page || !page.published) {
     redirect("/");
   }
+
+  interface BrochureItem {
+    name: string;
+    url: string;
+  }
+
+  const parseBrochures = (urlStr: string | null): BrochureItem[] => {
+    if (!urlStr) return [];
+    try {
+      if (urlStr.trim().startsWith("[")) {
+        const parsed = JSON.parse(urlStr);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(item => item.url && item.url.trim() !== "");
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to parse pdfUrl JSON:", e);
+    }
+    return [{ name: "ดาวน์โหลดโบรชัวร์", url: urlStr }];
+  };
+
+  const brochures = parseBrochures(page.pdfUrl);
   return (
     <>
       <Container size="wide" className="pt-6">
@@ -94,10 +117,8 @@ export default async function PropertyInsurancePage() {
             <Button href="/quote/property" variant="accent" size="lg">
               ขอใบเสนอราคา
             </Button>
-            {page.pdfUrl && (
-              <Button href={page.pdfUrl} target="_blank" variant="secondary" size="lg" className="border border-white/20">
-                📄 ดาวน์โหลดโบรชัวร์ (PDF)
-              </Button>
+            {brochures.length > 0 && (
+              <BrochureDownloadButton brochures={brochures} />
             )}
             <Button href="/tel:0819416620" variant="secondary" size="lg">
               📞 โทรสอบถาม

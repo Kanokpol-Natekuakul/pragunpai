@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { uploadAttachment } from "@/lib/upload";
 
 interface InsurancePageUpdateInput {
   name: string;
@@ -103,5 +104,22 @@ export async function updateComparisonTableAction(pageId: string, rows: PlanRowI
   } catch (error) {
     console.error("[updateComparisonTableAction] Error:", error);
     return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกตารางเปรียบเทียบ" };
+  }
+}
+
+export async function uploadInsurancePdfAction(formData: FormData) {
+  try {
+    await requireAuth();
+
+    const file = formData.get("file") as File;
+    if (!file) {
+      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
+    }
+
+    const result = await uploadAttachment(file);
+    return { success: true, url: result.url };
+  } catch (error) {
+    console.error("[uploadInsurancePdfAction] Error:", error);
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดไฟล์ PDF" };
   }
 }

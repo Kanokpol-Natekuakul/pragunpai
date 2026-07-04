@@ -8,6 +8,7 @@ import { FaqSectionBlock } from "@/components/faq/FaqSectionBlock";
 import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
 
 export const metadata: Metadata = {
   title: "พ.ร.บ. ประกันภัยรถยนต์ — ขอใบเสนอราคา ต่อ พ.ร.บ. ง่าย",
@@ -54,6 +55,28 @@ export default async function CarActPage() {
     redirect("/");
   }
 
+  interface BrochureItem {
+    name: string;
+    url: string;
+  }
+
+  const parseBrochures = (urlStr: string | null): BrochureItem[] => {
+    if (!urlStr) return [];
+    try {
+      if (urlStr.trim().startsWith("[")) {
+        const parsed = JSON.parse(urlStr);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(item => item.url && item.url.trim() !== "");
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to parse pdfUrl JSON:", e);
+    }
+    return [{ name: "ดาวน์โหลดโบรชัวร์", url: urlStr }];
+  };
+
+  const brochures = parseBrochures(page.pdfUrl);
+
   const coverageTable = Array.isArray(setting?.value)
     ? (setting.value as Array<{ item: string; amount: string }>)
     : [
@@ -87,10 +110,8 @@ export default async function CarActPage() {
             <Button href="/quote/car-act" variant="accent" size="lg">
               ขอใบเสนอราคา พ.ร.บ.
             </Button>
-            {page.pdfUrl && (
-              <Button href={page.pdfUrl} target="_blank" variant="secondary" size="lg" className="border border-white/20">
-                📄 ดาวน์โหลดโบรชัวร์ (PDF)
-              </Button>
+            {brochures.length > 0 && (
+              <BrochureDownloadButton brochures={brochures} />
             )}
             <Button href="/tel:0819416620" variant="secondary" size="lg">
               📞 โทรสอบถาม
