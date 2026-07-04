@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import {
   loginStep1,
   loginStep2,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/auth";
 import { AuthError } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, recordFailedAttempt, resetRateLimit } from "@/lib/rate-limit";
 
 // ---------------------------------------------------------------------------
 // Login Step 1: email + password → send OTP
@@ -28,8 +30,22 @@ export async function actionLoginStep1(
     return { error: "กรุณากรอกอีเมลและรหัสผ่าน" };
   }
 
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+
+  // Check rate limit
+  const rateLimitStatus = checkRateLimit(ip, email);
+  if (!rateLimitStatus.ok) {
+    return { error: rateLimitStatus.error };
+  }
+
   const result = await loginStep1(email, password);
-  if (!result.ok) return { error: result.error };
+  if (!result.ok) {
+    recordFailedAttempt(ip, email);
+    return { error: result.error };
+  }
+
+  // Do not reset rate limit here yet since we need OTP verification in step 2.
   return { success: true, email };
 }
 
@@ -47,8 +63,23 @@ export async function actionLoginStep2(
     return { error: "กรุณากรอกรหัส OTP" };
   }
 
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
+
+  // Check rate limit
+  const rateLimitStatus = checkRateLimit(ip, email);
+  if (!rateLimitStatus.ok) {
+    return { error: rateLimitStatus.error };
+  }
+
   const result = await loginStep2(email, otp);
-  if (!result.ok) return { error: result.error };
+  if (!result.ok) {
+    recordFailedAttempt(ip, email);
+    return { error: result.error };
+  }
+
+  // Auth successful, reset the attempts counter
+  resetRateLimit(ip, email);
 
   const callbackUrl = "/admin/dashboard";
   redirect(callbackUrl);
