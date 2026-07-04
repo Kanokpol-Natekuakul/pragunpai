@@ -65,7 +65,6 @@ export default async function PropertyInsurancePage() {
   const [page, faqSection] = await Promise.all([
     prisma.insurancePage.findUnique({
       where: { slug: "property-insurance" },
-      select: { published: true },
     }),
     getFaqSection("property", faqs),
   ]);
@@ -86,10 +85,20 @@ export default async function PropertyInsurancePage() {
           <p className="mx-auto mt-4 max-w-2xl text-navy-100">
             คุ้มครองทรัพย์สินจากอัคคีภัย ภัยน้ำท่วม พายุ และการสูญหาย เลือกแผนที่เหมาะสม
           </p>
+          {page.premium && (
+            <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
+              🏷️ {page.premium}
+            </p>
+          )}
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button href="/quote/property" variant="accent" size="lg">
               ขอใบเสนอราคา
             </Button>
+            {page.pdfUrl && (
+              <Button href={page.pdfUrl} target="_blank" variant="secondary" size="lg" className="border border-white/20">
+                📄 ดาวน์โหลดโบรชัวร์ (PDF)
+              </Button>
+            )}
             <Button href="/tel:0819416620" variant="secondary" size="lg">
               📞 โทรสอบถาม
             </Button>

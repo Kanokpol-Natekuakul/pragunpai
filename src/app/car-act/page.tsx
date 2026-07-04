@@ -44,7 +44,6 @@ export default async function CarActPage() {
   const [page, setting] = await Promise.all([
     prisma.insurancePage.findUnique({
       where: { slug: "car-act" },
-      select: { published: true },
     }),
     prisma.siteSetting.findUnique({
       where: { key: "carActCoverage" },
@@ -79,10 +78,20 @@ export default async function CarActPage() {
           <p className="mx-auto mt-4 max-w-2xl text-navy-100">
             ประกันภัยภาคบังคับตามกฎหมาย คุ้มครองผู้ประสบภัยจากรถยนต์ ขอใบเสนอราคาและต่อ พ.ร.บ. ได้ง่าย
           </p>
+          {page.premium && (
+            <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
+              🏷️ {page.premium}
+            </p>
+          )}
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button href="/quote/car-act" variant="accent" size="lg">
               ขอใบเสนอราคา พ.ร.บ.
             </Button>
+            {page.pdfUrl && (
+              <Button href={page.pdfUrl} target="_blank" variant="secondary" size="lg" className="border border-white/20">
+                📄 ดาวน์โหลดโบรชัวร์ (PDF)
+              </Button>
+            )}
             <Button href="/tel:0819416620" variant="secondary" size="lg">
               📞 โทรสอบถาม
             </Button>
