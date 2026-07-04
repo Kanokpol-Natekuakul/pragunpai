@@ -26,7 +26,6 @@
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
-    "google-recaptcha": "^1.1.0",
     "jose": "^6.2.3",
     "next": "16.2.9",
     "next-auth": "^5.0.0-beta.31",
