@@ -123,7 +123,7 @@ export default async function AccidentInsurancePage() {
       </Container>
 
       <HeroCarousel slides={banners.slides}>
-        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+        <section className="bg-linear-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="wide" className="text-center">
             <span className="text-5xl">🩹</span>
             <h1 className="mt-4 text-3xl font-bold sm:text-4xl">ประกันอุบัติเหตุ</h1>

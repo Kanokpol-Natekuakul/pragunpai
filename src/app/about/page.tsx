@@ -33,7 +33,7 @@ export default async function AboutPage() {
       </Container>
 
       <HeroCarousel slides={banners.slides}>
-        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+        <section className="bg-linear-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="prose" className="text-center">
             <h1 className="text-3xl font-bold sm:text-4xl">เกี่ยวกับ Pragunpai</h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-navy-100">

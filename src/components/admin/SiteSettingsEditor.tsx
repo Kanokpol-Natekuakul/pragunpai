@@ -176,7 +176,7 @@ export function SiteSettingsEditor({
             </div>
 
             {/* Logo Preview */}
-            <div className="h-16 w-full max-w-[250px] overflow-hidden rounded-lg bg-navy-50 border border-gray-200 flex items-center justify-center p-2 relative">
+            <div className="h-16 w-full max-w-62.5 overflow-hidden rounded-lg bg-navy-50 border border-gray-200 flex items-center justify-center p-2 relative">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={logoUrl} alt="โลโก้เว็บไซต์" className="max-h-full max-w-full object-contain" />

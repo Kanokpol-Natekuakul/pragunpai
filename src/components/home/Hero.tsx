@@ -10,7 +10,7 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden bg-navy-800 text-white">
       {/* Decorative gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-700 via-navy-800 to-navy-900" aria-hidden="true" />
+      <div className="absolute inset-0 bg-linear-to-br from-navy-700 via-navy-800 to-navy-900" aria-hidden="true" />
       <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" aria-hidden="true" />
       <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-orange-500/5 blur-3xl" aria-hidden="true" />
 

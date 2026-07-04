@@ -16,7 +16,7 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
             <div className="flex items-center gap-2">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-[180px] object-contain brightness-0 invert" />
+                <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-45 object-contain brightness-0 invert" />
               ) : (
                 <>
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-500 text-white font-bold">

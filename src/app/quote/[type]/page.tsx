@@ -83,7 +83,7 @@ export default async function QuoteTypePage({ params, searchParams }: Props) {
         />
       </Container>
 
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-12 text-white">
+      <section className="bg-linear-to-br from-navy-700 to-navy-900 py-12 text-white">
         <Container size="wide" className="text-center">
           <h1 className="text-3xl font-bold sm:text-4xl">ขอใบเสนอราคา{label}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-navy-100">

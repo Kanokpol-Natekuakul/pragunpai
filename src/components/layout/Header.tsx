@@ -18,7 +18,7 @@ export function Header({ logoUrl }: { logoUrl?: string }) {
           <Link href="/" className="flex items-center gap-2" aria-label={`${siteConfig.name} หน้าแรก`}>
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-[180px] object-contain" />
+              <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-45 object-contain" />
             ) : (
               <>
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-600 text-white font-bold">
