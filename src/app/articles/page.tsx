@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { prisma } from "@/lib/prisma";
 import { formatThaiDate, articleCategoryLabel } from "@/lib/format";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { getPageBannerSlides } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "บทความความรู้ประกันภัย — พ.ร.บ. ประกันอุบัติเหตุ ประกันบ้าน",
@@ -32,6 +34,8 @@ export default async function ArticlesPage() {
     articles = [];
   }
 
+  const bannerSlides = await getPageBannerSlides("/articles");
+
   return (
     <>
       <Container size="wide" className="pt-6">
@@ -39,16 +43,18 @@ export default async function ArticlesPage() {
       </Container>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
-        <Container size="wide" className="text-center">
-          <span className="text-5xl">📚</span>
-          <h1 className="mt-4 text-3xl font-bold sm:text-4xl">บทความความรู้ประกันภัย</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-            ความรู้เรื่อง พ.ร.บ. รถยนต์ ประกันอุบัติเหตุ ประกันบ้าน-คอนโด-หอพัก
-            และคำแนะนำการเลือกแผนประกันที่เหมาะกับคุณ
-          </p>
-        </Container>
-      </section>
+      <HeroCarousel slides={bannerSlides}>
+        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+          <Container size="wide" className="text-center">
+            <span className="text-5xl">📚</span>
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">บทความความรู้ประกันภัย</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-navy-100">
+              ความรู้เรื่อง พ.ร.บ. รถยนต์ ประกันอุบัติเหตุ ประกันบ้าน-คอนโด-หอพัก
+              และคำแนะนำการเลือกแผนประกันที่เหมาะกับคุณ
+            </p>
+          </Container>
+        </section>
+      </HeroCarousel>
 
       {/* Article grid */}
       <section className="bg-navy-50 py-16">

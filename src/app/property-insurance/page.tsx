@@ -10,6 +10,8 @@ import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { getPageBannerSlides } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "ประกันบ้าน คอนโด หอพัก — คุ้มครองทรัพย์สิน ขอใบเสนอราคา",
@@ -63,11 +65,12 @@ const faqs = [
 ];
 
 export default async function PropertyInsurancePage() {
-  const [page, faqSection] = await Promise.all([
+  const [page, faqSection, bannerSlides] = await Promise.all([
     prisma.insurancePage.findUnique({
       where: { slug: "property-insurance" },
     }),
     getFaqSection("property", faqs),
+    getPageBannerSlides("/property-insurance"),
   ]);
 
   if (!page || !page.published) {
@@ -101,31 +104,33 @@ export default async function PropertyInsurancePage() {
         <Breadcrumbs items={[{ name: "ประกันบ้าน-คอนโด-หอพัก", href: "/property-insurance" }]} />
       </Container>
 
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
-        <Container size="wide" className="text-center">
-          <span className="text-5xl">🏠</span>
-          <h1 className="mt-4 text-3xl font-bold sm:text-4xl">ประกันบ้าน คอนโด หอพัก</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-            คุ้มครองทรัพย์สินจากอัคคีภัย ภัยน้ำท่วม พายุ และการสูญหาย เลือกแผนที่เหมาะสม
-          </p>
-          {page.premium && (
-            <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
-              🏷️ {page.premium}
+      <HeroCarousel slides={bannerSlides}>
+        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+          <Container size="wide" className="text-center">
+            <span className="text-5xl">🏠</span>
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">ประกันบ้าน คอนโด หอพัก</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-navy-100">
+              คุ้มครองทรัพย์สินจากอัคคีภัย ภัยน้ำท่วม พายุ และการสูญหาย เลือกแผนที่เหมาะสม
             </p>
-          )}
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="/quote/property" variant="accent" size="lg">
-              ขอใบเสนอราคา
-            </Button>
-            {brochures.length > 0 && (
-              <BrochureDownloadButton brochures={brochures} />
+            {page.premium && (
+              <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
+                🏷️ {page.premium}
+              </p>
             )}
-            <Button href="/tel:0819416620" variant="secondary" size="lg">
-              📞 โทรสอบถาม
-            </Button>
-          </div>
-        </Container>
-      </section>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href="/quote/property" variant="accent" size="lg">
+                ขอใบเสนอราคา
+              </Button>
+              {brochures.length > 0 && (
+                <BrochureDownloadButton brochures={brochures} />
+              )}
+              <Button href="/tel:0819416620" variant="secondary" size="lg">
+                📞 โทรสอบถาม
+              </Button>
+            </div>
+          </Container>
+        </section>
+      </HeroCarousel>
 
       <section className="bg-white py-16">
         <Container size="prose">

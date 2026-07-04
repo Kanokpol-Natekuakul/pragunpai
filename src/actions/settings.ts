@@ -35,6 +35,28 @@ export async function updateSiteSettingAction(key: string, value: unknown) {
   }
 }
 
+export async function uploadHeroBannerAction(formData: FormData) {
+  try {
+    await requireAuth();
+
+    const file = formData.get("file") as File;
+    if (!file) {
+      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
+    }
+
+    const allowedImageTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!allowedImageTypes.includes(file.type)) {
+      return { success: false, error: "รองรับเฉพาะไฟล์รูปภาพ JPG, PNG, WEBP เท่านั้น" };
+    }
+
+    const result = await uploadAttachment(file);
+    return { success: true, url: result.url };
+  } catch (error) {
+    console.error("[uploadHeroBannerAction] Error:", error);
+    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
+  }
+}
+
 export async function uploadSiteLogoAction(formData: FormData) {
   try {
     await requireAuth();

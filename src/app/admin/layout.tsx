@@ -18,6 +18,7 @@ const navItems = [
   { label: "จัดการ FAQ", href: "/admin/faqs", icon: "❓" },
   { label: "จัดการบทความ", href: "/admin/articles", icon: "✍️" },
   { label: "จัดการ SEO", href: "/admin/seo", icon: "🔍" },
+  { label: "แบนเนอร์สไลด์", href: "/admin/banners", icon: "🎠" },
   { label: "ตั้งค่าเว็บไซต์", href: "/admin/settings", icon: "⚙️" },
 ];
 

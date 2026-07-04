@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/Card";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { siteConfig } from "@/lib/site";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { getPageBannerSlides } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "เกี่ยวกับเรา — Pragunpai ที่ปรึกษาประกันภัยที่โปร่งใส",
@@ -20,22 +22,26 @@ const values = [
   { icon: "🛡️", title: "คำปรึกษาที่ไว้ใจได้", description: "ช่วยเปรียบเทียบแผนจากหลายบริษัทประกัน เพื่อให้คุณเลือกได้อย่างมั่นใจ" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const bannerSlides = await getPageBannerSlides("/about");
+
   return (
     <>
       <Container size="wide" className="pt-6">
         <Breadcrumbs items={[{ name: "เกี่ยวกับเรา", href: "/about" }]} />
       </Container>
 
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
-        <Container size="prose" className="text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">เกี่ยวกับ Pragunpai</h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-navy-100">
-            Pragunpai ให้คำปรึกษาและเปรียบเทียบแผนประกันภัย เพื่อช่วยให้ลูกค้าเลือกความคุ้มครองที่เหมาะสมก่อนตัดสินใจ
-            โดยเน้นความเข้าใจง่าย ความโปร่งใส และการให้ข้อมูลที่เป็นประโยชน์กับลูกค้า
-          </p>
-        </Container>
-      </section>
+      <HeroCarousel slides={bannerSlides}>
+        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+          <Container size="prose" className="text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl">เกี่ยวกับ Pragunpai</h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-navy-100">
+              Pragunpai ให้คำปรึกษาและเปรียบเทียบแผนประกันภัย เพื่อช่วยให้ลูกค้าเลือกความคุ้มครองที่เหมาะสมก่อนตัดสินใจ
+              โดยเน้นความเข้าใจง่าย ความโปร่งใส และการให้ข้อมูลที่เป็นประโยชน์กับลูกค้า
+            </p>
+          </Container>
+        </section>
+      </HeroCarousel>
 
       {/* Story / positioning */}
       <section className="bg-white py-16">

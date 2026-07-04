@@ -6,6 +6,8 @@ import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { localBusinessJsonLd } from "@/lib/jsonld";
 import { siteConfig } from "@/lib/site";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { getPageBannerSlides } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "ติดต่อเรา — Pragunpai ประกันภัย โทร LINE Email",
@@ -38,21 +40,25 @@ const contactMethods = [
   },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const bannerSlides = await getPageBannerSlides("/contact");
+
   return (
     <>
       <Container size="wide" className="pt-6">
         <Breadcrumbs items={[{ name: "ติดต่อเรา", href: "/contact" }]} />
       </Container>
 
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
-        <Container size="wide" className="text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">ติดต่อเรา</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-            เลือกช่องทางที่สะดวก เราพร้อมให้คำปรึกษาและส่งใบเสนอราคาประกันภัยให้คุณ
-          </p>
-        </Container>
-      </section>
+      <HeroCarousel slides={bannerSlides}>
+        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+          <Container size="wide" className="text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl">ติดต่อเรา</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-navy-100">
+              เลือกช่องทางที่สะดวก เราพร้อมให้คำปรึกษาและส่งใบเสนอราคาประกันภัยให้คุณ
+            </p>
+          </Container>
+        </section>
+      </HeroCarousel>
 
       <section className="bg-white py-16">
         <Container size="wide">

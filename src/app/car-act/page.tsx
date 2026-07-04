@@ -9,6 +9,8 @@ import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { getPageBannerSlides } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "พ.ร.บ. ประกันภัยรถยนต์ — ขอใบเสนอราคา ต่อ พ.ร.บ. ง่าย",
@@ -42,13 +44,14 @@ const faqs = [
 ];
 
 export default async function CarActPage() {
-  const [page, setting] = await Promise.all([
+  const [page, setting, bannerSlides] = await Promise.all([
     prisma.insurancePage.findUnique({
       where: { slug: "car-act" },
     }),
     prisma.siteSetting.findUnique({
       where: { key: "carActCoverage" },
     }),
+    getPageBannerSlides("/car-act"),
   ]);
 
   if (!page || !page.published) {
@@ -94,31 +97,33 @@ export default async function CarActPage() {
       </Container>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
-        <Container size="wide" className="text-center">
-          <span className="text-5xl">🚗</span>
-          <h1 className="mt-4 text-3xl font-bold sm:text-4xl">พ.ร.บ. ประกันภัยรถยนต์</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-            ประกันภัยภาคบังคับตามกฎหมาย คุ้มครองผู้ประสบภัยจากรถยนต์ ขอใบเสนอราคาและต่อ พ.ร.บ. ได้ง่าย
-          </p>
-          {page.premium && (
-            <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
-              🏷️ {page.premium}
+      <HeroCarousel slides={bannerSlides}>
+        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+          <Container size="wide" className="text-center">
+            <span className="text-5xl">🚗</span>
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">พ.ร.บ. ประกันภัยรถยนต์</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-navy-100">
+              ประกันภัยภาคบังคับตามกฎหมาย คุ้มครองผู้ประสบภัยจากรถยนต์ ขอใบเสนอราคาและต่อ พ.ร.บ. ได้ง่าย
             </p>
-          )}
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="/quote/car-act" variant="accent" size="lg">
-              ขอใบเสนอราคา พ.ร.บ.
-            </Button>
-            {brochures.length > 0 && (
-              <BrochureDownloadButton brochures={brochures} />
+            {page.premium && (
+              <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
+                🏷️ {page.premium}
+              </p>
             )}
-            <Button href="/tel:0819416620" variant="secondary" size="lg">
-              📞 โทรสอบถาม
-            </Button>
-          </div>
-        </Container>
-      </section>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href="/quote/car-act" variant="accent" size="lg">
+                ขอใบเสนอราคา พ.ร.บ.
+              </Button>
+              {brochures.length > 0 && (
+                <BrochureDownloadButton brochures={brochures} />
+              )}
+              <Button href="/tel:0819416620" variant="secondary" size="lg">
+                📞 โทรสอบถาม
+              </Button>
+            </div>
+          </Container>
+        </section>
+      </HeroCarousel>
 
       {/* Answer-first intro */}
       <section className="bg-white py-16">

@@ -10,6 +10,8 @@ import { AccidentPlansView } from "@/components/insurance/AccidentPlansView";
 import { getFaqSection } from "@/lib/faqs";
 import { redirect } from "next/navigation";
 import { BrochureDownloadButton } from "@/components/BrochureDownloadButton";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { getPageBannerSlides } from "@/lib/banners";
 
 export const metadata: Metadata = {
   title: "ประกันอุบัติเหตุ — เปรียบเทียบแผน ครอบคลุมเด็กถึงผู้สูงอายุ",
@@ -52,7 +54,7 @@ const faqs = [
 ];
 
 export default async function AccidentInsurancePage() {
-  const [page, setting, faqSection] = await Promise.all([
+  const [page, setting, faqSection, bannerSlides] = await Promise.all([
     prisma.insurancePage.findUnique({
       where: { slug: "accident-insurance" },
     }),
@@ -60,6 +62,7 @@ export default async function AccidentInsurancePage() {
       where: { key: "accidentPlansConfig" },
     }),
     getFaqSection("accident", faqs),
+    getPageBannerSlides("/accident-insurance"),
   ]);
 
   if (!page || !page.published) {
@@ -117,31 +120,33 @@ export default async function AccidentInsurancePage() {
         <Breadcrumbs items={[{ name: "ประกันอุบัติเหตุ", href: "/accident-insurance" }]} />
       </Container>
 
-      <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
-        <Container size="wide" className="text-center">
-          <span className="text-5xl">🩹</span>
-          <h1 className="mt-4 text-3xl font-bold sm:text-4xl">ประกันอุบัติเหตุ</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-            ความคุ้มครองสำหรับเด็กแรกเกิดถึงผู้สูงอายุ เปรียบเทียบแผนและเลือกความคุ้มครองที่เหมาะสม
-          </p>
-          {page.premium && (
-            <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
-              🏷️ {page.premium}
+      <HeroCarousel slides={bannerSlides}>
+        <section className="bg-gradient-to-br from-navy-700 to-navy-900 py-16 text-white">
+          <Container size="wide" className="text-center">
+            <span className="text-5xl">🩹</span>
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">ประกันอุบัติเหตุ</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-navy-100">
+              ความคุ้มครองสำหรับเด็กแรกเกิดถึงผู้สูงอายุ เปรียบเทียบแผนและเลือกความคุ้มครองที่เหมาะสม
             </p>
-          )}
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="/quote/accident" variant="accent" size="lg">
-              ขอใบเสนอราคา
-            </Button>
-            {brochures.length > 0 && (
-              <BrochureDownloadButton brochures={brochures} />
+            {page.premium && (
+              <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
+                🏷️ {page.premium}
+              </p>
             )}
-            <Button href="/tel:0819416620" variant="secondary" size="lg">
-              📞 โทรสอบถาม
-            </Button>
-          </div>
-        </Container>
-      </section>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href="/quote/accident" variant="accent" size="lg">
+                ขอใบเสนอราคา
+              </Button>
+              {brochures.length > 0 && (
+                <BrochureDownloadButton brochures={brochures} />
+              )}
+              <Button href="/tel:0819416620" variant="secondary" size="lg">
+                📞 โทรสอบถาม
+              </Button>
+            </div>
+          </Container>
+        </section>
+      </HeroCarousel>
 
       <section className="bg-white py-16">
         <Container size="prose">
