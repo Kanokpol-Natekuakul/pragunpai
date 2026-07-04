@@ -39,6 +39,13 @@ export async function uploadAttachment(file: File): Promise<UploadResult> {
     throw new Error(`ไม่รองรับประเภทไฟล์ "${originalName}" (รองรับเฉพาะ JPG, PNG, WEBP, PDF, DOC, DOCX)`);
   }
 
+  // Validate extension strictly
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".pdf", ".doc", ".docx"];
+  const origExt = path.extname(originalName).toLowerCase();
+  if (!allowedExtensions.includes(origExt)) {
+    throw new Error(`ไม่รองรับนามสกุลไฟล์ของ "${originalName}" (รองรับเฉพาะ .jpg, .jpeg, .png, .webp, .pdf, .doc, .docx)`);
+  }
+
   // Create local folder if it doesn't exist
   const uploadDir = path.join(process.cwd(), "public", "uploads");
   try {
@@ -48,9 +55,8 @@ export async function uploadAttachment(file: File): Promise<UploadResult> {
   }
 
   // Generate safe unique name
-  const ext = path.extname(originalName) || getExtFromMime(mimeType);
   const randomId = crypto.randomUUID();
-  const safeFilename = `${Date.now()}-${randomId}${ext}`;
+  const safeFilename = `${Date.now()}-${randomId}${origExt}`;
   const filePath = path.join(uploadDir, safeFilename);
 
   // Write file
