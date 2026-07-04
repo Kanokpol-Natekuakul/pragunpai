@@ -7,6 +7,8 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqPageJsonLd } from "@/lib/jsonld";
 import { getFaqSection } from "@/lib/faqs";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "ประกันบ้าน คอนโด หอพัก — คุ้มครองทรัพย์สิน ขอใบเสนอราคา",
@@ -60,7 +62,17 @@ const faqs = [
 ];
 
 export default async function PropertyInsurancePage() {
-  const faqSection = await getFaqSection("property", faqs);
+  const [page, faqSection] = await Promise.all([
+    prisma.insurancePage.findUnique({
+      where: { slug: "property-insurance" },
+      select: { published: true },
+    }),
+    getFaqSection("property", faqs),
+  ]);
+
+  if (!page || !page.published) {
+    redirect("/");
+  }
   return (
     <>
       <Container size="wide" className="pt-6">

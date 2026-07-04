@@ -8,6 +8,7 @@ import { faqPageJsonLd } from "@/lib/jsonld";
 import { prisma } from "@/lib/prisma";
 import { AccidentPlansView } from "@/components/insurance/AccidentPlansView";
 import { getFaqSection } from "@/lib/faqs";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "ประกันอุบัติเหตุ — เปรียบเทียบแผน ครอบคลุมเด็กถึงผู้สูงอายุ",
@@ -50,12 +51,20 @@ const faqs = [
 ];
 
 export default async function AccidentInsurancePage() {
-  const [setting, faqSection] = await Promise.all([
+  const [page, setting, faqSection] = await Promise.all([
+    prisma.insurancePage.findUnique({
+      where: { slug: "accident-insurance" },
+      select: { published: true },
+    }),
     prisma.siteSetting.findUnique({
       where: { key: "accidentPlansConfig" },
     }),
     getFaqSection("accident", faqs),
   ]);
+
+  if (!page || !page.published) {
+    redirect("/");
+  }
 
   const defaultImages = [
     "/images/mockups/accident_plan_basic.jpg",

@@ -7,6 +7,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqSectionBlock } from "@/components/faq/FaqSectionBlock";
 import { getFaqSection } from "@/lib/faqs";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "พ.ร.บ. ประกันภัยรถยนต์ — ขอใบเสนอราคา ต่อ พ.ร.บ. ง่าย",
@@ -40,9 +41,19 @@ const faqs = [
 ];
 
 export default async function CarActPage() {
-  const setting = await prisma.siteSetting.findUnique({
-    where: { key: "carActCoverage" },
-  });
+  const [page, setting] = await Promise.all([
+    prisma.insurancePage.findUnique({
+      where: { slug: "car-act" },
+      select: { published: true },
+    }),
+    prisma.siteSetting.findUnique({
+      where: { key: "carActCoverage" },
+    }),
+  ]);
+
+  if (!page || !page.published) {
+    redirect("/");
+  }
 
   const coverageTable = Array.isArray(setting?.value)
     ? (setting.value as Array<{ item: string; amount: string }>)
