@@ -48,7 +48,7 @@ export default async function AccidentPlansAdminPage() {
       planNames: Array.isArray(val.planNames) && val.planNames.length === 3 ? val.planNames : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"],
       comparisonPlans: Array.isArray(val.comparisonPlans)
         ? val.comparisonPlans.map((r, idx) => ({
-            id: r.id || `row-${idx}-${Date.now()}`,
+            id: r.id || `row-${idx}`,
             feature: r.feature,
             plan1: r.plan1,
             plan2: r.plan2,

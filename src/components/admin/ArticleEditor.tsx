@@ -58,7 +58,9 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
       };
       img.src = coverImage;
     } else {
-      setDimensions(null);
+      Promise.resolve().then(() => {
+        setDimensions(null);
+      });
     }
   }, [coverImage]);
 

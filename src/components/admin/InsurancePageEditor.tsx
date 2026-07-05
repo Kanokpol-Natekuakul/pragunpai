@@ -242,7 +242,7 @@ export function InsurancePageEditor({ page }: InsurancePageEditorProps) {
                   ไฟล์โบรชัวร์ PDF ประกันภัย (อัปโหลดได้สูงสุด 3 ไฟล์)
                 </label>
                 <p className="text-xs text-navy-450 mt-1">
-                  กรอกชื่อป้ายกำกับของแต่ละไฟล์ เช่น "โบรชัวร์รวม", "แผนประกันสำหรับเด็ก" และอัปโหลดไฟล์ PDF (ขนาดไม่เกิน 5MB ต่อไฟล์)
+                  กรอกชื่อป้ายกำกับของแต่ละไฟล์ เช่น &quot;โบรชัวร์รวม&quot;, &quot;แผนประกันสำหรับเด็ก&quot; และอัปโหลดไฟล์ PDF (ขนาดไม่เกิน 5MB ต่อไฟล์)
                 </p>
               </div>
               {brochures.length < 3 && (

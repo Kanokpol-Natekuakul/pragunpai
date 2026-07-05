@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "@google-recaptcha/react";
 import { submitLeadAction } from "@/actions/leads";
@@ -62,6 +62,11 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
   const accidentForm = useForm<z.infer<typeof accidentClientSchema>>({
     resolver: zodResolver(accidentClientSchema),
     defaultValues: { name: "", phone: "", lineId: "", province: "", email: "", note: "", age: "", occupation: "", hasExistingIllness: "ไม่มีประวัติการเจ็บป่วยร้ายแรงหรือโรคประจำตัว", illnessDetails: "", selectedPlan: selectedPlan || "" },
+  });
+
+  const hasExistingIllness = useWatch({
+    control: accidentForm.control,
+    name: "hasExistingIllness",
   });
 
   const propertyForm = useForm<z.infer<typeof propertyClientSchema>>({
@@ -512,7 +517,7 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                   </div>
                 </div>
 
-                {accidentForm.watch("hasExistingIllness") === "มีโรคประจำตัวหรือประวัติสุขภาพ" && (
+                {hasExistingIllness === "มีโรคประจำตัวหรือประวัติสุขภาพ" && (
                   <div>
                     <label className="block text-sm font-medium text-navy-700 mb-1">
                       รายละเอียดโรคประจำตัว / ยาที่ต้องทานประจำ
