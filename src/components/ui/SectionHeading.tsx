@@ -27,7 +27,7 @@ export function SectionHeading({
       className={clsx(
         "max-w-2xl",
         align === "center" && "mx-auto text-center",
-        className,
+        className
       )}
     >
       {eyebrow && (
@@ -35,9 +35,13 @@ export function SectionHeading({
           {eyebrow}
         </p>
       )}
-      <Tag className="text-2xl font-bold text-navy-800 sm:text-3xl">{title}</Tag>
+      <Tag className="text-2xl font-bold text-navy-800 sm:text-3xl">
+        {title}
+      </Tag>
       {subtitle && (
-        <p className="mt-3 text-base leading-relaxed text-navy-500">{subtitle}</p>
+        <p className="mt-3 text-base leading-relaxed text-navy-500">
+          {subtitle}
+        </p>
       )}
     </div>
   );

@@ -30,7 +30,10 @@ export type PurgeResult = {
   leadsSkipped: number;
 };
 
-export async function purgeExpiredLeads(now: Date, deps: PurgeDeps): Promise<PurgeResult> {
+export async function purgeExpiredLeads(
+  now: Date,
+  deps: PurgeDeps
+): Promise<PurgeResult> {
   const expiredLeads = await deps.findExpiredLeads(now);
 
   let filesDeleted = 0;
@@ -46,7 +49,10 @@ export async function purgeExpiredLeads(now: Date, deps: PurgeDeps): Promise<Pur
         await deps.deleteFile(att.url);
         filesDeleted++;
       } catch (err) {
-        console.error(`[Purge] Failed to delete file for lead ${lead.id}: ${att.url}`, err);
+        console.error(
+          `[Purge] Failed to delete file for lead ${lead.id}: ${att.url}`,
+          err
+        );
         filesFailed++;
         allFilesGone = false;
       }
@@ -56,7 +62,8 @@ export async function purgeExpiredLeads(now: Date, deps: PurgeDeps): Promise<Pur
     }
   }
 
-  const leadsPurged = deletableIds.length > 0 ? await deps.deleteLeads(deletableIds) : 0;
+  const leadsPurged =
+    deletableIds.length > 0 ? await deps.deleteLeads(deletableIds) : 0;
 
   return {
     leadsPurged,

@@ -25,7 +25,10 @@ type ImageKind = "slides" | "promos";
 const MAX_SLIDES = 5;
 const MAX_PROMOS = 2;
 
-const kindMeta: Record<ImageKind, { max: number; addLabel: string; emptyLabel: string }> = {
+const kindMeta: Record<
+  ImageKind,
+  { max: number; addLabel: string; emptyLabel: string }
+> = {
   slides: {
     max: MAX_SLIDES,
     addLabel: "เพิ่มสไลด์",
@@ -45,7 +48,10 @@ interface PageBannersEditorProps {
 
 const emptyConfig = (): PageBannerConfigVal => ({ slides: [], promos: [] });
 
-export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorProps) {
+export function PageBannersEditor({
+  pages,
+  initialBanners,
+}: PageBannersEditorProps) {
   const [isPending, startTransition] = useTransition();
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [activePath, setActivePath] = useState<string>(pages[0]?.path ?? "/");
@@ -55,7 +61,10 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
   const activePage = pages.find((p) => p.path === activePath) ?? pages[0];
   const config = bannersMap[activePath] ?? emptyConfig();
 
-  const setList = (kind: ImageKind, updater: (prev: BannerSlideVal[]) => BannerSlideVal[]) => {
+  const setList = (
+    kind: ImageKind,
+    updater: (prev: BannerSlideVal[]) => BannerSlideVal[]
+  ) => {
     setBannersMap((prev) => {
       const cfg = prev[activePath] ?? emptyConfig();
       return { ...prev, [activePath]: { ...cfg, [kind]: updater(cfg[kind]) } };
@@ -81,13 +90,22 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
     });
   };
 
-  const handleFieldChange = (kind: ImageKind, idx: number, field: "alt" | "href", value: string) => {
-    setList(kind, (prev) => prev.map((s, i) => (i === idx ? { ...s, [field]: value } : s)));
+  const handleFieldChange = (
+    kind: ImageKind,
+    idx: number,
+    field: "alt" | "href",
+    value: string
+  ) => {
+    setList(kind, (prev) =>
+      prev.map((s, i) => (i === idx ? { ...s, [field]: value } : s))
+    );
   };
 
   const handleUpload = async (kind: ImageKind, idx: number, file: File) => {
     if (!file) return;
-    const validation = validateUpload(file, { allowedMimeTypes: IMAGE_MIME_TYPES });
+    const validation = validateUpload(file, {
+      allowedMimeTypes: IMAGE_MIME_TYPES,
+    });
     if (!validation.ok) {
       alert(validation.error);
       return;
@@ -99,7 +117,9 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
       formData.append("file", file);
       const res = await uploadImageAction(formData);
       if (res.success && res.url) {
-        setList(kind, (prev) => prev.map((s, i) => (i === idx ? { ...s, imageUrl: res.url! } : s)));
+        setList(kind, (prev) =>
+          prev.map((s, i) => (i === idx ? { ...s, imageUrl: res.url! } : s))
+        );
         setSuccessMsg("อัปโหลดรูปสำเร็จแล้ว (อย่าลืมกดบันทึก)");
         setTimeout(() => setSuccessMsg(null), 3000);
       } else {
@@ -119,7 +139,8 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
     for (const [path, cfg] of Object.entries(bannersMap)) {
       const slides = (cfg.slides ?? []).filter((s) => s.imageUrl.trim() !== "");
       const promos = (cfg.promos ?? []).filter((s) => s.imageUrl.trim() !== "");
-      if (slides.length > 0 || promos.length > 0) cleaned[path] = { slides, promos };
+      if (slides.length > 0 || promos.length > 0)
+        cleaned[path] = { slides, promos };
     }
 
     setSuccessMsg(null);
@@ -136,10 +157,15 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
 
   const imageCount = (path: string) => {
     const cfg = bannersMap[path] ?? emptyConfig();
-    return [...cfg.slides, ...cfg.promos].filter((s) => s.imageUrl.trim() !== "").length;
+    return [...cfg.slides, ...cfg.promos].filter(
+      (s) => s.imageUrl.trim() !== ""
+    ).length;
   };
 
-  const renderSlotList = (kind: ImageKind, badgeLabel: (idx: number) => string) => {
+  const renderSlotList = (
+    kind: ImageKind,
+    badgeLabel: (idx: number) => string
+  ) => {
     const items = config[kind];
     const meta = kindMeta[kind];
 
@@ -152,14 +178,23 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
         ) : (
           <div className="space-y-3">
             {items.map((slide, idx) => (
-              <div key={idx} className="rounded-lg border border-gray-200 bg-navy-50/30 p-3 flex flex-col gap-3 sm:flex-row">
+              <div
+                key={idx}
+                className="rounded-lg border border-gray-200 bg-navy-50/30 p-3 flex flex-col gap-3 sm:flex-row"
+              >
                 {/* Preview */}
                 <div className="relative h-24 w-full sm:w-56 shrink-0 overflow-hidden rounded-md bg-navy-100 border border-gray-200 flex items-center justify-center">
                   {slide.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={slide.imageUrl} alt={slide.alt || badgeLabel(idx)} className="h-full w-full object-cover" />
+                    <img
+                      src={slide.imageUrl}
+                      alt={slide.alt || badgeLabel(idx)}
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
-                    <span className="text-[10px] text-navy-400 font-semibold">ยังไม่ได้เลือกรูป</span>
+                    <span className="text-[10px] text-navy-400 font-semibold">
+                      ยังไม่ได้เลือกรูป
+                    </span>
                   )}
                   <span className="absolute left-1.5 top-1.5 rounded bg-navy-800/80 px-1.5 py-0.5 text-[10px] font-bold text-white">
                     {badgeLabel(idx)}
@@ -180,20 +215,26 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
                     className="w-full text-xs text-navy-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-navy-50 file:text-navy-700 hover:file:bg-navy-100 cursor-pointer disabled:opacity-50"
                   />
                   {uploadingKey === `${kind}-${idx}` && (
-                    <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลดรูป...</span>
+                    <span className="text-[10px] text-orange-500 font-bold animate-pulse">
+                      กำลังอัปโหลดรูป...
+                    </span>
                   )}
                   <div className="grid gap-2 sm:grid-cols-2">
                     <input
                       type="text"
                       value={slide.alt || ""}
-                      onChange={(e) => handleFieldChange(kind, idx, "alt", e.target.value)}
+                      onChange={(e) =>
+                        handleFieldChange(kind, idx, "alt", e.target.value)
+                      }
                       placeholder="คำอธิบายรูป (Alt text) เช่น โปรโมชั่นประกันรถ"
                       className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400"
                     />
                     <input
                       type="text"
                       value={slide.href || ""}
-                      onChange={(e) => handleFieldChange(kind, idx, "href", e.target.value)}
+                      onChange={(e) =>
+                        handleFieldChange(kind, idx, "href", e.target.value)
+                      }
                       placeholder="ลิงก์เมื่อคลิกรูป (ไม่บังคับ) เช่น /quote"
                       className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-mono"
                     />
@@ -279,9 +320,13 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
           >
             {p.label}
             {imageCount(p.path) > 0 && (
-              <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                p.path === activePath ? "bg-orange-500 text-white" : "bg-navy-100 text-navy-600"
-              }`}>
+              <span
+                className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                  p.path === activePath
+                    ? "bg-orange-500 text-white"
+                    : "bg-navy-100 text-navy-600"
+                }`}
+              >
                 {imageCount(p.path)}
               </span>
             )}
@@ -293,14 +338,23 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
           <span>🎠 แบนเนอร์สไลด์: {activePage?.label}</span>
-          {isPending && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+          {isPending && (
+            <span className="text-xs text-orange-500 font-semibold">
+              กำลังบันทึก...
+            </span>
+          )}
         </h2>
 
         <p className="text-[11px] text-navy-400 leading-relaxed -mt-2">
-          รูปที่อัปโหลดจะแสดงต่อจากแบนเนอร์เดิมของหน้านี้เป็นสไลด์เลื่อนอัตโนมัติ (สูงสุด {MAX_SLIDES} รูปต่อหน้า){" "}
-          <strong className="text-orange-500">ขนาดแนะนำ: 1920px x 600px (สัดส่วน 16:5) ใช้ขนาดเดียวกันได้ทุกหน้า</strong>{" "}
-          ไฟล์ JPG, PNG หรือ WEBP ไม่เกิน 5MB — บนจอกว้างรูปจะแสดงเต็มสัดส่วน ส่วนบนมือถืออาจถูกครอบตัดขอบซ้าย-ขวา
-          แนะนำวางข้อความ/เนื้อหาสำคัญไว้กลางภาพ หากไม่มีรูป หน้านี้จะแสดงแบนเนอร์เดิมตามปกติ
+          รูปที่อัปโหลดจะแสดงต่อจากแบนเนอร์เดิมของหน้านี้เป็นสไลด์เลื่อนอัตโนมัติ
+          (สูงสุด {MAX_SLIDES} รูปต่อหน้า){" "}
+          <strong className="text-orange-500">
+            ขนาดแนะนำ: 1920px x 600px (สัดส่วน 16:5) ใช้ขนาดเดียวกันได้ทุกหน้า
+          </strong>{" "}
+          ไฟล์ JPG, PNG หรือ WEBP ไม่เกิน 5MB — บนจอกว้างรูปจะแสดงเต็มสัดส่วน
+          ส่วนบนมือถืออาจถูกครอบตัดขอบซ้าย-ขวา
+          แนะนำวางข้อความ/เนื้อหาสำคัญไว้กลางภาพ หากไม่มีรูป
+          หน้านี้จะแสดงแบนเนอร์เดิมตามปกติ
         </p>
 
         {renderSlotList("slides", (idx) => `สไลด์ ${idx + 2}`)}
@@ -311,13 +365,21 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
         <Card className="p-6 bg-white border border-gray-200 space-y-4">
           <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
             <span>🖼️ รูปโปรโมชั่นใต้แบนเนอร์: {activePage?.label}</span>
-            {isPending && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+            {isPending && (
+              <span className="text-xs text-orange-500 font-semibold">
+                กำลังบันทึก...
+              </span>
+            )}
           </h2>
 
           <p className="text-[11px] text-navy-400 leading-relaxed -mt-2">
-            รูปนิ่งแนวตั้งแสดงใต้แบนเนอร์ของหน้านี้ (สูงสุด {MAX_PROMOS} รูป) มี 1 รูปแสดงกลางหน้า มี 2 รูปแบ่งซ้าย-ขวา{" "}
-            <strong className="text-orange-500">ขนาดแนะนำ: 900px x 1200px (สัดส่วน 3:4 แนวตั้ง)</strong>{" "}
-            ไฟล์ JPG, PNG หรือ WEBP ไม่เกิน 5MB หากไม่มีรูป หน้านี้จะไม่แสดงส่วนนี้เลย
+            รูปนิ่งแนวตั้งแสดงใต้แบนเนอร์ของหน้านี้ (สูงสุด {MAX_PROMOS} รูป) มี
+            1 รูปแสดงกลางหน้า มี 2 รูปแบ่งซ้าย-ขวา{" "}
+            <strong className="text-orange-500">
+              ขนาดแนะนำ: 900px x 1200px (สัดส่วน 3:4 แนวตั้ง)
+            </strong>{" "}
+            ไฟล์ JPG, PNG หรือ WEBP ไม่เกิน 5MB หากไม่มีรูป
+            หน้านี้จะไม่แสดงส่วนนี้เลย
           </p>
 
           {renderSlotList("promos", (idx) => `รูปที่ ${idx + 1}`)}

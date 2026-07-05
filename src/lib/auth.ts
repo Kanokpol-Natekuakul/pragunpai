@@ -32,7 +32,11 @@ import {
 } from "@/lib/crypto";
 import { sendOtpEmail, sendPasswordResetEmail } from "@/lib/email";
 import { absoluteUrl } from "@/lib/site";
-import { checkRateLimit, recordFailedAttempt, resetRateLimit } from "@/lib/rate-limit";
+import {
+  checkRateLimit,
+  recordFailedAttempt,
+  resetRateLimit,
+} from "@/lib/rate-limit";
 
 // ---------------------------------------------------------------------------
 // Session cookie helpers
@@ -73,7 +77,11 @@ export async function getSession(): Promise<SessionPayload | null> {
 }
 
 /** Create a session cookie for an admin. */
-async function createSession(admin: { id: string; email: string; name: string }) {
+async function createSession(admin: {
+  id: string;
+  email: string;
+  name: string;
+}) {
   const payload: Omit<SessionPayload, "iat" | "exp"> = {
     sub: admin.id,
     email: admin.email,
@@ -90,9 +98,11 @@ async function createSession(admin: { id: string; email: string; name: string })
 }
 
 /** Set the session cookie in the response. */
-export async function setSessionCookie(
-  admin: { id: string; email: string; name: string },
-) {
+export async function setSessionCookie(admin: {
+  id: string;
+  email: string;
+  name: string;
+}) {
   const token = await createSession(admin);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_KEY, token, {
@@ -117,7 +127,7 @@ export async function deleteSessionCookie() {
 export async function loginStep1(
   email: string,
   password: string,
-  ip: string,
+  ip: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   // Rate limiting lives inside the auth module so no entry point can skip it.
   const rateLimitStatus = checkRateLimit("login", ip, email);
@@ -161,7 +171,7 @@ export async function loginStep1(
 export async function loginStep2(
   email: string,
   otp: string,
-  ip: string,
+  ip: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   // Rate limiting lives inside the auth module so no entry point can skip it.
   const rateLimitStatus = checkRateLimit("login", ip, email);
@@ -205,7 +215,7 @@ export async function loginStep2(
 
 export async function requestPasswordReset(
   email: string,
-  ip: string,
+  ip: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   // Every request counts (not just failures) — this throttles email bombing
   // and reset-token churn, and applies whether or not the email exists so it
@@ -238,7 +248,7 @@ export async function requestPasswordReset(
 
 export async function resetPassword(
   token: string,
-  newPassword: string,
+  newPassword: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   // Find admin with matching (non-expired) reset token.
   const admins = await prisma.admin.findMany({
@@ -274,7 +284,7 @@ export async function resetPassword(
 export async function changePassword(
   adminId: string,
   currentPassword: string,
-  newPassword: string,
+  newPassword: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const admin = await prisma.admin.findUnique({ where: { id: adminId } });
   if (!admin) {

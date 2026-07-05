@@ -22,9 +22,12 @@ export default async function ArticlesAdminPage() {
       {/* Header section */}
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-navy-800">จัดการบทความ (SEO Articles)</h1>
+          <h1 className="text-2xl font-bold text-navy-800">
+            จัดการบทความ (SEO Articles)
+          </h1>
           <p className="text-sm text-navy-500 font-medium">
-            เขียนและแก้ไขบทความเพื่อเสริมสร้างคะแนน SEO และให้คำแนะนำความรู้แก่ผู้เอาประกันภัย
+            เขียนและแก้ไขบทความเพื่อเสริมสร้างคะแนน SEO
+            และให้คำแนะนำความรู้แก่ผู้เอาประกันภัย
           </p>
         </div>
         <div>
@@ -41,7 +44,8 @@ export default async function ArticlesAdminPage() {
       <Card className="overflow-hidden bg-white border border-gray-200">
         {articles.length === 0 ? (
           <div className="p-12 text-center text-sm text-navy-400 font-medium">
-            ยังไม่มีบทความในระบบ คลิก &ldquo;เขียนบทความใหม่&rdquo; เพื่อเริ่มต้นเขียน
+            ยังไม่มีบทความในระบบ คลิก &ldquo;เขียนบทความใหม่&rdquo;
+            เพื่อเริ่มต้นเขียน
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -58,17 +62,27 @@ export default async function ArticlesAdminPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {articles.map((article) => {
-                  const isPublished = new Date(article.publishedAt) <= new Date();
+                  const isPublished =
+                    new Date(article.publishedAt) <= new Date();
                   return (
-                    <tr key={article.id} className="hover:bg-navy-50/20 transition-colors">
+                    <tr
+                      key={article.id}
+                      className="hover:bg-navy-50/20 transition-colors"
+                    >
                       <td className="px-6 py-4 font-bold text-navy-800 max-w-xs sm:max-w-md truncate">
-                        <Link href={`/admin/articles/${article.id}`} className="hover:underline hover:text-orange-500">
+                        <Link
+                          href={`/admin/articles/${article.id}`}
+                          className="hover:underline hover:text-orange-500"
+                        >
                           {article.title}
                         </Link>
-                        <div className="text-[11px] text-navy-450 font-semibold mt-1">Slug: /{article.slug}</div>
+                        <div className="text-[11px] text-navy-450 font-semibold mt-1">
+                          Slug: /{article.slug}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap font-medium text-navy-700">
-                        {articleCategoryLabel[article.category] || article.category}
+                        {articleCategoryLabel[article.category] ||
+                          article.category}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-navy-600 font-medium">
                         {article.insurancePage?.name || "ความรู้ทั่วไป"}

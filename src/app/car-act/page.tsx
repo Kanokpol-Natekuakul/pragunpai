@@ -71,7 +71,7 @@ export default async function CarActPage() {
       if (urlStr.trim().startsWith("[")) {
         const parsed = JSON.parse(urlStr);
         if (Array.isArray(parsed)) {
-          return parsed.filter(item => item.url && item.url.trim() !== "");
+          return parsed.filter((item) => item.url && item.url.trim() !== "");
         }
       }
     } catch (e) {
@@ -86,8 +86,14 @@ export default async function CarActPage() {
     ? (setting.value as Array<{ item: string; amount: string }>)
     : [
         { item: "ค่ารักษาพยาบาล (ต่อคน)", amount: "สูงสุด 80,000 บาท" },
-        { item: "ทุนประกันกรณีเสียชีวิต/สูญเสียอวัยวะ/ทุพพลภาพถาวร", amount: "สูงสุด 500,000 บาท" },
-        { item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ", amount: "สูงสุด 200 บาท/วัน (จำกัด 20 วัน)" },
+        {
+          item: "ทุนประกันกรณีเสียชีวิต/สูญเสียอวัยวะ/ทุพพลภาพถาวร",
+          amount: "สูงสุด 500,000 บาท",
+        },
+        {
+          item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ",
+          amount: "สูงสุด 200 บาท/วัน (จำกัด 20 วัน)",
+        },
         { item: "ระยะเวลาคุ้มครอง", amount: "1 ปี" },
       ];
   const faqSection = await getFaqSection("car-act", faqs);
@@ -103,9 +109,12 @@ export default async function CarActPage() {
         <section className="bg-linear-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="wide" className="text-center">
             <span className="text-5xl">🚗</span>
-            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">พ.ร.บ. ประกันภัยรถยนต์</h1>
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
+              พ.ร.บ. ประกันภัยรถยนต์
+            </h1>
             <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-              ประกันภัยภาคบังคับตามกฎหมาย คุ้มครองผู้ประสบภัยจากรถยนต์ ขอใบเสนอราคาและต่อ พ.ร.บ. ได้ง่าย
+              ประกันภัยภาคบังคับตามกฎหมาย คุ้มครองผู้ประสบภัยจากรถยนต์
+              ขอใบเสนอราคาและต่อ พ.ร.บ. ได้ง่าย
             </p>
             {page.premium && (
               <p className="mt-3 text-sm text-orange-200 font-bold bg-navy-800/40 inline-block px-3 py-1 rounded-full border border-navy-600/50">
@@ -137,9 +146,10 @@ export default async function CarActPage() {
             <p>
               <strong>พ.ร.บ. ประกันภัยรถยนต์</strong> หรือ ประกันภัยภาคบังคับ
               เป็นประกันภัยที่กฎหมายกำหนดให้รถทุกคันต้องมี ตาม
-              พระราชบัญญัติคุ้มครองผู้ประสบภัยจากรถ พ.ศ. 2535
-              โดยคุ้มครอง<strong>ค่ารักษาพยาบาล</strong>และ<strong>ทุนประกัน</strong>ให้แก่ผู้ประสบภัย
-              ไม่ว่าจะเป็นความผิดของใคร รวมถึงคุ้มครองผู้ขับขี่และผู้โดยสาร
+              พระราชบัญญัติคุ้มครองผู้ประสบภัยจากรถ พ.ศ. 2535 โดยคุ้มครอง
+              <strong>ค่ารักษาพยาบาล</strong>และ<strong>ทุนประกัน</strong>
+              ให้แก่ผู้ประสบภัย ไม่ว่าจะเป็นความผิดของใคร
+              รวมถึงคุ้มครองผู้ขับขี่และผู้โดยสาร
             </p>
             <p>
               การมี พ.ร.บ. จึงเป็นสิ่งจำเป็นและเป็นวิธีที่ถูกต้องตามกฎหมาย
@@ -152,7 +162,10 @@ export default async function CarActPage() {
       {/* Coverage table */}
       <section className="bg-navy-50 py-16">
         <Container size="prose">
-          <SectionHeading eyebrow="ความคุ้มครอง" title="ตารางความคุ้มครอง พ.ร.บ." />
+          <SectionHeading
+            eyebrow="ความคุ้มครอง"
+            title="ตารางความคุ้มครอง พ.ร.บ."
+          />
           <Card className="mt-8 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -166,7 +179,9 @@ export default async function CarActPage() {
                   {coverageTable.map((row) => (
                     <tr key={row.item}>
                       <td className="px-4 py-3 text-navy-700">{row.item}</td>
-                      <td className="px-4 py-3 font-semibold text-navy-900">{row.amount}</td>
+                      <td className="px-4 py-3 font-semibold text-navy-900">
+                        {row.amount}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -174,7 +189,8 @@ export default async function CarActPage() {
             </div>
           </Card>
           <p className="mt-4 text-xs text-navy-500">
-            * จำนวนเงินคุ้มครองเป็นไปตามเกณฑ์ของ พ.ร.บ. อาจมีการปรับปรุงตามประกาศทางการ
+            * จำนวนเงินคุ้มครองเป็นไปตามเกณฑ์ของ พ.ร.บ.
+            อาจมีการปรับปรุงตามประกาศทางการ
           </p>
         </Container>
       </section>
@@ -184,7 +200,9 @@ export default async function CarActPage() {
       {/* CTA */}
       <section className="bg-orange-500 py-12">
         <Container size="wide" className="text-center">
-          <h2 className="text-2xl font-bold text-white">พร้อมต่อ พ.ร.บ. แล้วหรือยัง?</h2>
+          <h2 className="text-2xl font-bold text-white">
+            พร้อมต่อ พ.ร.บ. แล้วหรือยัง?
+          </h2>
           <div className="mt-6">
             <Button href="/quote/car-act" variant="primary" size="lg">
               ขอใบเสนอราคา พ.ร.บ.
@@ -192,7 +210,6 @@ export default async function CarActPage() {
           </div>
         </Container>
       </section>
-
     </>
   );
 }

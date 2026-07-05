@@ -29,11 +29,16 @@ export function FaqSectionBlock({
             <details key={faq.id ?? faq.question} className="group py-5">
               <summary className="flex cursor-pointer items-center justify-between gap-4 font-semibold text-navy-800">
                 {faq.question}
-                <span className="text-orange-500 transition-transform group-open:rotate-45" aria-hidden="true">
+                <span
+                  className="text-orange-500 transition-transform group-open:rotate-45"
+                  aria-hidden="true"
+                >
                   +
                 </span>
               </summary>
-              <p className="mt-3 text-sm leading-relaxed text-navy-600">{faq.answer}</p>
+              <p className="mt-3 text-sm leading-relaxed text-navy-600">
+                {faq.answer}
+              </p>
             </details>
           ))}
         </div>

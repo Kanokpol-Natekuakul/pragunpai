@@ -26,9 +26,12 @@ export default async function SeoAdminPage() {
   return (
     <Container size="wide" className="py-4">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy-800">จัดการ SEO หน้าเว็บหลัก (Meta Tags)</h1>
+        <h1 className="text-2xl font-bold text-navy-800">
+          จัดการ SEO หน้าเว็บหลัก (Meta Tags)
+        </h1>
         <p className="text-sm text-navy-500 font-medium mt-1">
-          ปรับแต่งชื่อหน้าเว็บ (SEO Title) คำค้นหา (Keywords) และคำโปรยหน้าเสิร์ช (Meta Description) สำหรับแต่ละหน้าหลักของเว็บไซต์
+          ปรับแต่งชื่อหน้าเว็บ (SEO Title) คำค้นหา (Keywords)
+          และคำโปรยหน้าเสิร์ช (Meta Description) สำหรับแต่ละหน้าหลักของเว็บไซต์
         </p>
       </div>
 

@@ -17,8 +17,13 @@ export async function GET(request: Request) {
 
     if (!cronSecret) {
       if (process.env.NODE_ENV === "production") {
-        console.error("[Purge Cron] CRON_SECRET is not configured — refusing to run.");
-        return NextResponse.json({ error: "CRON_SECRET is not configured" }, { status: 500 });
+        console.error(
+          "[Purge Cron] CRON_SECRET is not configured — refusing to run."
+        );
+        return NextResponse.json(
+          { error: "CRON_SECRET is not configured" },
+          { status: 500 }
+        );
       }
     } else if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,7 +37,9 @@ export async function GET(request: Request) {
           select: { id: true, attachments: { select: { url: true } } },
         }),
       deleteLeads: async (ids) => {
-        const res = await prisma.lead.deleteMany({ where: { id: { in: ids } } });
+        const res = await prisma.lead.deleteMany({
+          where: { id: { in: ids } },
+        });
         return res.count;
       },
       deleteFile: async (url) => {
@@ -70,7 +77,9 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("[Purge Cron] Error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal Server Error" },
+      {
+        error: error instanceof Error ? error.message : "Internal Server Error",
+      },
       { status: 500 }
     );
   }

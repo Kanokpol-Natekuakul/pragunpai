@@ -2,7 +2,8 @@ import Link from "next/link";
 import { clsx } from "@/lib/utils";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "accent" | "outline" | "ghost" | "danger";
+type Variant =
+  "primary" | "secondary" | "accent" | "outline" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -12,7 +13,8 @@ const variants: Record<Variant, string> = {
   primary: "bg-navy-600 text-white hover:bg-navy-700 shadow-sm",
   secondary: "bg-white text-navy-700 border border-navy-200 hover:bg-navy-50",
   accent: "bg-orange-500 text-white hover:bg-orange-600 shadow-sm",
-  outline: "bg-transparent text-navy-700 border border-navy-300 hover:bg-navy-50",
+  outline:
+    "bg-transparent text-navy-700 border border-navy-300 hover:bg-navy-50",
   ghost: "bg-transparent text-navy-700 hover:bg-navy-50",
   danger: "bg-red-600 text-white hover:bg-red-700",
 };
@@ -37,10 +39,19 @@ type ButtonAsButton = CommonProps &
 
 type ButtonAsLink = CommonProps & {
   href: string;
-} & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "className" | "children">;
+} & Omit<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    "href" | "className" | "children"
+  >;
 
 export function Button(props: ButtonAsButton | ButtonAsLink) {
-  const { variant = "primary", size = "md", className, children, ...rest } = props;
+  const {
+    variant = "primary",
+    size = "md",
+    className,
+    children,
+    ...rest
+  } = props;
   const classes = clsx(base, variants[variant], sizes[size], className);
 
   if ("href" in props && props.href !== undefined) {
@@ -66,7 +77,10 @@ export function Button(props: ButtonAsButton | ButtonAsLink) {
   }
 
   return (
-    <button className={classes} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>
+    <button
+      className={classes}
+      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
       {children}
     </button>
   );

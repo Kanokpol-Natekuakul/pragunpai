@@ -78,7 +78,7 @@ describe("runAdminAction", () => {
 
     expect(console.error).toHaveBeenCalledWith(
       "[deleteLeadAction] Error:",
-      expect.any(Error),
+      expect.any(Error)
     );
   });
 });

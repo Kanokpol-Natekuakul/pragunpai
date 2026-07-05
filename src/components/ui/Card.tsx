@@ -19,8 +19,9 @@ export function Card({
     <Tag
       className={clsx(
         "rounded-xl border border-navy-100 bg-white shadow-sm",
-        interactive && "transition-shadow hover:shadow-md hover:-translate-y-0.5 duration-200",
-        className,
+        interactive &&
+          "transition-shadow hover:shadow-md hover:-translate-y-0.5 duration-200",
+        className
       )}
     >
       {children}

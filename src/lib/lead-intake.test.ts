@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { processLead, parseLeadForm, buildLeadDetails, LeadIntakeDeps } from "./lead-intake";
+import {
+  processLead,
+  parseLeadForm,
+  buildLeadDetails,
+  LeadIntakeDeps,
+} from "./lead-intake";
 import type { UploadResult } from "./upload";
 
 function makeFormData(fields: Record<string, string>): FormData {
@@ -64,10 +69,10 @@ describe("buildLeadDetails", () => {
 
   it("throws ZodError with Thai message for invalid phone", () => {
     const { rawData } = parseLeadForm(
-      makeFormData({ ...validCarAct, phone: "abc" }),
+      makeFormData({ ...validCarAct, phone: "abc" })
     );
     expect(() => buildLeadDetails("CAR_ACT", rawData)).toThrowError(
-      /เบอร์โทรศัพท์/,
+      /เบอร์โทรศัพท์/
     );
   });
 
@@ -78,7 +83,7 @@ describe("buildLeadDetails", () => {
         phone: "0812345678",
         requestType: "ประกันเดินทาง",
         description: "อยากได้ใบเสนอราคา",
-      }),
+      })
     );
     const { formType, details } = buildLeadDetails("UNKNOWN", rawData);
     expect(formType).toBe("OTHER");
@@ -113,7 +118,9 @@ describe("processLead", () => {
   });
 
   it("rejects when recaptcha fails, before any I/O", async () => {
-    const deps = makeDeps({ verifyRecaptcha: vi.fn().mockResolvedValue(false) });
+    const deps = makeDeps({
+      verifyRecaptcha: vi.fn().mockResolvedValue(false),
+    });
     const result = await processLead(makeFormData(validCarAct), deps);
     expect(result.success).toBe(false);
     expect(deps.createLead).not.toHaveBeenCalled();
@@ -124,7 +131,7 @@ describe("processLead", () => {
     const deps = makeDeps();
     const result = await processLead(
       makeFormData({ ...validCarAct, carBrand: "" }),
-      deps,
+      deps
     );
     expect(result).toEqual({ success: false, error: "กรุณากรอกยี่ห้อรถยนต์" });
     expect(deps.createLead).not.toHaveBeenCalled();
@@ -133,7 +140,10 @@ describe("processLead", () => {
   it("uploads attachments and passes them to createLead", async () => {
     const deps = makeDeps();
     const fd = makeFormData(validCarAct);
-    fd.append("attachments", new File(["data"], "doc.pdf", { type: "application/pdf" }));
+    fd.append(
+      "attachments",
+      new File(["data"], "doc.pdf", { type: "application/pdf" })
+    );
 
     const result = await processLead(fd, deps);
     expect(result.success).toBe(true);
@@ -148,7 +158,10 @@ describe("processLead", () => {
       uploadAttachment: vi.fn().mockRejectedValue(new Error("ไฟล์ใหญ่เกินไป")),
     });
     const fd = makeFormData(validCarAct);
-    fd.append("attachments", new File(["data"], "doc.pdf", { type: "application/pdf" }));
+    fd.append(
+      "attachments",
+      new File(["data"], "doc.pdf", { type: "application/pdf" })
+    );
 
     const result = await processLead(fd, deps);
     expect(result).toEqual({ success: false, error: "ไฟล์ใหญ่เกินไป" });
@@ -157,7 +170,9 @@ describe("processLead", () => {
 
   it("marks email failure on the lead but still succeeds", async () => {
     const deps = makeDeps({
-      sendLeadAlert: vi.fn().mockResolvedValue({ ok: false, error: "smtp down" }),
+      sendLeadAlert: vi
+        .fn()
+        .mockResolvedValue({ ok: false, error: "smtp down" }),
     });
     const result = await processLead(makeFormData(validCarAct), deps);
     expect(result).toEqual({ success: true, leadId: "lead-1" });

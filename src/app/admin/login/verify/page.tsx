@@ -55,7 +55,9 @@ export default function VerifyOtpPage() {
       <Container size="prose">
         <div className="rounded-xl border border-navy-100 bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <h1 className="text-xl font-bold text-navy-800">ยืนยันตัวตนด้วย OTP</h1>
+            <h1 className="text-xl font-bold text-navy-800">
+              ยืนยันตัวตนด้วย OTP
+            </h1>
             <p className="mt-1 text-sm text-navy-500">
               รหัส OTP ถูกส่งไปที่อีเมลของคุณแล้ว (หมดอายุใน 10 นาที)
             </p>
@@ -69,7 +71,10 @@ export default function VerifyOtpPage() {
 
           <form id="otp-form" onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label htmlFor="otp" className="mb-1.5 block text-sm font-medium text-navy-700">
+              <label
+                htmlFor="otp"
+                className="mb-1.5 block text-sm font-medium text-navy-700"
+              >
                 รหัส OTP (6 หลัก)
               </label>
               <input
@@ -94,7 +99,10 @@ export default function VerifyOtpPage() {
             </button>
           </form>
           <p className="mt-3 text-center text-sm">
-            <a href="/admin/login" className="text-navy-500 hover:text-navy-700">
+            <a
+              href="/admin/login"
+              className="text-navy-500 hover:text-navy-700"
+            >
               กลับหน้าเข้าสู่ระบบ
             </a>
           </p>
@@ -103,4 +111,3 @@ export default function VerifyOtpPage() {
     </div>
   );
 }
-

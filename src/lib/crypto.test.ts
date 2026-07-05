@@ -37,13 +37,13 @@ describe("crypto helpers", () => {
     it("hashes and verifies passwords successfully", async () => {
       const password = "SuperSecretPassword123!";
       const hash = await hashPassword(password);
-      
+
       expect(hash).toBeDefined();
       expect(hash).not.toBe(password);
-      
+
       const isCorrect = await verifyPassword(password, hash);
       expect(isCorrect).toBe(true);
-      
+
       const isWrong = await verifyPassword("WrongPassword", hash);
       expect(isWrong).toBe(false);
     });
@@ -53,13 +53,13 @@ describe("crypto helpers", () => {
     it("hashes and verifies short secrets successfully", async () => {
       const otp = "123456";
       const hash = await hashSecret(otp);
-      
+
       expect(hash).toBeDefined();
       expect(hash).not.toBe(otp);
-      
+
       const isCorrect = await verifySecret(otp, hash);
       expect(isCorrect).toBe(true);
-      
+
       const isWrong = await verifySecret("654321", hash);
       expect(isWrong).toBe(false);
     });

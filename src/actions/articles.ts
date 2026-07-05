@@ -21,90 +21,108 @@ interface ArticleInput {
 }
 
 export async function createArticleAction(data: ArticleInput) {
-  return runAdminAction("createArticleAction", "เกิดข้อผิดพลาดในการบันทึกข้อมูล", async () => {
-    // Check slug uniqueness
-    const existing = await prisma.article.findUnique({
-      where: { slug: data.slug },
-    });
-    if (existing) {
-      return { success: false, error: "มีบทความที่ใช้ Slug นี้อยู่แล้ว กรุณาเปลี่ยนชื่อสำหรับ URL" };
+  return runAdminAction(
+    "createArticleAction",
+    "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+    async () => {
+      // Check slug uniqueness
+      const existing = await prisma.article.findUnique({
+        where: { slug: data.slug },
+      });
+      if (existing) {
+        return {
+          success: false,
+          error: "มีบทความที่ใช้ Slug นี้อยู่แล้ว กรุณาเปลี่ยนชื่อสำหรับ URL",
+        };
+      }
+
+      const article = await prisma.article.create({
+        data: {
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.excerpt,
+          content: data.content,
+          coverImage: data.coverImage,
+          coverAlt: data.coverAlt,
+          category: data.category,
+          insurancePageId: data.insurancePageId || null,
+          seoTitle: data.seoTitle || null,
+          metaDescription: data.metaDescription || null,
+          keywords: data.keywords || null,
+          publishedAt: data.publishedAt,
+        },
+      });
+
+      revalidatePath("/admin/articles");
+      revalidatePath("/articles");
+      revalidatePath(`/articles/${article.slug}`);
+      revalidatePath("/");
+
+      return { success: true, articleId: article.id };
     }
-
-    const article = await prisma.article.create({
-      data: {
-        title: data.title,
-        slug: data.slug,
-        excerpt: data.excerpt,
-        content: data.content,
-        coverImage: data.coverImage,
-        coverAlt: data.coverAlt,
-        category: data.category,
-        insurancePageId: data.insurancePageId || null,
-        seoTitle: data.seoTitle || null,
-        metaDescription: data.metaDescription || null,
-        keywords: data.keywords || null,
-        publishedAt: data.publishedAt,
-      },
-    });
-
-    revalidatePath("/admin/articles");
-    revalidatePath("/articles");
-    revalidatePath(`/articles/${article.slug}`);
-    revalidatePath("/");
-
-    return { success: true, articleId: article.id };
-  });
+  );
 }
 
 export async function updateArticleAction(id: string, data: ArticleInput) {
-  return runAdminAction("updateArticleAction", "เกิดข้อผิดพลาดในการบันทึกข้อมูล", async () => {
-    // Check slug uniqueness on other records
-    const existing = await prisma.article.findFirst({
-      where: { slug: data.slug, NOT: { id } },
-    });
-    if (existing) {
-      return { success: false, error: "มีบทความที่ใช้ Slug นี้อยู่แล้วในระบบ" };
+  return runAdminAction(
+    "updateArticleAction",
+    "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+    async () => {
+      // Check slug uniqueness on other records
+      const existing = await prisma.article.findFirst({
+        where: { slug: data.slug, NOT: { id } },
+      });
+      if (existing) {
+        return {
+          success: false,
+          error: "มีบทความที่ใช้ Slug นี้อยู่แล้วในระบบ",
+        };
+      }
+
+      const article = await prisma.article.update({
+        where: { id },
+        data: {
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.excerpt,
+          content: data.content,
+          coverImage: data.coverImage,
+          coverAlt: data.coverAlt,
+          category: data.category,
+          insurancePageId: data.insurancePageId || null,
+          seoTitle: data.seoTitle || null,
+          metaDescription: data.metaDescription || null,
+          keywords: data.keywords || null,
+          publishedAt: data.publishedAt,
+        },
+      });
+
+      revalidatePath("/admin/articles");
+      revalidatePath(`/admin/articles/${id}`);
+      revalidatePath("/articles");
+      revalidatePath(`/articles/${article.slug}`);
+      revalidatePath("/");
+
+      return { success: true, articleId: article.id };
     }
-
-    const article = await prisma.article.update({
-      where: { id },
-      data: {
-        title: data.title,
-        slug: data.slug,
-        excerpt: data.excerpt,
-        content: data.content,
-        coverImage: data.coverImage,
-        coverAlt: data.coverAlt,
-        category: data.category,
-        insurancePageId: data.insurancePageId || null,
-        seoTitle: data.seoTitle || null,
-        metaDescription: data.metaDescription || null,
-        keywords: data.keywords || null,
-        publishedAt: data.publishedAt,
-      },
-    });
-
-    revalidatePath("/admin/articles");
-    revalidatePath(`/admin/articles/${id}`);
-    revalidatePath("/articles");
-    revalidatePath(`/articles/${article.slug}`);
-    revalidatePath("/");
-
-    return { success: true, articleId: article.id };
-  });
+  );
 }
 
 export async function deleteArticleAction(id: string) {
-  return runAdminAction("deleteArticleAction", "เกิดข้อผิดพลาดในการลบข้อมูล", async () => {
-    const article = await prisma.article.delete({
-      where: { id },
-    });
+  return runAdminAction(
+    "deleteArticleAction",
+    "เกิดข้อผิดพลาดในการลบข้อมูล",
+    async () => {
+      const article = await prisma.article.delete({
+        where: { id },
+      });
 
-    revalidatePath("/admin/articles");
-    revalidatePath("/articles");
-    revalidatePath(`/articles/${article.slug}`);
-    revalidatePath("/");
+      revalidatePath("/admin/articles");
+      revalidatePath("/articles");
+      revalidatePath(`/articles/${article.slug}`);
+      revalidatePath("/");
 
-    return { success: true };
-  });
+      return { success: true };
+    }
+  );
 }

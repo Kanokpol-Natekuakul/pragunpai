@@ -58,19 +58,19 @@ export default async function QuoteTypePage({ params, searchParams }: Props) {
     type === "car-act"
       ? "CAR_ACT"
       : type === "accident"
-      ? "ACCIDENT"
-      : type === "property"
-      ? "PROPERTY"
-      : "OTHER";
+        ? "ACCIDENT"
+        : type === "property"
+          ? "PROPERTY"
+          : "OTHER";
 
   const label =
     type === "car-act"
       ? "พ.ร.บ. & ประกันรถยนต์"
       : type === "accident"
-      ? "ประกันอุบัติเหตุ"
-      : type === "property"
-      ? "ประกันบ้าน & คอนโด"
-      : "ประกันอื่นๆ / สอบถาม";
+        ? "ประกันอุบัติเหตุ"
+        : type === "property"
+          ? "ประกันบ้าน & คอนโด"
+          : "ประกันอื่นๆ / สอบถาม";
 
   return (
     <RecaptchaProvider>
@@ -85,9 +85,12 @@ export default async function QuoteTypePage({ params, searchParams }: Props) {
 
       <section className="bg-linear-to-br from-navy-700 to-navy-900 py-12 text-white">
         <Container size="wide" className="text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">ขอใบเสนอราคา{label}</h1>
+          <h1 className="text-3xl font-bold sm:text-4xl">
+            ขอใบเสนอราคา{label}
+          </h1>
           <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-            บริการเปรียบเทียบและขอใบเสนอราคาฟรี รวดเร็ว สะดวกสบาย ปลอดภัยตามหลัก PDPA
+            บริการเปรียบเทียบและขอใบเสนอราคาฟรี รวดเร็ว สะดวกสบาย ปลอดภัยตามหลัก
+            PDPA
           </p>
         </Container>
       </section>

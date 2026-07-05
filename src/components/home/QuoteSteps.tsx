@@ -27,11 +27,16 @@ export function QuoteSteps() {
         />
         <ol className="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, i) => (
-            <li key={i} className="relative rounded-xl border border-navy-100 bg-navy-50 p-6">
+            <li
+              key={i}
+              className="relative rounded-xl border border-navy-100 bg-navy-50 p-6"
+            >
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-lg font-bold text-white">
                 {i + 1}
               </span>
-              <p className="mt-4 text-sm leading-relaxed text-navy-700">{step}</p>
+              <p className="mt-4 text-sm leading-relaxed text-navy-700">
+                {step}
+              </p>
             </li>
           ))}
         </ol>
@@ -40,7 +45,12 @@ export function QuoteSteps() {
             เริ่มขอใบเสนอราคา
           </Button>
         </div>
-        <JsonLd data={howToJsonLd({ name: "วิธีขอใบเสนอราคาประกันภัยผ่าน Pragunpai", steps })} />
+        <JsonLd
+          data={howToJsonLd({
+            name: "วิธีขอใบเสนอราคาประกันภัยผ่าน Pragunpai",
+            steps,
+          })}
+        />
       </Container>
     </section>
   );

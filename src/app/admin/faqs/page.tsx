@@ -55,9 +55,12 @@ export default async function FaqAdminPage() {
   return (
     <Container size="wide" className="py-4">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy-800">จัดการคำถามที่พบบ่อย (FAQ)</h1>
+        <h1 className="text-2xl font-bold text-navy-800">
+          จัดการคำถามที่พบบ่อย (FAQ)
+        </h1>
         <p className="mt-1 text-sm font-medium text-navy-500">
-          แก้ชื่อหัวข้อ คำถาม คำตอบ ลำดับการแสดงผล และลบรายการ FAQ ที่แสดงบนหน้าเว็บหลัก
+          แก้ชื่อหัวข้อ คำถาม คำตอบ ลำดับการแสดงผล และลบรายการ FAQ
+          ที่แสดงบนหน้าเว็บหลัก
         </p>
       </div>
 

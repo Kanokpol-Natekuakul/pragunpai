@@ -37,8 +37,12 @@ export default function AdminLayout({
             P
           </span>
           <div className="flex flex-col">
-            <span className="font-bold tracking-wide leading-none">{siteConfig.name}</span>
-            <span className="text-[10px] text-navy-300 font-semibold tracking-wider uppercase mt-0.5">Admin Control</span>
+            <span className="font-bold tracking-wide leading-none">
+              {siteConfig.name}
+            </span>
+            <span className="text-[10px] text-navy-300 font-semibold tracking-wider uppercase mt-0.5">
+              Admin Control
+            </span>
           </div>
         </div>
 
@@ -85,15 +89,23 @@ export default function AdminLayout({
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-600 text-white font-bold text-sm">
               P
             </span>
-            <span className="font-bold text-navy-800">{siteConfig.name} Admin</span>
+            <span className="font-bold text-navy-800">
+              {siteConfig.name} Admin
+            </span>
           </a>
-          
+
           <div className="flex items-center gap-4">
-            <a href="/admin/account" className="text-sm font-medium text-navy-600">
+            <a
+              href="/admin/account"
+              className="text-sm font-medium text-navy-600"
+            >
               บัญชี
             </a>
             <form action="/api/auth/logout" method="POST">
-              <button type="submit" className="text-sm font-medium text-red-600 cursor-pointer">
+              <button
+                type="submit"
+                className="text-sm font-medium text-red-600 cursor-pointer"
+              >
                 ออก
               </button>
             </form>

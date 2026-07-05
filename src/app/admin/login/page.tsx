@@ -66,7 +66,10 @@ export default function AdminLoginPage() {
           <form id="login-step1" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-navy-700">
+                <label
+                  htmlFor="email"
+                  className="mb-1.5 block text-sm font-medium text-navy-700"
+                >
                   อีเมล
                 </label>
                 <input
@@ -80,7 +83,10 @@ export default function AdminLoginPage() {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-navy-700">
+                <label
+                  htmlFor="password"
+                  className="mb-1.5 block text-sm font-medium text-navy-700"
+                >
                   รหัสผ่าน
                 </label>
                 <input
@@ -94,7 +100,13 @@ export default function AdminLoginPage() {
                   className="w-full rounded-lg border border-navy-200 bg-white px-4 py-2.5 text-sm text-navy-800 placeholder:text-navy-300 focus:border-navy-400 focus:outline-none focus:ring-2 focus:ring-navy-100"
                 />
               </div>
-              <Button type="submit" variant="primary" size="md" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                className="w-full"
+                disabled={loading}
+              >
                 {loading ? "กำลังตรวจสอบ..." : "เข้าสู่ระบบ"}
               </Button>
             </div>
@@ -102,7 +114,10 @@ export default function AdminLoginPage() {
 
           {/* Forgot password link */}
           <p className="mt-4 text-center text-sm">
-            <a href="/admin/forgot-password" className="text-navy-500 hover:text-navy-700">
+            <a
+              href="/admin/forgot-password"
+              className="text-navy-500 hover:text-navy-700"
+            >
               ลืมรหัสผ่าน?
             </a>
           </p>
@@ -111,4 +126,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-

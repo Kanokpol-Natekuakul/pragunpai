@@ -49,10 +49,17 @@ export function ServiceHighlights() {
         />
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {highlights.map((h) => (
-            <div key={h.title} className="rounded-xl border border-navy-100 bg-white p-6 shadow-sm">
+            <div
+              key={h.title}
+              className="rounded-xl border border-navy-100 bg-white p-6 shadow-sm"
+            >
               <div className="text-3xl">{h.icon}</div>
-              <h3 className="mt-4 text-lg font-bold text-navy-800">{h.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-navy-500">{h.description}</p>
+              <h3 className="mt-4 text-lg font-bold text-navy-800">
+                {h.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-navy-500">
+                {h.description}
+              </p>
             </div>
           ))}
         </div>

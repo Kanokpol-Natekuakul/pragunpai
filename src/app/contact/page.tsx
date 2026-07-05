@@ -55,7 +55,8 @@ export default async function ContactPage() {
           <Container size="wide" className="text-center">
             <h1 className="text-3xl font-bold sm:text-4xl">ติดต่อเรา</h1>
             <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-              เลือกช่องทางที่สะดวก เราพร้อมให้คำปรึกษาและส่งใบเสนอราคาประกันภัยให้คุณ
+              เลือกช่องทางที่สะดวก
+              เราพร้อมให้คำปรึกษาและส่งใบเสนอราคาประกันภัยให้คุณ
             </p>
           </Container>
         </section>
@@ -69,11 +70,15 @@ export default async function ContactPage() {
             {contactMethods.map((m) => (
               <Card key={m.label} className="p-8 text-center">
                 <div className="text-5xl">{m.icon}</div>
-                <h2 className="mt-4 text-lg font-bold text-navy-800">{m.label}</h2>
+                <h2 className="mt-4 text-lg font-bold text-navy-800">
+                  {m.label}
+                </h2>
                 <a
                   href={m.href}
                   className="mt-2 block text-lg font-semibold text-orange-500 hover:text-orange-600"
-                  {...(m.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  {...(m.href.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                 >
                   {m.value}
                 </a>
@@ -84,7 +89,9 @@ export default async function ContactPage() {
 
           {/* Service area */}
           <div className="mt-12 rounded-xl border border-navy-100 bg-navy-50 p-8 text-center">
-            <h2 className="text-lg font-bold text-navy-800">พื้นที่ให้บริการ</h2>
+            <h2 className="text-lg font-bold text-navy-800">
+              พื้นที่ให้บริการ
+            </h2>
             <p className="mt-2 text-navy-600">
               Pragunpai ให้บริการทั่วประเทศไทย ไม่ว่าคุณจะอยู่จังหวัดใด
               ก็สามารถขอคำปรึกษาและใบเสนอราคาได้

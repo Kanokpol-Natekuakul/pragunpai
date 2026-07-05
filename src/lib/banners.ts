@@ -15,7 +15,11 @@ export const bannerPages = [
   { path: "/", label: "หน้าแรก", promos: false },
   { path: "/car-act", label: "พ.ร.บ. รถยนต์", promos: true },
   { path: "/accident-insurance", label: "ประกันอุบัติเหตุ", promos: true },
-  { path: "/property-insurance", label: "ประกันบ้าน-คอนโด-หอพัก", promos: true },
+  {
+    path: "/property-insurance",
+    label: "ประกันบ้าน-คอนโด-หอพัก",
+    promos: true,
+  },
   { path: "/articles", label: "บทความ", promos: true },
   { path: "/about", label: "เกี่ยวกับเรา", promos: true },
   { path: "/contact", label: "ติดต่อเรา", promos: true },
@@ -37,7 +41,10 @@ function sanitizeConfig(value: unknown): PageBannerConfig {
   }
   if (value && typeof value === "object") {
     const v = value as { slides?: unknown; promos?: unknown };
-    return { slides: sanitizeSlides(v.slides), promos: sanitizeSlides(v.promos) };
+    return {
+      slides: sanitizeSlides(v.slides),
+      promos: sanitizeSlides(v.promos),
+    };
   }
   return emptyConfig();
 }

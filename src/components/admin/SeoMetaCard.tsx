@@ -17,10 +17,15 @@ interface SeoMetaCardProps {
 
 export function SeoMetaCard({ pageKey, label, initialData }: SeoMetaCardProps) {
   const [seoTitle, setSeoTitle] = useState(initialData?.seoTitle || "");
-  const [metaDescription, setMetaDescription] = useState(initialData?.metaDescription || "");
+  const [metaDescription, setMetaDescription] = useState(
+    initialData?.metaDescription || ""
+  );
   const [keywords, setKeywords] = useState(initialData?.keywords || "");
   const [isPending, startTransition] = useTransition();
-  const [status, setStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [status, setStatus] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const handleSave = () => {
     setStatus(null);
@@ -44,7 +49,10 @@ export function SeoMetaCard({ pageKey, label, initialData }: SeoMetaCardProps) {
         setStatus({ type: "success", text: "บันทึกการตั้งค่า SEO สำเร็จ" });
         setTimeout(() => setStatus(null), 3000);
       } else {
-        setStatus({ type: "error", text: res.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล" });
+        setStatus({
+          type: "error",
+          text: res.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        });
       }
     });
   };
@@ -53,9 +61,12 @@ export function SeoMetaCard({ pageKey, label, initialData }: SeoMetaCardProps) {
     <Card className="p-6 bg-white border border-gray-200 space-y-4">
       <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-2">
         <h2 className="text-base font-bold text-navy-800">
-          📍 {label} <span className="text-xs text-navy-400 font-semibold">({pageKey})</span>
+          📍 {label}{" "}
+          <span className="text-xs text-navy-400 font-semibold">
+            ({pageKey})
+          </span>
         </h2>
-        
+
         {status && (
           <span
             className={`text-xs font-semibold px-2 py-0.5 rounded ${
@@ -98,7 +109,8 @@ export function SeoMetaCard({ pageKey, label, initialData }: SeoMetaCardProps) {
 
         <div className="sm:col-span-2">
           <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
-            Meta Description (คำอธิบายสั้นๆ สำหรับแสดงใน Google Search) <span className="text-red-500">*</span>
+            Meta Description (คำอธิบายสั้นๆ สำหรับแสดงใน Google Search){" "}
+            <span className="text-red-500">*</span>
           </label>
           <textarea
             rows={2}

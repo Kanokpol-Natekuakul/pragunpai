@@ -21,7 +21,7 @@ import { prisma } from "@/lib/prisma";
 // ---------------------------------------------------------------------------
 export async function actionChangePassword(
   _prevState: unknown,
-  formData: FormData,
+  formData: FormData
 ) {
   try {
     const session = await requireAuth();
@@ -39,7 +39,11 @@ export async function actionChangePassword(
       return { error: "รหัสผ่านใหม่ไม่ตรงกัน" };
     }
 
-    const result = await changePassword(session.sub, currentPassword, newPassword);
+    const result = await changePassword(
+      session.sub,
+      currentPassword,
+      newPassword
+    );
     if (!result.ok) return { error: result.error };
     return { success: true };
   } catch (e) {
@@ -53,7 +57,7 @@ export async function actionChangePassword(
 // ---------------------------------------------------------------------------
 export async function actionUpdateProfile(
   _prevState: unknown,
-  formData: FormData,
+  formData: FormData
 ) {
   try {
     const session = await requireAuth();

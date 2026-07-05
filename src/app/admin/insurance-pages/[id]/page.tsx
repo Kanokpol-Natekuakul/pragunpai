@@ -47,8 +47,12 @@ export default async function EditInsurancePageAdmin({ params }: Props) {
       </div>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-navy-800">จัดการข้อมูล {page.name}</h1>
-        <p className="text-sm text-navy-500 font-medium">แก้ไขโครงสร้างเนื้อหา ลิงก์ PDF และตารางเปรียบเทียบในหน้าแผนประกัน</p>
+        <h1 className="text-2xl font-bold text-navy-800">
+          จัดการข้อมูล {page.name}
+        </h1>
+        <p className="text-sm text-navy-500 font-medium">
+          แก้ไขโครงสร้างเนื้อหา ลิงก์ PDF และตารางเปรียบเทียบในหน้าแผนประกัน
+        </p>
       </div>
 
       <InsurancePageEditor page={page} />

@@ -50,7 +50,9 @@ export default async function EditArticleAdminPage({ params }: Props) {
         <h1 className="text-2xl font-bold text-navy-800">
           {id === "new" ? "เขียนบทความใหม่" : `แก้ไขบทความ: ${article?.title}`}
         </h1>
-        <p className="text-sm text-navy-500 font-medium">เขียน ปรับเปลี่ยนโครงสร้างเนื้อหา SEO สำหรับระบบบล็อกความรู้</p>
+        <p className="text-sm text-navy-500 font-medium">
+          เขียน ปรับเปลี่ยนโครงสร้างเนื้อหา SEO สำหรับระบบบล็อกความรู้
+        </p>
       </div>
 
       <ArticleEditor article={article} insurancePages={insurancePages} />

@@ -9,17 +9,19 @@
 เนื่องจากระบบใช้ PostgreSQL (เช่น Neon หรือ Supabase) เราสามารถใช้โปรแกรมเครื่องมือมาตรฐานอย่าง `pg_dump` ในการสำรองข้อมูลโครงสร้างและตัวข้อมูลทั้งหมดได้
 
 ### คำสั่งสำรองข้อมูล (Backup Command)
+
 รันคำสั่งด้านล่างบน Terminal/Command Line (แทนค่า URL ด้วย `DATABASE_URL` จริงจากไฟล์ `.env`):
 
 ```bash
 pg_dump "postgresql://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require" -F c -b -v -f pragunpai_db_backup.dump
 ```
 
-*คำอธิบาย Option:*
-* `-F c`: กำหนดรูปแบบไฟล์เป็น Custom format (บีบอัดขนาดไฟล์และเอื้อต่อการกู้คืน)
-* `-b`: สำรองข้อมูลประเภท Large Objects ด้วย
-* `-v`: แสดงผลขั้นตอนการทำงานแบบละเอียด (Verbose)
-* `-f`: ชื่อไฟล์ปลายทางที่ได้
+_คำอธิบาย Option:_
+
+- `-F c`: กำหนดรูปแบบไฟล์เป็น Custom format (บีบอัดขนาดไฟล์และเอื้อต่อการกู้คืน)
+- `-b`: สำรองข้อมูลประเภท Large Objects ด้วย
+- `-v`: แสดงผลขั้นตอนการทำงานแบบละเอียด (Verbose)
+- `-f`: ชื่อไฟล์ปลายทางที่ได้
 
 ---
 
@@ -28,11 +30,12 @@ pg_dump "postgresql://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require" -F c -b -v
 ในกรณีที่ต้องการกู้คืนระบบกลับไปยังฐานข้อมูลใหม่ หรือกู้คืนค่าย้อนหลัง ให้ใช้โปรแกรม `pg_restore`
 
 ### คำสั่งกู้คืนข้อมูล (Restore Command)
+
 ```bash
 pg_restore -d "postgresql://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require" -v pragunpai_db_backup.dump
 ```
 
-*หมายเหตุ: หากต้องการล้างฐานข้อมูลปลายทางก่อนเขียนทับ ให้ใส่ Option `--clean` เพิ่มเติมได้*
+_หมายเหตุ: หากต้องการล้างฐานข้อมูลปลายทางก่อนเขียนทับ ให้ใส่ Option `--clean` เพิ่มเติมได้_
 
 ---
 
@@ -42,19 +45,23 @@ pg_restore -d "postgresql://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require" -v p
 `public/uploads/`
 
 ### ขั้นตอนการสำรองไฟล์ (Local Development / VPS Storage)
+
 ให้สำรองโฟลเดอร์นี้เก็บไว้เป็นระยะๆ โดยการจัดทำไฟล์ Zip หรือใช้คำสั่ง Sync ไปยังเครื่องมือภายนอก:
 
 **สร้างไฟล์บีบอัด (Zip) บน Windows (PowerShell):**
+
 ```powershell
 Compress-Archive -Path .\public\uploads\* -DestinationPath .\backups\pragunpai_uploads_backup.zip
 ```
 
 **สร้างไฟล์บีบอัดบน Linux (VPS):**
+
 ```bash
 tar -czvf pragunpai_uploads_backup.tar.gz public/uploads/
 ```
 
 ### การกู้คืนไฟล์แนบ (Restore Attachments)
+
 เพียงคลายไฟล์บีบอัด (Unzip / Un-tar) กลับลงไปที่โฟลเดอร์ `public/uploads` ของเซิร์ฟเวอร์ปลายทาง
 
 ---

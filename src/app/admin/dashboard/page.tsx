@@ -12,23 +12,18 @@ export default async function DashboardPage() {
   const session = await requireAuth().catch(() => redirect("/admin/login"));
 
   // Fetch summary stats for the dashboard.
-  const [
-    newLeads,
-    totalLeads,
-    articles,
-    insurancePages,
-    recentLeads,
-  ] = await Promise.all([
-    prisma.lead.count({ where: { status: "NEW" } }),
-    prisma.lead.count(),
-    prisma.article.count(),
-    prisma.insurancePage.count(),
-    prisma.lead.findMany({
-      take: 5,
-      orderBy: { createdAt: "desc" },
-      include: { attachments: true },
-    }),
-  ]);
+  const [newLeads, totalLeads, articles, insurancePages, recentLeads] =
+    await Promise.all([
+      prisma.lead.count({ where: { status: "NEW" } }),
+      prisma.lead.count(),
+      prisma.article.count(),
+      prisma.insurancePage.count(),
+      prisma.lead.findMany({
+        take: 5,
+        orderBy: { createdAt: "desc" },
+        include: { attachments: true },
+      }),
+    ]);
 
   const stats = [
     { label: "Lead ใหม่", value: newLeads, tone: "text-orange-500" },
@@ -58,7 +53,10 @@ export default async function DashboardPage() {
       <div className="mt-8">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-navy-800">Lead ล่าสุด</h2>
-          <Link href="/admin/leads" className="text-sm text-navy-600 hover:text-navy-800">
+          <Link
+            href="/admin/leads"
+            className="text-sm text-navy-600 hover:text-navy-800"
+          >
             ดูทั้งหมด →
           </Link>
         </div>
@@ -84,7 +82,10 @@ export default async function DashboardPage() {
                       {formatThaiDate(lead.createdAt)}
                     </td>
                     <td className="px-4 py-3 font-medium text-navy-800">
-                      <Link href={`/admin/leads/${lead.id}`} className="hover:underline">
+                      <Link
+                        href={`/admin/leads/${lead.id}`}
+                        className="hover:underline"
+                      >
                         {lead.name}
                       </Link>
                     </td>

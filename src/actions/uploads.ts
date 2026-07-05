@@ -8,25 +8,33 @@ type UploadActionResult = { success: boolean; url?: string; error?: string };
 
 async function handleUpload(
   formData: FormData,
-  allowedMimeTypes: readonly string[],
+  allowedMimeTypes: readonly string[]
 ): Promise<UploadActionResult> {
-  return runAdminAction("uploadAction", "เกิดข้อผิดพลาดในการอัปโหลดไฟล์", async () => {
-    const file = formData.get("file");
-    if (!(file instanceof File) || file.size === 0) {
-      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
-    }
+  return runAdminAction(
+    "uploadAction",
+    "เกิดข้อผิดพลาดในการอัปโหลดไฟล์",
+    async () => {
+      const file = formData.get("file");
+      if (!(file instanceof File) || file.size === 0) {
+        return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
+      }
 
-    const result = await uploadAttachment(file, { allowedMimeTypes });
-    return { success: true, url: result.url };
-  });
+      const result = await uploadAttachment(file, { allowedMimeTypes });
+      return { success: true, url: result.url };
+    }
+  );
 }
 
 /** Admin upload for images (article covers, banners, logos, plan images). */
-export async function uploadImageAction(formData: FormData): Promise<UploadActionResult> {
+export async function uploadImageAction(
+  formData: FormData
+): Promise<UploadActionResult> {
   return handleUpload(formData, IMAGE_MIME_TYPES);
 }
 
 /** Admin upload for PDF brochures. */
-export async function uploadPdfAction(formData: FormData): Promise<UploadActionResult> {
+export async function uploadPdfAction(
+  formData: FormData
+): Promise<UploadActionResult> {
   return handleUpload(formData, PDF_MIME_TYPES);
 }

@@ -36,13 +36,15 @@ function detailsToHtml(details?: Record<string, unknown> | null): string {
     .map(
       ([k, v]) =>
         `<tr><td style="padding:6px 12px;border:1px solid #e5e7eb;font-weight:600;background:#f9fafb;">${escapeHtml(
-          k,
+          k
         )}</td><td style="padding:6px 12px;border:1px solid #e5e7eb;">${escapeHtml(
-          String(v),
-        )}</td></tr>`,
+          String(v)
+        )}</td></tr>`
     )
     .join("");
-  return rows ? `<table style="border-collapse:collapse;font-size:14px;margin:8px 0;">${rows}</table>` : "";
+  return rows
+    ? `<table style="border-collapse:collapse;font-size:14px;margin:8px 0;">${rows}</table>`
+    : "";
 }
 
 function escapeHtml(s: string): string {
@@ -54,16 +56,20 @@ function escapeHtml(s: string): string {
 }
 
 export async function sendLeadAlertEmail(
-  lead: LeadAlertInput,
+  lead: LeadAlertInput
 ): Promise<{ ok: boolean; error?: string }> {
   const resend = getClient();
   if (!resend) {
-    console.info("[email] RESEND_API_KEY not set — skipping lead alert email (dev mode).");
+    console.info(
+      "[email] RESEND_API_KEY not set — skipping lead alert email (dev mode)."
+    );
     return { ok: false, error: "RESEND_API_KEY missing" };
   }
 
   const to = process.env.LEAD_ALERT_TO ?? siteConfig.email;
-  const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <no-reply@${siteConfig.domain}>`;
+  const from =
+    process.env.EMAIL_FROM ??
+    `${siteConfig.name} <no-reply@${siteConfig.domain}>`;
   const subject = `[Lead ใหม่] ${leadFormTypeLabel[lead.formType] ?? lead.formType} — ${lead.name}`;
 
   const html = `
@@ -99,15 +105,20 @@ export async function sendLeadAlertEmail(
 export async function sendOtpEmail(
   to: string,
   name: string,
-  code: string,
+  code: string
 ): Promise<{ ok: boolean; error?: string }> {
   const resend = getClient();
   if (!resend) {
-    console.info("[email] RESEND_API_KEY not set — skipping OTP email (dev mode). OTP is:", code);
+    console.info(
+      "[email] RESEND_API_KEY not set — skipping OTP email (dev mode). OTP is:",
+      code
+    );
     return { ok: false, error: "RESEND_API_KEY missing" };
   }
 
-  const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <no-reply@${siteConfig.domain}>`;
+  const from =
+    process.env.EMAIL_FROM ??
+    `${siteConfig.name} <no-reply@${siteConfig.domain}>`;
   const html = `
     <div style="font-family:system-ui,sans-serif;color:#182841;max-width:500px;">
       <h2 style="color:#283e6c;">รหัสยืนยันตัวตน (OTP) — ${siteConfig.name}</h2>
@@ -139,15 +150,20 @@ export async function sendOtpEmail(
 export async function sendPasswordResetEmail(
   to: string,
   name: string,
-  resetUrl: string,
+  resetUrl: string
 ): Promise<{ ok: boolean; error?: string }> {
   const resend = getClient();
   if (!resend) {
-    console.info("[email] RESEND_API_KEY not set — skipping reset email (dev). URL:", resetUrl);
+    console.info(
+      "[email] RESEND_API_KEY not set — skipping reset email (dev). URL:",
+      resetUrl
+    );
     return { ok: false, error: "RESEND_API_KEY missing" };
   }
 
-  const from = process.env.EMAIL_FROM ?? `${siteConfig.name} <no-reply@${siteConfig.domain}>`;
+  const from =
+    process.env.EMAIL_FROM ??
+    `${siteConfig.name} <no-reply@${siteConfig.domain}>`;
   const html = `
     <div style="font-family:system-ui,sans-serif;color:#182841;max-width:500px;">
       <h2 style="color:#283e6c;">ตั้งรหัสผ่านใหม่ — ${siteConfig.name}</h2>

@@ -5,11 +5,7 @@
  */
 type JsonLdObject = Record<string, unknown>;
 
-export function JsonLd({
-  data,
-}: {
-  data: JsonLdObject | JsonLdObject[];
-}) {
+export function JsonLd({ data }: { data: JsonLdObject | JsonLdObject[] }) {
   const json = Array.isArray(data) ? data : [data];
   return (
     <>

@@ -18,7 +18,7 @@ export type UploadResult = {
  */
 export async function uploadAttachment(
   file: File,
-  opts?: { allowedMimeTypes?: readonly string[] },
+  opts?: { allowedMimeTypes?: readonly string[] }
 ): Promise<UploadResult> {
   const validation = validateUpload(file, opts);
   if (!validation.ok) {

@@ -29,33 +29,55 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
           answer: item.answer,
         })),
       })),
-    [sections],
+    [sections]
   );
 
-  const [editorSections, setEditorSections] = useState<EditorSection[]>(initialSections);
-  const [activeCategory, setActiveCategory] = useState<FaqCategory>(sections[0]?.category ?? "general");
+  const [editorSections, setEditorSections] =
+    useState<EditorSection[]>(initialSections);
+  const [activeCategory, setActiveCategory] = useState<FaqCategory>(
+    sections[0]?.category ?? "general"
+  );
   const [isPending, startTransition] = useTransition();
-  const [status, setStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [status, setStatus] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  const activeSection = editorSections.find((section) => section.category === activeCategory);
+  const activeSection = editorSections.find(
+    (section) => section.category === activeCategory
+  );
 
-  const updateSection = (category: FaqCategory, updater: (section: EditorSection) => EditorSection) => {
+  const updateSection = (
+    category: FaqCategory,
+    updater: (section: EditorSection) => EditorSection
+  ) => {
     setEditorSections((current) =>
-      current.map((section) => (section.category === category ? updater(section) : section)),
+      current.map((section) =>
+        section.category === category ? updater(section) : section
+      )
     );
   };
 
   const addItem = () => {
     updateSection(activeCategory, (section) => ({
       ...section,
-      items: [...section.items, { clientId: `new-${Date.now()}`, question: "", answer: "" }],
+      items: [
+        ...section.items,
+        { clientId: `new-${Date.now()}`, question: "", answer: "" },
+      ],
     }));
   };
 
-  const updateItem = (clientId: string, field: "question" | "answer", value: string) => {
+  const updateItem = (
+    clientId: string,
+    field: "question" | "answer",
+    value: string
+  ) => {
     updateSection(activeCategory, (section) => ({
       ...section,
-      items: section.items.map((item) => (item.clientId === clientId ? { ...item, [field]: value } : item)),
+      items: section.items.map((item) =>
+        item.clientId === clientId ? { ...item, [field]: value } : item
+      ),
     }));
   };
 
@@ -68,9 +90,12 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
 
   const moveItem = (clientId: string, direction: -1 | 1) => {
     updateSection(activeCategory, (section) => {
-      const index = section.items.findIndex((item) => item.clientId === clientId);
+      const index = section.items.findIndex(
+        (item) => item.clientId === clientId
+      );
       const nextIndex = index + direction;
-      if (index < 0 || nextIndex < 0 || nextIndex >= section.items.length) return section;
+      if (index < 0 || nextIndex < 0 || nextIndex >= section.items.length)
+        return section;
 
       const items = [...section.items];
       const [item] = items.splice(index, 1);
@@ -97,7 +122,10 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
         setStatus({ type: "success", text: "บันทึก FAQ สำเร็จ" });
         setTimeout(() => setStatus(null), 3000);
       } else {
-        setStatus({ type: "error", text: response.error || "บันทึก FAQ ไม่สำเร็จ" });
+        setStatus({
+          type: "error",
+          text: response.error || "บันทึก FAQ ไม่สำเร็จ",
+        });
       }
     });
   };
@@ -131,8 +159,12 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
       <Card className="bg-white p-6">
         <div className="flex flex-col gap-4 border-b border-gray-100 pb-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h2 className="text-lg font-bold text-navy-800">{activeSection.label}</h2>
-            <p className="mt-1 text-sm text-navy-500">แสดงบนหน้า {activeSection.path}</p>
+            <h2 className="text-lg font-bold text-navy-800">
+              {activeSection.label}
+            </h2>
+            <p className="mt-1 text-sm text-navy-500">
+              แสดงบนหน้า {activeSection.path}
+            </p>
           </div>
           <div className="flex items-center gap-3">
             {status && (
@@ -146,19 +178,29 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
                 {status.text}
               </span>
             )}
-            <Button onClick={saveActiveSection} disabled={isPending} variant="secondary" className="cursor-pointer">
+            <Button
+              onClick={saveActiveSection}
+              disabled={isPending}
+              variant="secondary"
+              className="cursor-pointer"
+            >
               {isPending ? "กำลังบันทึก..." : "บันทึก FAQ"}
             </Button>
           </div>
         </div>
 
         <div className="mt-5">
-          <label className="mb-1 block text-xs font-bold uppercase text-navy-600">ชื่อหัวข้อ FAQ</label>
+          <label className="mb-1 block text-xs font-bold uppercase text-navy-600">
+            ชื่อหัวข้อ FAQ
+          </label>
           <input
             type="text"
             value={activeSection.title}
             onChange={(event) =>
-              updateSection(activeCategory, (section) => ({ ...section, title: event.target.value }))
+              updateSection(activeCategory, (section) => ({
+                ...section,
+                title: event.target.value,
+              }))
             }
             className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm font-semibold text-navy-800 focus:border-orange-400 focus:outline-none"
           />
@@ -166,9 +208,14 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
 
         <div className="mt-6 space-y-4">
           {activeSection.items.map((item, index) => (
-            <div key={item.clientId} className="rounded-lg border border-navy-100 bg-navy-50/40 p-4">
+            <div
+              key={item.clientId}
+              className="rounded-lg border border-navy-100 bg-navy-50/40 p-4"
+            >
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-sm font-bold text-navy-700">ข้อที่ {index + 1}</span>
+                <span className="text-sm font-bold text-navy-700">
+                  ข้อที่ {index + 1}
+                </span>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -198,20 +245,28 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase text-navy-600">คำถาม</label>
+                  <label className="mb-1 block text-xs font-bold uppercase text-navy-600">
+                    คำถาม
+                  </label>
                   <input
                     type="text"
                     value={item.question}
-                    onChange={(event) => updateItem(item.clientId, "question", event.target.value)}
+                    onChange={(event) =>
+                      updateItem(item.clientId, "question", event.target.value)
+                    }
                     className="w-full rounded-lg border border-navy-200 bg-white px-3 py-2 text-sm text-navy-800 focus:border-orange-400 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-bold uppercase text-navy-600">คำตอบ</label>
+                  <label className="mb-1 block text-xs font-bold uppercase text-navy-600">
+                    คำตอบ
+                  </label>
                   <textarea
                     rows={3}
                     value={item.answer}
-                    onChange={(event) => updateItem(item.clientId, "answer", event.target.value)}
+                    onChange={(event) =>
+                      updateItem(item.clientId, "answer", event.target.value)
+                    }
                     className="w-full rounded-lg border border-navy-200 bg-white px-3 py-2 text-sm text-navy-800 focus:border-orange-400 focus:outline-none"
                   />
                 </div>
@@ -221,10 +276,19 @@ export function FaqEditor({ sections }: { sections: FaqSectionView[] }) {
         </div>
 
         <div className="mt-5 flex justify-between border-t border-gray-100 pt-5">
-          <Button onClick={addItem} variant="secondary" className="cursor-pointer">
+          <Button
+            onClick={addItem}
+            variant="secondary"
+            className="cursor-pointer"
+          >
             เพิ่มคำถาม
           </Button>
-          <Button onClick={saveActiveSection} disabled={isPending} variant="accent" className="cursor-pointer">
+          <Button
+            onClick={saveActiveSection}
+            disabled={isPending}
+            variant="accent"
+            className="cursor-pointer"
+          >
             {isPending ? "กำลังบันทึก..." : "บันทึกการเปลี่ยนแปลง"}
           </Button>
         </div>

@@ -14,7 +14,8 @@ import type { ReactNode } from "react";
  *   บรรทัดว่าง        → paragraph break
  */
 
-const INLINE_PATTERN = /(\*\*[^*]+\*\*|\[[^\]]+\]\((?:https?:\/\/|\/)[^)\s]+\))/g;
+const INLINE_PATTERN =
+  /(\*\*[^*]+\*\*|\[[^\]]+\]\((?:https?:\/\/|\/)[^)\s]+\))/g;
 
 function renderInline(text: string): ReactNode[] {
   return text.split(INLINE_PATTERN).map((part, i) => {
@@ -28,7 +29,9 @@ function renderInline(text: string): ReactNode[] {
         <a
           key={i}
           href={link[2]}
-          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+          {...(external
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {})}
         >
           {link[1]}
         </a>

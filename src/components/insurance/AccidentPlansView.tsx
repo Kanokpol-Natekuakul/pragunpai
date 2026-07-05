@@ -18,7 +18,12 @@ interface AccidentPlansViewProps {
   comparisonPlans: PlanRow[];
 }
 
-export function AccidentPlansView({ viewMode, images, planNames: customPlanNames, comparisonPlans }: AccidentPlansViewProps) {
+export function AccidentPlansView({
+  viewMode,
+  images,
+  planNames: customPlanNames,
+  comparisonPlans,
+}: AccidentPlansViewProps) {
   const [activeTab, setActiveTab] = useState<"images" | "table">(
     viewMode === "table" ? "table" : "images"
   );
@@ -27,12 +32,25 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
   // If viewMode is "table" only or "images" only, we don't show tabs. We just show the content directly.
   const showTabs = viewMode === "both";
 
-  const planNames = customPlanNames && customPlanNames.length === 3 ? customPlanNames : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
-  const planColors = ["border-navy-200", "border-orange-400 ring-2 ring-orange-400/20", "border-navy-800"];
+  const planNames =
+    customPlanNames && customPlanNames.length === 3
+      ? customPlanNames
+      : ["แผนเริ่มต้น", "แผนแนะนำ", "แผนสูงสุด"];
+  const planColors = [
+    "border-navy-200",
+    "border-orange-400 ring-2 ring-orange-400/20",
+    "border-navy-800",
+  ];
   const planBadges = [
     { label: "ประหยัด", style: "bg-navy-50 text-navy-700 border-navy-100" },
-    { label: "คุ้มค่าที่สุด", style: "bg-orange-50 text-orange-700 border-orange-200" },
-    { label: "คุ้มครองสูงสุด", style: "bg-navy-900 text-white border-navy-950" },
+    {
+      label: "คุ้มค่าที่สุด",
+      style: "bg-orange-50 text-orange-700 border-orange-200",
+    },
+    {
+      label: "คุ้มครองสูงสุด",
+      style: "bg-navy-900 text-white border-navy-950",
+    },
   ];
 
   // Map and filter active plans that have non-empty image URLs
@@ -54,8 +72,8 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
     activePlans.length === 1
       ? "grid-cols-1 max-w-sm mx-auto"
       : activePlans.length === 2
-      ? "grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto"
-      : "grid-cols-1 md:grid-cols-3";
+        ? "grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto"
+        : "grid-cols-1 md:grid-cols-3";
 
   return (
     <div className="space-y-8">
@@ -93,12 +111,21 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
           {activePlans.length === 0 ? (
             <div className="text-center py-12 px-6 bg-white border border-gray-150 rounded-xl space-y-4 shadow-sm">
               <span className="text-4xl">📋</span>
-              <h3 className="text-base font-bold text-navy-800">ขณะนี้อยู่ระหว่างปรับปรุงรูปภาพแผนความคุ้มครอง</h3>
+              <h3 className="text-base font-bold text-navy-800">
+                ขณะนี้อยู่ระหว่างปรับปรุงรูปภาพแผนความคุ้มครอง
+              </h3>
               <p className="text-sm text-navy-500 max-w-md mx-auto leading-relaxed">
-                ท่านสามารถกดดูรายละเอียดตารางความคุ้มครองได้ที่แท็บ <strong>&ldquo;ตารางเปรียบเทียบข้อมูล&rdquo;</strong> ด้านบน หรือขอใบเสนอราคาโดยตรงเพื่อรับคำแนะนำการเลือกแผนที่เหมาะกับท่าน
+                ท่านสามารถกดดูรายละเอียดตารางความคุ้มครองได้ที่แท็บ{" "}
+                <strong>&ldquo;ตารางเปรียบเทียบข้อมูล&rdquo;</strong> ด้านบน
+                หรือขอใบเสนอราคาโดยตรงเพื่อรับคำแนะนำการเลือกแผนที่เหมาะกับท่าน
               </p>
               <div className="pt-2">
-                <Button href="/quote/accident" variant="accent" size="sm" className="shadow-sm">
+                <Button
+                  href="/quote/accident"
+                  variant="accent"
+                  size="sm"
+                  className="shadow-sm"
+                >
                   ขอใบเสนอราคาด่วน
                 </Button>
               </div>
@@ -106,7 +133,8 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
           ) : (
             <>
               <p className="text-center text-xs text-navy-500 font-medium">
-                💡 คลิกที่รูปภาพโบรชัวร์ด้านล่างเพื่อขยายดูรายละเอียดความคุ้มครองแบบเต็มจอ
+                💡
+                คลิกที่รูปภาพโบรชัวร์ด้านล่างเพื่อขยายดูรายละเอียดความคุ้มครองแบบเต็มจอ
               </p>
 
               <div className={`grid gap-8 ${gridCols}`}>
@@ -118,7 +146,9 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
                   >
                     {/* Plan Badge */}
                     <div className="absolute top-4 left-4 z-10">
-                      <span className={`rounded-full border px-3 py-1 text-[11px] font-bold shadow-sm ${plan.badge.style}`}>
+                      <span
+                        className={`rounded-full border px-3 py-1 text-[11px] font-bold shadow-sm ${plan.badge.style}`}
+                      >
                         {plan.badge.label}
                       </span>
                     </div>
@@ -144,7 +174,9 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
 
                     {/* Card CTA */}
                     <div className="mt-5 pt-3 border-t border-gray-100 flex flex-col items-center">
-                      <h3 className="text-base font-bold text-navy-800">{plan.name}</h3>
+                      <h3 className="text-base font-bold text-navy-800">
+                        {plan.name}
+                      </h3>
                       <Button
                         href={`/quote/accident?plan=${plan.quoteParam}`}
                         variant={plan.idx === 1 ? "accent" : "primary"}
@@ -169,19 +201,36 @@ export function AccidentPlansView({ viewMode, images, planNames: customPlanNames
             <table className="w-full text-sm text-left">
               <thead className="bg-navy-600 text-white">
                 <tr>
-                  <th className="px-6 py-4 font-bold text-sm">รายการคุ้มครอง</th>
-                  <th className="px-6 py-4 font-bold text-sm">{planNames[0]}</th>
-                  <th className="px-6 py-4 font-bold text-sm">{planNames[1]}</th>
-                  <th className="px-6 py-4 font-bold text-sm">{planNames[2]}</th>
+                  <th className="px-6 py-4 font-bold text-sm">
+                    รายการคุ้มครอง
+                  </th>
+                  <th className="px-6 py-4 font-bold text-sm">
+                    {planNames[0]}
+                  </th>
+                  <th className="px-6 py-4 font-bold text-sm">
+                    {planNames[1]}
+                  </th>
+                  <th className="px-6 py-4 font-bold text-sm">
+                    {planNames[2]}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-navy-50">
                 {comparisonPlans.map((row) => (
-                  <tr key={row.feature} className="hover:bg-navy-50/20 transition-colors">
-                    <td className="px-6 py-4 font-medium text-navy-800">{row.feature}</td>
+                  <tr
+                    key={row.feature}
+                    className="hover:bg-navy-50/20 transition-colors"
+                  >
+                    <td className="px-6 py-4 font-medium text-navy-800">
+                      {row.feature}
+                    </td>
                     <td className="px-6 py-4 text-navy-600">{row.plan1}</td>
-                    <td className="px-6 py-4 font-semibold text-navy-900 bg-orange-50/10">{row.plan2}</td>
-                    <td className="px-6 py-4 font-semibold text-orange-600">{row.plan3}</td>
+                    <td className="px-6 py-4 font-semibold text-navy-900 bg-orange-50/10">
+                      {row.plan2}
+                    </td>
+                    <td className="px-6 py-4 font-semibold text-orange-600">
+                      {row.plan3}
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -15,22 +15,35 @@ export function Header({ logoUrl }: { logoUrl?: string }) {
       <Container size="wide">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2" aria-label={`${siteConfig.name} หน้าแรก`}>
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+            aria-label={`${siteConfig.name} หน้าแรก`}
+          >
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-45 object-contain" />
+              <img
+                src={logoUrl}
+                alt={siteConfig.name}
+                className="h-9 w-auto max-w-45 object-contain"
+              />
             ) : (
               <>
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-600 text-white font-bold">
                   P
                 </span>
-                <span className="text-lg font-bold text-navy-800">{siteConfig.name}</span>
+                <span className="text-lg font-bold text-navy-800">
+                  {siteConfig.name}
+                </span>
               </>
             )}
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="เมนูหลัก">
+          <nav
+            className="hidden items-center gap-1 lg:flex"
+            aria-label="เมนูหลัก"
+          >
             {mainMenu.map((item) => (
               <Link
                 key={item.href}
@@ -56,11 +69,26 @@ export function Header({ logoUrl }: { logoUrl?: string }) {
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               {open ? (
-                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               ) : (
-                <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M3 6h18M3 12h18M3 18h18"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               )}
             </svg>
           </button>

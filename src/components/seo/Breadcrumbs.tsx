@@ -16,7 +16,10 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
             return (
               <li key={item.href} className="flex items-center gap-1.5">
                 {last ? (
-                  <span className="font-medium text-navy-700" aria-current="page">
+                  <span
+                    className="font-medium text-navy-700"
+                    aria-current="page"
+                  >
                     {item.name}
                   </span>
                 ) : (
@@ -32,7 +35,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
       </nav>
       <JsonLd
         data={breadcrumbJsonLd(
-          all.map((c) => ({ name: c.name, url: absoluteUrl(c.href) })),
+          all.map((c) => ({ name: c.name, url: absoluteUrl(c.href) }))
         )}
       />
     </>

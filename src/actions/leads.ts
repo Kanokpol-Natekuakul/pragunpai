@@ -14,7 +14,9 @@ import { runAdminAction } from "@/lib/admin-action";
 async function verifyRecaptcha(token?: string | null): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
   if (!secret) {
-    console.info("[recaptcha] RECAPTCHA_SECRET_KEY not set — bypassing verification (dev mode).");
+    console.info(
+      "[recaptcha] RECAPTCHA_SECRET_KEY not set — bypassing verification (dev mode)."
+    );
     return true;
   }
 
@@ -79,26 +81,38 @@ export async function submitLeadAction(formData: FormData) {
   });
 }
 
-export async function updateLeadAction(id: string, status: LeadStatus, notes: string | null) {
-  return runAdminAction("updateLeadAction", "เกิดข้อผิดพลาดในการอัปเดตข้อมูล", async () => {
-    const lead = await prisma.lead.update({
-      where: { id },
-      data: {
-        status,
-        notes,
-      },
-    });
+export async function updateLeadAction(
+  id: string,
+  status: LeadStatus,
+  notes: string | null
+) {
+  return runAdminAction(
+    "updateLeadAction",
+    "เกิดข้อผิดพลาดในการอัปเดตข้อมูล",
+    async () => {
+      const lead = await prisma.lead.update({
+        where: { id },
+        data: {
+          status,
+          notes,
+        },
+      });
 
-    return { success: true, leadId: lead.id };
-  });
+      return { success: true, leadId: lead.id };
+    }
+  );
 }
 
 export async function deleteLeadAction(id: string) {
-  return runAdminAction("deleteLeadAction", "เกิดข้อผิดพลาดในการลบข้อมูล", async () => {
-    await prisma.lead.delete({
-      where: { id },
-    });
+  return runAdminAction(
+    "deleteLeadAction",
+    "เกิดข้อผิดพลาดในการลบข้อมูล",
+    async () => {
+      await prisma.lead.delete({
+        where: { id },
+      });
 
-    return { success: true };
-  });
+      return { success: true };
+    }
+  );
 }

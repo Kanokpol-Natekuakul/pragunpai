@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useTransition, useRef } from "react";
-import { updateAccidentPlansConfigAction, uploadAccidentPlanImageAction } from "@/actions/accident-settings";
+import {
+  updateAccidentPlansConfigAction,
+  uploadAccidentPlanImageAction,
+} from "@/actions/accident-settings";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
@@ -22,7 +25,9 @@ interface AccidentPlansEditorProps {
   };
 }
 
-export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps) {
+export function AccidentPlansEditor({
+  initialConfig,
+}: AccidentPlansEditorProps) {
   const [viewMode, setViewMode] = useState(initialConfig.viewMode || "both");
   const [images, setImages] = useState<string[]>(
     initialConfig.images && initialConfig.images.length === 3
@@ -61,7 +66,12 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
   const handleSaveConfig = () => {
     setSuccessMsg(null);
     startTransition(async () => {
-      const res = await updateAccidentPlansConfigAction({ viewMode, images, planNames, comparisonPlans });
+      const res = await updateAccidentPlansConfigAction({
+        viewMode,
+        images,
+        planNames,
+        comparisonPlans,
+      });
       if (res.success) {
         setSuccessMsg("บันทึกการตั้งค่าแผนประกันอุบัติเหตุสำเร็จแล้ว");
         setTimeout(() => setSuccessMsg(null), 3000);
@@ -75,7 +85,13 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
     const newId = `row-${Date.now()}`;
     setComparisonPlans([
       ...comparisonPlans,
-      { id: newId, feature: "รายการความคุ้มครองใหม่", plan1: "", plan2: "", plan3: "" },
+      {
+        id: newId,
+        feature: "รายการความคุ้มครองใหม่",
+        plan1: "",
+        plan2: "",
+        plan3: "",
+      },
     ]);
   };
 
@@ -83,7 +99,11 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
     setComparisonPlans(comparisonPlans.filter((r) => r.id !== id));
   };
 
-  const handleRowFieldChange = (id: string, field: "feature" | "plan1" | "plan2" | "plan3", val: string) => {
+  const handleRowFieldChange = (
+    id: string,
+    field: "feature" | "plan1" | "plan2" | "plan3",
+    val: string
+  ) => {
     setComparisonPlans(
       comparisonPlans.map((r) => (r.id === id ? { ...r, [field]: val } : r))
     );
@@ -113,7 +133,10 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
     setImages(updated);
   };
 
-  const handleFileChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -152,9 +175,18 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
   };
 
   const planLabels = [
-    { name: "แผนพื้นฐาน (Basic Plan)", defaultUrl: "/images/mockups/accident_plan_basic.jpg" },
-    { name: "แผนมาตรฐาน (Standard Plan)", defaultUrl: "/images/mockups/accident_plan_standard.jpg" },
-    { name: "แผนพรีเมียม (Premium Plan)", defaultUrl: "/images/mockups/accident_plan_premium.jpg" },
+    {
+      name: "แผนพื้นฐาน (Basic Plan)",
+      defaultUrl: "/images/mockups/accident_plan_basic.jpg",
+    },
+    {
+      name: "แผนมาตรฐาน (Standard Plan)",
+      defaultUrl: "/images/mockups/accident_plan_standard.jpg",
+    },
+    {
+      name: "แผนพรีเมียม (Premium Plan)",
+      defaultUrl: "/images/mockups/accident_plan_premium.jpg",
+    },
   ];
 
   return (
@@ -168,7 +200,8 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
       {/* View Mode Config */}
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3">
-          📊 เลือกรูปแบบการแสดงผลเปรียบเทียบแผนประกันอุบัติเหตุ (Public View Mode)
+          📊 เลือกรูปแบบการแสดงผลเปรียบเทียบแผนประกันอุบัติเหตุ (Public View
+          Mode)
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-3 pt-2">
@@ -188,10 +221,13 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                 onChange={(e) => setViewMode(e.target.value)}
                 className="accent-orange-500 h-4 w-4"
               />
-              <span className="font-bold text-navy-800">📊 ตารางเปรียบเทียบอย่างเดียว</span>
+              <span className="font-bold text-navy-800">
+                📊 ตารางเปรียบเทียบอย่างเดียว
+              </span>
             </div>
             <p className="text-xs text-navy-500 mt-2 ml-7 leading-relaxed font-medium">
-              แสดงเฉพาะตาราง HTML แบบเดิม เหมาะกับการเปรียบเทียบข้อมูลรายละเอียดความคุ้มครอง
+              แสดงเฉพาะตาราง HTML แบบเดิม
+              เหมาะกับการเปรียบเทียบข้อมูลรายละเอียดความคุ้มครอง
             </p>
           </label>
 
@@ -211,10 +247,13 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                 onChange={(e) => setViewMode(e.target.value)}
                 className="accent-orange-500 h-4 w-4"
               />
-              <span className="font-bold text-navy-800">🖼️ รูปภาพโบรชัวร์อย่างเดียว</span>
+              <span className="font-bold text-navy-800">
+                🖼️ รูปภาพโบรชัวร์อย่างเดียว
+              </span>
             </div>
             <p className="text-xs text-navy-500 mt-2 ml-7 leading-relaxed font-medium">
-              แสดงเฉพาะการ์ด 3 รูปภาพเรียงกันใน 1 แถว สามารถคลิกขยายใหญ่และเลือกสมัครได้
+              แสดงเฉพาะการ์ด 3 รูปภาพเรียงกันใน 1 แถว
+              สามารถคลิกขยายใหญ่และเลือกสมัครได้
             </p>
           </label>
 
@@ -234,10 +273,13 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                 onChange={(e) => setViewMode(e.target.value)}
                 className="accent-orange-500 h-4 w-4"
               />
-              <span className="font-bold text-navy-800">🔄 แสดงทั้งสองแบบพร้อมกัน (สลับแท็บ)</span>
+              <span className="font-bold text-navy-800">
+                🔄 แสดงทั้งสองแบบพร้อมกัน (สลับแท็บ)
+              </span>
             </div>
             <p className="text-xs text-navy-500 mt-2 ml-7 leading-relaxed font-medium">
-              แสดงผลแบบเป็นแท็บสลับให้ลูกค้าเลือกดูได้ทั้งโบรชัวร์รูปภาพ หรือตารางข้อมูล (แนะนำสำหรับ UX ที่ดีที่สุด)
+              แสดงผลแบบเป็นแท็บสลับให้ลูกค้าเลือกดูได้ทั้งโบรชัวร์รูปภาพ
+              หรือตารางข้อมูล (แนะนำสำหรับ UX ที่ดีที่สุด)
             </p>
           </label>
         </div>
@@ -259,11 +301,18 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
         {planLabels.map((plan, idx) => {
           const currentUrl = images[idx] || plan.defaultUrl;
           return (
-            <Card key={idx} className="p-5 bg-white border border-gray-200 flex flex-col justify-between space-y-4">
+            <Card
+              key={idx}
+              className="p-5 bg-white border border-gray-200 flex flex-col justify-between space-y-4"
+            >
               <div>
                 <h3 className="text-sm font-bold text-navy-800 border-b border-gray-100 pb-2.5 mb-3 flex items-center justify-between">
                   <span>🖼️ {planNames[idx]}</span>
-                  {uploadingIndex === idx && <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลด...</span>}
+                  {uploadingIndex === idx && (
+                    <span className="text-[10px] text-orange-500 font-bold animate-pulse">
+                      กำลังอัปโหลด...
+                    </span>
+                  )}
                 </h3>
 
                 {/* Preview image */}
@@ -291,7 +340,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                     <input
                       type="text"
                       value={planNames[idx] || ""}
-                      onChange={(e) => handlePlanNameChange(idx, e.target.value)}
+                      onChange={(e) =>
+                        handlePlanNameChange(idx, e.target.value)
+                      }
                       placeholder="เช่น แผนเริ่มต้น, แผนแนะนำ"
                       className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-bold text-navy-800"
                     />
@@ -317,7 +368,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                     <input
                       type="text"
                       value={images[idx] || ""}
-                      onChange={(e) => handleImageUrlChange(idx, e.target.value)}
+                      onChange={(e) =>
+                        handleImageUrlChange(idx, e.target.value)
+                      }
                       placeholder="เช่น /images/mockups/plan.jpg หรือ https://..."
                       className="w-full rounded-lg border border-navy-200 px-3 py-1.5 text-xs focus:outline-none focus:border-orange-400 font-mono text-navy-700"
                     />
@@ -355,10 +408,11 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
               📊 จัดการตารางเปรียบเทียบข้อมูลแผนประกันอุบัติเหตุ
             </h2>
             <p className="text-xs text-navy-500 mt-1 font-medium">
-              เพิ่ม ลด หรือเรียงลำดับหัวข้อความคุ้มครองและจำนวนเงินที่จะไปแสดงในตารางเปรียบเทียบหน้าเว็บจริง
+              เพิ่ม ลด
+              หรือเรียงลำดับหัวข้อความคุ้มครองและจำนวนเงินที่จะไปแสดงในตารางเปรียบเทียบหน้าเว็บจริง
             </p>
           </div>
-          
+
           <button
             type="button"
             onClick={handleAddRow}
@@ -410,7 +464,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                   <input
                     type="text"
                     value={row.feature}
-                    onChange={(e) => handleRowFieldChange(row.id, "feature", e.target.value)}
+                    onChange={(e) =>
+                      handleRowFieldChange(row.id, "feature", e.target.value)
+                    }
                     className="w-full rounded-lg border border-navy-200 bg-white px-3 py-2 text-sm font-bold text-navy-850 focus:outline-none focus:border-orange-400"
                     placeholder="เช่น ค่ารักษาพยาบาลต่ออุบัติเหตุ"
                   />
@@ -425,7 +481,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                     <input
                       type="text"
                       value={row.plan1}
-                      onChange={(e) => handleRowFieldChange(row.id, "plan1", e.target.value)}
+                      onChange={(e) =>
+                        handleRowFieldChange(row.id, "plan1", e.target.value)
+                      }
                       placeholder="เช่น 10,000 บาท"
                       className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 focus:outline-none focus:border-orange-400"
                     />
@@ -437,7 +495,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                     <input
                       type="text"
                       value={row.plan2}
-                      onChange={(e) => handleRowFieldChange(row.id, "plan2", e.target.value)}
+                      onChange={(e) =>
+                        handleRowFieldChange(row.id, "plan2", e.target.value)
+                      }
                       placeholder="เช่น 30,000 บาท"
                       className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 focus:outline-none focus:border-orange-400"
                     />
@@ -449,7 +509,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
                     <input
                       type="text"
                       value={row.plan3}
-                      onChange={(e) => handleRowFieldChange(row.id, "plan3", e.target.value)}
+                      onChange={(e) =>
+                        handleRowFieldChange(row.id, "plan3", e.target.value)
+                      }
                       placeholder="เช่น 50,000 บาท"
                       className="w-full rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 focus:outline-none focus:border-orange-400"
                     />
@@ -494,7 +556,9 @@ export function AccidentPlansEditor({ initialConfig }: AccidentPlansEditorProps)
       {/* Global Action Footer */}
       <Card className="p-5 bg-white border border-gray-200 flex items-center justify-between text-navy-800 flex-col sm:flex-row gap-3 shadow-sm">
         <div className="text-center sm:text-left">
-          <p className="text-sm font-bold text-navy-800">💾 บันทึกรูปภาพแผนและลิงก์ทั้งหมด</p>
+          <p className="text-sm font-bold text-navy-800">
+            💾 บันทึกรูปภาพแผนและลิงก์ทั้งหมด
+          </p>
           <p className="text-xs text-navy-500 mt-1 font-medium">
             กดปุ่มสีส้มขวามือเพื่อบันทึกการเปลี่ยนแปลงลิงก์รูปภาพแผนทั้งหมดลงฐานข้อมูล
           </p>

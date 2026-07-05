@@ -5,7 +5,12 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "@google-recaptcha/react";
 import { submitLeadAction } from "@/actions/leads";
-import { carActSchema, accidentSchema, propertySchema, otherSchema } from "@/lib/lead-intake";
+import {
+  carActSchema,
+  accidentSchema,
+  propertySchema,
+  otherSchema,
+} from "@/lib/lead-intake";
 import { validateUpload } from "@/lib/upload-constraints";
 import { provinces } from "@/lib/provinces";
 import { Button } from "@/components/ui/Button";
@@ -16,10 +21,21 @@ import { z } from "zod";
 // Define the 4 form types
 type FormType = "CAR_ACT" | "ACCIDENT" | "PROPERTY" | "OTHER";
 
-const FORM_METADATA: Record<FormType, { label: string; icon: string; path: string }> = {
-  CAR_ACT: { label: "พ.ร.บ. & ประกันรถยนต์", icon: "🚗", path: "/quote/car-act" },
+const FORM_METADATA: Record<
+  FormType,
+  { label: string; icon: string; path: string }
+> = {
+  CAR_ACT: {
+    label: "พ.ร.บ. & ประกันรถยนต์",
+    icon: "🚗",
+    path: "/quote/car-act",
+  },
   ACCIDENT: { label: "ประกันอุบัติเหตุ", icon: "🩹", path: "/quote/accident" },
-  PROPERTY: { label: "ประกันบ้าน & คอนโด", icon: "🏠", path: "/quote/property" },
+  PROPERTY: {
+    label: "ประกันบ้าน & คอนโด",
+    icon: "🏠",
+    path: "/quote/property",
+  },
   OTHER: { label: "ประกันอื่นๆ / สอบถาม", icon: "✉️", path: "/quote/other" },
 };
 
@@ -43,7 +59,10 @@ interface QuoteFormProps {
   selectedPlan?: string;
 }
 
-export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }: QuoteFormProps) {
+export default function QuoteForm({
+  initialType = "CAR_ACT",
+  selectedPlan = "",
+}: QuoteFormProps) {
   const [activeTab, setActiveTab] = useState<FormType>(initialType);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -56,12 +75,36 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
   // Form setups for each form type
   const carActForm = useForm<z.infer<typeof carActClientSchema>>({
     resolver: zodResolver(carActClientSchema),
-    defaultValues: { name: "", phone: "", lineId: "", province: "", email: "", note: "", carType: "", carBrand: "", carModel: "", carYear: "", carPlate: "" },
+    defaultValues: {
+      name: "",
+      phone: "",
+      lineId: "",
+      province: "",
+      email: "",
+      note: "",
+      carType: "",
+      carBrand: "",
+      carModel: "",
+      carYear: "",
+      carPlate: "",
+    },
   });
 
   const accidentForm = useForm<z.infer<typeof accidentClientSchema>>({
     resolver: zodResolver(accidentClientSchema),
-    defaultValues: { name: "", phone: "", lineId: "", province: "", email: "", note: "", age: "", occupation: "", hasExistingIllness: "ไม่มีประวัติการเจ็บป่วยร้ายแรงหรือโรคประจำตัว", illnessDetails: "", selectedPlan: selectedPlan || "" },
+    defaultValues: {
+      name: "",
+      phone: "",
+      lineId: "",
+      province: "",
+      email: "",
+      note: "",
+      age: "",
+      occupation: "",
+      hasExistingIllness: "ไม่มีประวัติการเจ็บป่วยร้ายแรงหรือโรคประจำตัว",
+      illnessDetails: "",
+      selectedPlan: selectedPlan || "",
+    },
   });
 
   const hasExistingIllness = useWatch({
@@ -71,33 +114,61 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
 
   const propertyForm = useForm<z.infer<typeof propertyClientSchema>>({
     resolver: zodResolver(propertyClientSchema),
-    defaultValues: { name: "", phone: "", lineId: "", province: "", email: "", note: "", propertyType: "", constructionType: "", floorsCount: "", propertyValue: "", securitySystems: [] },
+    defaultValues: {
+      name: "",
+      phone: "",
+      lineId: "",
+      province: "",
+      email: "",
+      note: "",
+      propertyType: "",
+      constructionType: "",
+      floorsCount: "",
+      propertyValue: "",
+      securitySystems: [],
+    },
   });
 
   const otherForm = useForm<z.infer<typeof otherClientSchema>>({
     resolver: zodResolver(otherClientSchema),
-    defaultValues: { name: "", phone: "", lineId: "", province: "", email: "", note: "", requestType: "", description: "" },
+    defaultValues: {
+      name: "",
+      phone: "",
+      lineId: "",
+      province: "",
+      email: "",
+      note: "",
+      requestType: "",
+      description: "",
+    },
   });
 
   const activeForm =
     activeTab === "CAR_ACT"
       ? carActForm
       : activeTab === "ACCIDENT"
-      ? accidentForm
-      : activeTab === "PROPERTY"
-      ? propertyForm
-      : otherForm;
+        ? accidentForm
+        : activeTab === "PROPERTY"
+          ? propertyForm
+          : otherForm;
 
   // Helpers to register contact fields without union type signature mismatches
-  const registerContactField = (fieldName: "name" | "phone" | "lineId" | "province" | "email" | "note") => {
+  const registerContactField = (
+    fieldName: "name" | "phone" | "lineId" | "province" | "email" | "note"
+  ) => {
     if (activeTab === "CAR_ACT") return carActForm.register(fieldName);
     if (activeTab === "ACCIDENT") return accidentForm.register(fieldName);
     if (activeTab === "PROPERTY") return propertyForm.register(fieldName);
     return otherForm.register(fieldName);
   };
 
-  const getContactFieldError = (fieldName: "name" | "phone" | "lineId" | "province" | "email" | "note") => {
-    const errors = activeForm.formState.errors as Record<string, { message?: string }>;
+  const getContactFieldError = (
+    fieldName: "name" | "phone" | "lineId" | "province" | "email" | "note"
+  ) => {
+    const errors = activeForm.formState.errors as Record<
+      string,
+      { message?: string }
+    >;
     return errors[fieldName];
   };
 
@@ -170,7 +241,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
         }
       } catch (err) {
         const error = err as Error;
-        setSubmitError(error.message || "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+        setSubmitError(
+          error.message || "เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์"
+        );
       }
     });
   };
@@ -221,7 +294,8 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
           ขอใบเสนอราคา {FORM_METADATA[activeTab].label}
         </h2>
         <p className="text-sm text-navy-500 mb-8 border-b border-navy-50 pb-4">
-          กรอกข้อมูลให้ครบถ้วน เพื่อให้เจ้าหน้าที่นำเสนอแผนคุ้มครองและเบี้ยประกันที่ดีที่สุด
+          กรอกข้อมูลให้ครบถ้วน
+          เพื่อให้เจ้าหน้าที่นำเสนอแผนคุ้มครองและเบี้ยประกันที่ดีที่สุด
         </p>
 
         {submitError && (
@@ -231,7 +305,10 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
           </div>
         )}
 
-        <form onSubmit={activeForm.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={activeForm.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           {/* Section 1: Contact Details */}
           <div className="space-y-4">
             <h3 className="text-base font-semibold text-navy-800 border-l-4 border-orange-400 pl-3">
@@ -254,7 +331,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                   {...registerContactField("name")}
                 />
                 {getContactFieldError("name") && (
-                  <p className="mt-1 text-xs text-red-500">{getContactFieldError("name").message as string}</p>
+                  <p className="mt-1 text-xs text-red-500">
+                    {getContactFieldError("name").message as string}
+                  </p>
                 )}
               </div>
 
@@ -273,7 +352,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                   {...registerContactField("phone")}
                 />
                 {getContactFieldError("phone") && (
-                  <p className="mt-1 text-xs text-red-500">{getContactFieldError("phone").message as string}</p>
+                  <p className="mt-1 text-xs text-red-500">
+                    {getContactFieldError("phone").message as string}
+                  </p>
                 )}
               </div>
             </div>
@@ -281,7 +362,10 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-navy-700 mb-1">
-                  LINE ID <span className="text-navy-400 text-xs">(แนะนำสำหรับการส่งใบเสนอราคา)</span>
+                  LINE ID{" "}
+                  <span className="text-navy-400 text-xs">
+                    (แนะนำสำหรับการส่งใบเสนอราคา)
+                  </span>
                 </label>
                 <input
                   type="text"
@@ -311,7 +395,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                   ))}
                 </select>
                 {getContactFieldError("province") && (
-                  <p className="mt-1 text-xs text-red-500">{getContactFieldError("province").message as string}</p>
+                  <p className="mt-1 text-xs text-red-500">
+                    {getContactFieldError("province").message as string}
+                  </p>
                 )}
               </div>
             </div>
@@ -331,7 +417,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                 {...registerContactField("email")}
               />
               {getContactFieldError("email") && (
-                <p className="mt-1 text-xs text-red-500">{getContactFieldError("email").message as string}</p>
+                <p className="mt-1 text-xs text-red-500">
+                  {getContactFieldError("email").message as string}
+                </p>
               )}
             </div>
           </div>
@@ -354,13 +442,23 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                     {...carActForm.register("carType")}
                   >
                     <option value="">-- เลือกประเภทรถยนต์ --</option>
-                    <option value="รถเก๋ง/รถกระบะ 4 ประตู (รย.1)">รถเก๋ง/รถกระบะ 4 ประตู (รย.1)</option>
-                    <option value="รถกระบะแค็ป/ตอนเดียว (รย.3)">รถกระบะบรรทุกแค็ป/ตอนเดียว (รย.3)</option>
-                    <option value="รถตู้ส่วนบุคคล (รย.2)">รถตู้ส่วนบุคคล (รย.2)</option>
-                    <option value="อื่นๆ (พ.ร.บ. บิ๊กไบค์ / รถบรรทุก)">อื่นๆ (พ.ร.บ. บิ๊กไบค์ / รถบรรทุก)</option>
+                    <option value="รถเก๋ง/รถกระบะ 4 ประตู (รย.1)">
+                      รถเก๋ง/รถกระบะ 4 ประตู (รย.1)
+                    </option>
+                    <option value="รถกระบะแค็ป/ตอนเดียว (รย.3)">
+                      รถกระบะบรรทุกแค็ป/ตอนเดียว (รย.3)
+                    </option>
+                    <option value="รถตู้ส่วนบุคคล (รย.2)">
+                      รถตู้ส่วนบุคคล (รย.2)
+                    </option>
+                    <option value="อื่นๆ (พ.ร.บ. บิ๊กไบค์ / รถบรรทุก)">
+                      อื่นๆ (พ.ร.บ. บิ๊กไบค์ / รถบรรทุก)
+                    </option>
                   </select>
                   {carActForm.formState.errors.carType && (
-                    <p className="mt-1 text-xs text-red-500">{carActForm.formState.errors.carType.message}</p>
+                    <p className="mt-1 text-xs text-red-500">
+                      {carActForm.formState.errors.carType.message}
+                    </p>
                   )}
                 </div>
 
@@ -376,7 +474,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...carActForm.register("carBrand")}
                     />
                     {carActForm.formState.errors.carBrand && (
-                      <p className="mt-1 text-xs text-red-500">{carActForm.formState.errors.carBrand.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {carActForm.formState.errors.carBrand.message}
+                      </p>
                     )}
                   </div>
 
@@ -391,7 +491,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...carActForm.register("carModel")}
                     />
                     {carActForm.formState.errors.carModel && (
-                      <p className="mt-1 text-xs text-red-500">{carActForm.formState.errors.carModel.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {carActForm.formState.errors.carModel.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -406,14 +508,19 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...carActForm.register("carYear")}
                     >
                       <option value="">-- เลือกปี --</option>
-                      {Array.from({ length: 16 }, (_, i) => new Date().getFullYear() - i).map((yr) => (
+                      {Array.from(
+                        { length: 16 },
+                        (_, i) => new Date().getFullYear() - i
+                      ).map((yr) => (
                         <option key={yr} value={yr}>
                           {yr} / {yr + 543}
                         </option>
                       ))}
                     </select>
                     {carActForm.formState.errors.carYear && (
-                      <p className="mt-1 text-xs text-red-500">{carActForm.formState.errors.carYear.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {carActForm.formState.errors.carYear.message}
+                      </p>
                     )}
                   </div>
 
@@ -428,7 +535,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...carActForm.register("carPlate")}
                     />
                     {carActForm.formState.errors.carPlate && (
-                      <p className="mt-1 text-xs text-red-500">{carActForm.formState.errors.carPlate.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {carActForm.formState.errors.carPlate.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -452,7 +561,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...accidentForm.register("age")}
                     />
                     {accidentForm.formState.errors.age && (
-                      <p className="mt-1 text-xs text-red-500">{accidentForm.formState.errors.age.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {accidentForm.formState.errors.age.message}
+                      </p>
                     )}
                   </div>
 
@@ -467,14 +578,17 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...accidentForm.register("occupation")}
                     />
                     {accidentForm.formState.errors.occupation && (
-                      <p className="mt-1 text-xs text-red-500">{accidentForm.formState.errors.occupation.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {accidentForm.formState.errors.occupation.message}
+                      </p>
                     )}
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-navy-700 mb-1">
-                    ประวัติสุขภาพ / โรคประจำตัว <span className="text-red-500">*</span>
+                    ประวัติสุขภาพ / โรคประจำตัว{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <div className="space-y-2 mt-2">
                     <label className="flex items-center gap-2 text-sm text-navy-700 cursor-pointer">
@@ -493,7 +607,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                         className="accent-orange-500"
                         {...accidentForm.register("hasExistingIllness")}
                       />
-                      <span>มีโรคประจำตัว หรือข้อจำกัดด้านสุขภาพ (โปรดระบุด้านล่าง)</span>
+                      <span>
+                        มีโรคประจำตัว หรือข้อจำกัดด้านสุขภาพ (โปรดระบุด้านล่าง)
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -515,16 +631,25 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                 {/* Plan selection if any */}
                 <div>
                   <label className="block text-sm font-medium text-navy-700 mb-1">
-                    แผนประกันที่สนใจ <span className="text-navy-400 text-xs">(หากเลือกไว้)</span>
+                    แผนประกันที่สนใจ{" "}
+                    <span className="text-navy-400 text-xs">(หากเลือกไว้)</span>
                   </label>
                   <select
                     className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
                     {...accidentForm.register("selectedPlan")}
                   >
-                    <option value="">-- แนะนำแผนที่เหมาะสมตามความต้องการ --</option>
-                    <option value="Basic Plan">Basic Plan (ความคุ้มครองเริ่มต้น)</option>
-                    <option value="Comprehensive Plan">Comprehensive Plan (ความคุ้มครองคุ้มค่า)</option>
-                    <option value="Premium Plan">Premium Plan (คุ้มครองสูงสุด + ชดเชยรายได้)</option>
+                    <option value="">
+                      -- แนะนำแผนที่เหมาะสมตามความต้องการ --
+                    </option>
+                    <option value="Basic Plan">
+                      Basic Plan (ความคุ้มครองเริ่มต้น)
+                    </option>
+                    <option value="Comprehensive Plan">
+                      Comprehensive Plan (ความคุ้มครองคุ้มค่า)
+                    </option>
+                    <option value="Premium Plan">
+                      Premium Plan (คุ้มครองสูงสุด + ชดเชยรายได้)
+                    </option>
                   </select>
                 </div>
               </div>
@@ -536,7 +661,8 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="block text-sm font-medium text-navy-700 mb-1">
-                      ประเภทสิ่งปลูกสร้าง <span className="text-red-500">*</span>
+                      ประเภทสิ่งปลูกสร้าง{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <select
                       className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
@@ -544,31 +670,46 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                     >
                       <option value="">-- เลือกประเภทสิ่งปลูกสร้าง --</option>
                       <option value="บ้านเดี่ยว">บ้านเดี่ยว</option>
-                      <option value="ทาวน์เฮ้าส์ / ทาวน์โฮม">ทาวน์เฮ้าส์ / ทาวน์โฮม</option>
+                      <option value="ทาวน์เฮ้าส์ / ทาวน์โฮม">
+                        ทาวน์เฮ้าส์ / ทาวน์โฮม
+                      </option>
                       <option value="คอนโดมิเนียม">คอนโดมิเนียม</option>
-                      <option value="อาคารพาณิชย์ / ตึกแถว">อาคารพาณิชย์ / ตึกแถว</option>
-                      <option value="หอพัก / อพาร์ทเมนท์">หอพัก / อพาร์ทเมนท์</option>
+                      <option value="อาคารพาณิชย์ / ตึกแถว">
+                        อาคารพาณิชย์ / ตึกแถว
+                      </option>
+                      <option value="หอพัก / อพาร์ทเมนท์">
+                        หอพัก / อพาร์ทเมนท์
+                      </option>
                     </select>
                     {propertyForm.formState.errors.propertyType && (
-                      <p className="mt-1 text-xs text-red-500">{propertyForm.formState.errors.propertyType.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {propertyForm.formState.errors.propertyType.message}
+                      </p>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-navy-700 mb-1">
-                      ลักษณะโครงสร้างอาคาร <span className="text-red-500">*</span>
+                      ลักษณะโครงสร้างอาคาร{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <select
                       className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
                       {...propertyForm.register("constructionType")}
                     >
                       <option value="">-- เลือกลักษณะโครงสร้าง --</option>
-                      <option value="โครงสร้างคอนกรีตล้วน (ตึก)">โครงสร้างคอนกรีตล้วน (ตึก)</option>
-                      <option value="โครงสร้างครึ่งตึกครึ่งไม้">โครงสร้างครึ่งตึกครึ่งไม้</option>
+                      <option value="โครงสร้างคอนกรีตล้วน (ตึก)">
+                        โครงสร้างคอนกรีตล้วน (ตึก)
+                      </option>
+                      <option value="โครงสร้างครึ่งตึกครึ่งไม้">
+                        โครงสร้างครึ่งตึกครึ่งไม้
+                      </option>
                       <option value="โครงสร้างไม้ล้วน">โครงสร้างไม้ล้วน</option>
                     </select>
                     {propertyForm.formState.errors.constructionType && (
-                      <p className="mt-1 text-xs text-red-500">{propertyForm.formState.errors.constructionType.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {propertyForm.formState.errors.constructionType.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -586,13 +727,16 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...propertyForm.register("floorsCount")}
                     />
                     {propertyForm.formState.errors.floorsCount && (
-                      <p className="mt-1 text-xs text-red-500">{propertyForm.formState.errors.floorsCount.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {propertyForm.formState.errors.floorsCount.message}
+                      </p>
                     )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-navy-700 mb-1">
-                      มูลค่าทรัพย์สินที่คุ้มครอง (บาท) <span className="text-red-500">*</span>
+                      มูลค่าทรัพย์สินที่คุ้มครอง (บาท){" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -601,7 +745,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       {...propertyForm.register("propertyValue")}
                     />
                     {propertyForm.formState.errors.propertyValue && (
-                      <p className="mt-1 text-xs text-red-500">{propertyForm.formState.errors.propertyValue.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {propertyForm.formState.errors.propertyValue.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -617,7 +763,10 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                       { key: "cctv", label: "กล้องวงจรปิด" },
                       { key: "security_guard", label: "รปภ. 24 ชั่วโมง" },
                     ].map((sys) => (
-                      <label key={sys.key} className="flex items-center gap-2 text-sm text-navy-700 cursor-pointer">
+                      <label
+                        key={sys.key}
+                        className="flex items-center gap-2 text-sm text-navy-700 cursor-pointer"
+                      >
                         <input
                           type="checkbox"
                           value={sys.label}
@@ -637,27 +786,41 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-navy-700 mb-1">
-                    ประเภทประกันที่ท่านสนใจ <span className="text-red-500">*</span>
+                    ประเภทประกันที่ท่านสนใจ{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <select
                     className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400"
                     {...otherForm.register("requestType")}
                   >
                     <option value="">-- เลือกเรื่องที่สนใจ --</option>
-                    <option value="ประกันสุขภาพ (Health)">ประกันสุขภาพ (Health)</option>
-                    <option value="ประกันการเดินทางต่างประเทศ (Travel)">ประกันการเดินทางต่างประเทศ (Travel)</option>
-                    <option value="ประกันชีวิต / โรคร้ายแรง">ประกันชีวิต / โรคร้ายแรง</option>
-                    <option value="ประกันร้านค้า / ธุรกิจ">ประกันร้านค้า / ธุรกิจ</option>
-                    <option value="อื่นๆ (สอบถามคำแนะนำทั่วไป)">อื่นๆ (สอบถามคำแนะนำทั่วไป)</option>
+                    <option value="ประกันสุขภาพ (Health)">
+                      ประกันสุขภาพ (Health)
+                    </option>
+                    <option value="ประกันการเดินทางต่างประเทศ (Travel)">
+                      ประกันการเดินทางต่างประเทศ (Travel)
+                    </option>
+                    <option value="ประกันชีวิต / โรคร้ายแรง">
+                      ประกันชีวิต / โรคร้ายแรง
+                    </option>
+                    <option value="ประกันร้านค้า / ธุรกิจ">
+                      ประกันร้านค้า / ธุรกิจ
+                    </option>
+                    <option value="อื่นๆ (สอบถามคำแนะนำทั่วไป)">
+                      อื่นๆ (สอบถามคำแนะนำทั่วไป)
+                    </option>
                   </select>
                   {otherForm.formState.errors.requestType && (
-                    <p className="mt-1 text-xs text-red-500">{otherForm.formState.errors.requestType.message}</p>
+                    <p className="mt-1 text-xs text-red-500">
+                      {otherForm.formState.errors.requestType.message}
+                    </p>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-navy-700 mb-1">
-                    รายละเอียดคำถาม / ข้อมูลความต้องการเพิ่ม <span className="text-red-500">*</span>
+                    รายละเอียดคำถาม / ข้อมูลความต้องการเพิ่ม{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     rows={4}
@@ -666,7 +829,9 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                     {...otherForm.register("description")}
                   />
                   {otherForm.formState.errors.description && (
-                    <p className="mt-1 text-xs text-red-500">{otherForm.formState.errors.description.message}</p>
+                    <p className="mt-1 text-xs text-red-500">
+                      {otherForm.formState.errors.description.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -675,7 +840,8 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
             {/* Common field: Note */}
             <div>
               <label className="block text-sm font-medium text-navy-700 mb-1">
-                หมายเหตุเพิ่มเติมถึงเจ้าหน้าที่ <span className="text-navy-400 text-xs">(ไม่บังคับ)</span>
+                หมายเหตุเพิ่มเติมถึงเจ้าหน้าที่{" "}
+                <span className="text-navy-400 text-xs">(ไม่บังคับ)</span>
               </label>
               <textarea
                 rows={2}
@@ -689,10 +855,12 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
           {/* Section 3: File Upload */}
           <div className="space-y-4 pt-4 border-t border-navy-50">
             <h3 className="text-base font-semibold text-navy-800 border-l-4 border-orange-400 pl-3">
-              3. อัปโหลดเอกสารประกอบ (ไม่บังคับ แต่ช่วยให้ได้รับข้อเสนอที่รวดเร็วขึ้น)
+              3. อัปโหลดเอกสารประกอบ (ไม่บังคับ
+              แต่ช่วยให้ได้รับข้อเสนอที่รวดเร็วขึ้น)
             </h3>
             <p className="text-xs text-navy-500">
-              * เอกสารที่แนะนำ เช่น สำเนาเล่มทะเบียนรถ, กรมธรรม์เดิม, รูปภาพทรัพย์สิน หรือสำเนาบัตรประชาชน
+              * เอกสารที่แนะนำ เช่น สำเนาเล่มทะเบียนรถ, กรมธรรม์เดิม,
+              รูปภาพทรัพย์สิน หรือสำเนาบัตรประชาชน
             </p>
 
             <div className="rounded-lg border-2 border-dashed border-navy-200 hover:border-orange-400 bg-navy-50/50 p-6 text-center transition-colors">
@@ -710,24 +878,34 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
                   คลิกที่นี่เพื่ออัปโหลดไฟล์ หรือวางไฟล์ของคุณที่นี่
                 </span>
                 <span className="text-xs text-navy-400 mt-1 block">
-                  รองรับไฟล์ JPG, PNG, WEBP, PDF, DOC, DOCX ขนาดไม่เกิน 5MB ต่อไฟล์
+                  รองรับไฟล์ JPG, PNG, WEBP, PDF, DOC, DOCX ขนาดไม่เกิน 5MB
+                  ต่อไฟล์
                 </span>
               </label>
             </div>
 
             {fileError && (
-              <p className="text-xs text-red-500 mt-1 font-semibold">⚠️ {fileError}</p>
+              <p className="text-xs text-red-500 mt-1 font-semibold">
+                ⚠️ {fileError}
+              </p>
             )}
 
             {files.length > 0 && (
               <div className="mt-4 space-y-2">
-                <p className="text-xs font-semibold text-navy-700">ไฟล์ที่จะส่ง ({files.length} ไฟล์):</p>
+                <p className="text-xs font-semibold text-navy-700">
+                  ไฟล์ที่จะส่ง ({files.length} ไฟล์):
+                </p>
                 <ul className="divide-y divide-navy-50 border border-navy-100 rounded-lg bg-white">
                   {files.map((file, idx) => (
-                    <li key={idx} className="flex items-center justify-between p-3 text-sm">
+                    <li
+                      key={idx}
+                      className="flex items-center justify-between p-3 text-sm"
+                    >
                       <div className="flex items-center gap-2 overflow-hidden mr-4">
                         <span className="text-base">📄</span>
-                        <span className="truncate text-navy-800 font-medium">{file.name}</span>
+                        <span className="truncate text-navy-800 font-medium">
+                          {file.name}
+                        </span>
                         <span className="text-xs text-navy-400 whitespace-nowrap">
                           ({(file.size / 1024 / 1024).toFixed(2)} MB)
                         </span>
@@ -749,9 +927,14 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
           {/* Verification and PDPA Consent */}
           <div className="pt-4 border-t border-navy-50 space-y-4">
             <p className="text-xs text-navy-500 leading-relaxed">
-              การคลิก &ldquo;ส่งข้อมูลขอใบเสนอราคา&rdquo; แสดงว่าท่านยินยอมให้ Pragunpai.com จัดเก็บและประมวลผลข้อมูลส่วนบุคคล
+              การคลิก &ldquo;ส่งข้อมูลขอใบเสนอราคา&rdquo; แสดงว่าท่านยินยอมให้
+              Pragunpai.com จัดเก็บและประมวลผลข้อมูลส่วนบุคคล
               เพื่อใช้นำเสนอแผนประกันภัยและติดต่อกลับ ตามเงื่อนไขของ{" "}
-              <a href="/privacy-policy" target="_blank" className="underline hover:text-orange-500">
+              <a
+                href="/privacy-policy"
+                target="_blank"
+                className="underline hover:text-orange-500"
+              >
                 นโยบายความเป็นส่วนตัว (PDPA)
               </a>{" "}
               โดยข้อมูลจะถูกจัดเก็บอย่างปลอดภัยและลบโดยอัตโนมัติภายใน 30 วัน
@@ -766,8 +949,19 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
             >
               {isPending ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
                     <path
                       className="opacity-75"
                       fill="currentColor"
@@ -790,10 +984,14 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 text-4xl animate-bounce">
               ✓
             </div>
-            <h2 className="mt-6 text-2xl font-bold text-navy-800">ส่งข้อมูลขอใบเสนอราคาสำเร็จ!</h2>
+            <h2 className="mt-6 text-2xl font-bold text-navy-800">
+              ส่งข้อมูลขอใบเสนอราคาสำเร็จ!
+            </h2>
             <p className="mt-4 text-navy-600 leading-relaxed text-sm">
-              ขอบคุณที่ไว้วางใจให้ <strong>Pragunpai (ประกันภัย)</strong> ดูแลท่าน เจ้าหน้าที่กำลังตรวจสอบข้อมูล
-              และจะติดต่อกลับเพื่อนำเสนอแผนประกันภัยที่ดีที่สุดผ่านทางโทรศัพท์ หรือ LINE ที่ท่านระบุ ภายใน 24 ชั่วโมง
+              ขอบคุณที่ไว้วางใจให้ <strong>Pragunpai (ประกันภัย)</strong>{" "}
+              ดูแลท่าน เจ้าหน้าที่กำลังตรวจสอบข้อมูล
+              และจะติดต่อกลับเพื่อนำเสนอแผนประกันภัยที่ดีที่สุดผ่านทางโทรศัพท์
+              หรือ LINE ที่ท่านระบุ ภายใน 24 ชั่วโมง
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <button
@@ -803,7 +1001,12 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
               >
                 ตกลง (ปิดหน้าต่าง)
               </button>
-              <Button href="/" variant="secondary" size="md" className="w-full sm:w-auto">
+              <Button
+                href="/"
+                variant="secondary"
+                size="md"
+                className="w-full sm:w-auto"
+              >
                 กลับสู่หน้าแรก
               </Button>
             </div>

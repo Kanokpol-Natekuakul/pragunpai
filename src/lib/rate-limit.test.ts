@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { checkRateLimit, recordFailedAttempt, resetRateLimit } from "./rate-limit";
+import {
+  checkRateLimit,
+  recordFailedAttempt,
+  resetRateLimit,
+} from "./rate-limit";
 
 // Module-level cache persists across tests — each test uses a unique email
 // so state never leaks between cases.
@@ -42,7 +46,11 @@ describe("rate-limit utility", () => {
   it("should normalize email case so casing variants share one counter", () => {
     const email = "case-test@example.com";
     for (let i = 0; i < 10; i++) {
-      recordFailedAttempt("login", `10.1.0.${i}`, i % 2 === 0 ? email : email.toUpperCase());
+      recordFailedAttempt(
+        "login",
+        `10.1.0.${i}`,
+        i % 2 === 0 ? email : email.toUpperCase()
+      );
     }
     expect(checkRateLimit("login", "203.0.113.1", email).ok).toBe(false);
   });

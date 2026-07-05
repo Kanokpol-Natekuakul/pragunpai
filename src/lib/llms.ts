@@ -117,7 +117,7 @@ async function fetchArticles(full: boolean): Promise<ArticleRow[]> {
 function productSection(products: ProductRow[]): string {
   if (products.length === 0) return "";
   const lines = products.map(
-    (p) => `- [${p.name}](${absoluteUrl(`/${p.slug}`)}): ${p.summary}`,
+    (p) => `- [${p.name}](${absoluteUrl(`/${p.slug}`)}): ${p.summary}`
   );
   return `## Core Offerings\n\n${lines.join("\n")}`;
 }
@@ -125,7 +125,7 @@ function productSection(products: ProductRow[]): string {
 function articleSection(articles: ArticleRow[]): string {
   if (articles.length === 0) return "";
   const lines = articles.map(
-    (a) => `- [${a.title}](${absoluteUrl(`/articles/${a.slug}`)}): ${a.excerpt}`,
+    (a) => `- [${a.title}](${absoluteUrl(`/articles/${a.slug}`)}): ${a.excerpt}`
   );
   return `## Knowledge Base Articles\n\n${lines.join("\n")}`;
 }
@@ -137,9 +137,11 @@ export async function buildLlmsTxt(): Promise<string> {
     fetchArticles(false),
   ]);
 
-  return [INTRO, productSection(products), STATIC_SECTIONS, articleSection(articles)]
-    .filter(Boolean)
-    .join("\n\n") + "\n";
+  return (
+    [INTRO, productSection(products), STATIC_SECTIONS, articleSection(articles)]
+      .filter(Boolean)
+      .join("\n\n") + "\n"
+  );
 }
 
 /** Full-content llms-full.txt: same skeleton plus complete page and article bodies. */
@@ -178,7 +180,8 @@ export async function buildLlmsFullTxt(): Promise<string> {
 
   const sections = [
     INTRO,
-    products.length > 0 && `## Core Offerings\n\n${productBodies.join("\n\n---\n\n")}`,
+    products.length > 0 &&
+      `## Core Offerings\n\n${productBodies.join("\n\n---\n\n")}`,
     STATIC_SECTIONS,
     articles.length > 0 &&
       `## Knowledge Base Articles\n\n${articleBodies.join("\n\n---\n\n")}`,

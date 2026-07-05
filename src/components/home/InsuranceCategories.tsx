@@ -19,7 +19,8 @@ const categories: Category[] = [
   },
   {
     title: "ประกันอุบัติเหตุ",
-    description: "ความคุ้มครองสำหรับเด็กแรกเกิดถึงผู้สูงอายุ ครอบคลุมทุกช่วงวัย",
+    description:
+      "ความคุ้มครองสำหรับเด็กแรกเกิดถึงผู้สูงอายุ ครอบคลุมทุกช่วงวัย",
     href: "/accident-insurance",
     icon: "🩹",
   },
@@ -46,11 +47,18 @@ export function InsuranceCategories() {
         />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {categories.map((cat) => (
-            <Card key={cat.href} interactive as="article" className="flex flex-col p-8">
+            <Card
+              key={cat.href}
+              interactive
+              as="article"
+              className="flex flex-col p-8"
+            >
               <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy-50 text-3xl">
                 {cat.icon}
               </div>
-              <h3 className="mt-5 text-xl font-bold text-navy-800">{cat.title}</h3>
+              <h3 className="mt-5 text-xl font-bold text-navy-800">
+                {cat.title}
+              </h3>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-navy-500">
                 {cat.description}
               </p>

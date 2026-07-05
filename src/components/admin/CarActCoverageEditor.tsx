@@ -14,14 +14,22 @@ interface CarActCoverageEditorProps {
   initialRows: CoverageRow[];
 }
 
-export function CarActCoverageEditor({ initialRows }: CarActCoverageEditorProps) {
+export function CarActCoverageEditor({
+  initialRows,
+}: CarActCoverageEditorProps) {
   const [rows, setRows] = useState<CoverageRow[]>(
     initialRows.length > 0
       ? initialRows
       : [
           { item: "ค่ารักษาพยาบาล (ต่อคน)", amount: "สูงสุด 80,000 บาท" },
-          { item: "ทุนประกันกรณีเสียชีวิต/สูญเสียอวัยวะ/ทุพพลภาพถาวร", amount: "สูงสุด 500,000 บาท" },
-          { item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ", amount: "สูงสุด 200 บาท/วัน (จำกัด 20 วัน)" },
+          {
+            item: "ทุนประกันกรณีเสียชีวิต/สูญเสียอวัยวะ/ทุพพลภาพถาวร",
+            amount: "สูงสุด 500,000 บาท",
+          },
+          {
+            item: "ค่ารักษาพยาบาลในกรณีเจ็บป่วยที่ไม่ใช่อุบัติเหตุ",
+            amount: "สูงสุด 200 บาท/วัน (จำกัด 20 วัน)",
+          },
           { item: "ระยะเวลาคุ้มครอง", amount: "1 ปี" },
         ]
   );
@@ -29,7 +37,11 @@ export function CarActCoverageEditor({ initialRows }: CarActCoverageEditorProps)
   const [isPending, startTransition] = useTransition();
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const handleFieldChange = (index: number, field: keyof CoverageRow, val: string) => {
+  const handleFieldChange = (
+    index: number,
+    field: keyof CoverageRow,
+    val: string
+  ) => {
     const updated = [...rows];
     updated[index] = { ...updated[index], [field]: val };
     setRows(updated);
@@ -66,8 +78,10 @@ export function CarActCoverageEditor({ initialRows }: CarActCoverageEditorProps)
     setSuccessMsg(null);
     startTransition(async () => {
       // Filter out empty rows
-      const cleanRows = rows.filter((r) => r.item.trim() !== "" || r.amount.trim() !== "");
-      
+      const cleanRows = rows.filter(
+        (r) => r.item.trim() !== "" || r.amount.trim() !== ""
+      );
+
       const res = await updateSiteSettingAction("carActCoverage", cleanRows);
       if (res.success) {
         setSuccessMsg("บันทึกข้อมูลตารางความคุ้มครอง พ.ร.บ. สำเร็จแล้ว");
@@ -90,8 +104,12 @@ export function CarActCoverageEditor({ initialRows }: CarActCoverageEditorProps)
       <Card className="p-6 bg-white border border-gray-200">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-100 pb-4 mb-6 gap-2">
           <div>
-            <h2 className="text-lg font-bold text-navy-800">📝 รายการตารางความคุ้มครอง พ.ร.บ.</h2>
-            <p className="text-xs text-navy-500 font-medium mt-0.5">แก้ไขหัวข้อและจำนวนเงินคุ้มครองที่จะนำไปแสดงในหน้า /car-act</p>
+            <h2 className="text-lg font-bold text-navy-800">
+              📝 รายการตารางความคุ้มครอง พ.ร.บ.
+            </h2>
+            <p className="text-xs text-navy-500 font-medium mt-0.5">
+              แก้ไขหัวข้อและจำนวนเงินคุ้มครองที่จะนำไปแสดงในหน้า /car-act
+            </p>
           </div>
           <Button
             type="button"
@@ -124,12 +142,16 @@ export function CarActCoverageEditor({ initialRows }: CarActCoverageEditorProps)
                 <tbody className="divide-y divide-gray-100">
                   {rows.map((row, idx) => (
                     <tr key={idx} className="hover:bg-gray-50/50">
-                      <td className="py-3 text-center font-bold text-navy-500">{idx + 1}</td>
+                      <td className="py-3 text-center font-bold text-navy-500">
+                        {idx + 1}
+                      </td>
                       <td className="py-3 px-3">
                         <input
                           type="text"
                           value={row.item}
-                          onChange={(e) => handleFieldChange(idx, "item", e.target.value)}
+                          onChange={(e) =>
+                            handleFieldChange(idx, "item", e.target.value)
+                          }
                           placeholder="เช่น ค่ารักษาพยาบาล (ต่อคน)"
                           className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400 font-medium text-navy-800"
                         />
@@ -138,7 +160,9 @@ export function CarActCoverageEditor({ initialRows }: CarActCoverageEditorProps)
                         <input
                           type="text"
                           value={row.amount}
-                          onChange={(e) => handleFieldChange(idx, "amount", e.target.value)}
+                          onChange={(e) =>
+                            handleFieldChange(idx, "amount", e.target.value)
+                          }
                           placeholder="เช่น สูงสุด 80,000 บาท"
                           className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:outline-none focus:border-orange-400 font-semibold text-navy-900"
                         />

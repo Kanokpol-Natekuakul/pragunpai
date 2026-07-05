@@ -10,7 +10,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "กรุณากรอกรหัส OTP" }, { status: 400 });
   }
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "127.0.0.1";
 
   const result = await loginStep2(email, otp, ip);
   if (!result.ok) {

@@ -37,7 +37,9 @@ export function PromoImages({ images }: { images: HeroBannerSlide[] }) {
   return (
     <section className="bg-white py-8 sm:py-10">
       <Container size="wide">
-        <div className={`mx-auto grid gap-4 sm:gap-6 ${visible.length > 1 ? "max-w-4xl sm:grid-cols-2" : "max-w-md"}`}>
+        <div
+          className={`mx-auto grid gap-4 sm:gap-6 ${visible.length > 1 ? "max-w-4xl sm:grid-cols-2" : "max-w-md"}`}
+        >
           {visible.map((img, i) => (
             <button
               key={`${img.imageUrl}-${i}`}
@@ -55,7 +57,13 @@ export function PromoImages({ images }: { images: HeroBannerSlide[] }) {
               />
               {/* Expand hint */}
               <span className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-navy-900/60 text-white backdrop-blur-sm transition-colors group-hover:bg-navy-900/80">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -97,7 +105,12 @@ export function PromoImages({ images }: { images: HeroBannerSlide[] }) {
             />
 
             {openImage.href && (
-              <Button href={openImage.href} variant="accent" size="lg" className="shadow-lg">
+              <Button
+                href={openImage.href}
+                variant="accent"
+                size="lg"
+                className="shadow-lg"
+              >
                 ดูรายละเอียดเพิ่มเติม →
               </Button>
             )}

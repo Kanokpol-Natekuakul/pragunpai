@@ -22,11 +22,18 @@ const statusMap: Record<LeadStatus, string> = {
   SPAM: "สแปม / ข้อมูลเท็จ",
 };
 
-export function LeadDetailEditor({ leadId, currentStatus, currentNotes }: LeadDetailEditorProps) {
+export function LeadDetailEditor({
+  leadId,
+  currentStatus,
+  currentNotes,
+}: LeadDetailEditorProps) {
   const [status, setStatus] = useState<LeadStatus>(currentStatus);
   const [notes, setNotes] = useState<string>(currentNotes || "");
   const [isPending, startTransition] = useTransition();
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error";
+  } | null>(null);
   const router = useRouter();
 
   const handleSave = () => {
@@ -37,13 +44,20 @@ export function LeadDetailEditor({ leadId, currentStatus, currentNotes }: LeadDe
         setMessage({ text: "บันทึกการเปลี่ยนแปลงสำเร็จแล้ว", type: "success" });
         router.refresh();
       } else {
-        setMessage({ text: res.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล", type: "error" });
+        setMessage({
+          text: res.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+          type: "error",
+        });
       }
     });
   };
 
   const handleDelete = () => {
-    if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบ Lead รายการนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้")) {
+    if (
+      !confirm(
+        "คุณแน่ใจหรือไม่ว่าต้องการลบ Lead รายการนี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้"
+      )
+    ) {
       return;
     }
 
@@ -53,7 +67,10 @@ export function LeadDetailEditor({ leadId, currentStatus, currentNotes }: LeadDe
         alert("ลบ Lead สำเร็จแล้ว");
         router.push("/admin/leads");
       } else {
-        setMessage({ text: res.error || "เกิดข้อผิดพลาดในการลบข้อมูล", type: "error" });
+        setMessage({
+          text: res.error || "เกิดข้อผิดพลาดในการลบข้อมูล",
+          type: "error",
+        });
       }
     });
   };

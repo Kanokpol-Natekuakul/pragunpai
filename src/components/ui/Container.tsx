@@ -26,7 +26,7 @@ export function Container({
       className={clsx(
         "mx-auto w-full px-4 sm:px-6 lg:px-8",
         sizeClass[size],
-        className,
+        className
       )}
     >
       {children}

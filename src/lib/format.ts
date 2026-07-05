@@ -30,7 +30,7 @@ export function formatThaiDateTime(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
   if (Number.isNaN(d.getTime())) return "";
   const time = `${String(d.getHours()).padStart(2, "0")}:${String(
-    d.getMinutes(),
+    d.getMinutes()
   ).padStart(2, "0")}`;
   return `${formatThaiDate(d)} ${time} น.`;
 }
@@ -98,4 +98,3 @@ export function formatThaiCurrency(amount: number, decimals = 2): string {
   });
   return `${formatted} บาท`;
 }
-

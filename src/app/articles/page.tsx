@@ -48,10 +48,12 @@ export default async function ArticlesPage() {
         <section className="bg-linear-to-br from-navy-700 to-navy-900 py-16 text-white">
           <Container size="wide" className="text-center">
             <span className="text-5xl">📚</span>
-            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">บทความความรู้ประกันภัย</h1>
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
+              บทความความรู้ประกันภัย
+            </h1>
             <p className="mx-auto mt-4 max-w-2xl text-navy-100">
-              ความรู้เรื่อง พ.ร.บ. รถยนต์ ประกันอุบัติเหตุ ประกันบ้าน-คอนโด-หอพัก
-              และคำแนะนำการเลือกแผนประกันที่เหมาะกับคุณ
+              ความรู้เรื่อง พ.ร.บ. รถยนต์ ประกันอุบัติเหตุ
+              ประกันบ้าน-คอนโด-หอพัก และคำแนะนำการเลือกแผนประกันที่เหมาะกับคุณ
             </p>
           </Container>
         </section>
@@ -82,10 +84,19 @@ export default async function ArticlesPage() {
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {articles.map((article) => (
-                <Card key={article.id} interactive as="article" className="overflow-hidden">
-                  <Link href={`/articles/${article.slug}`} className="block p-6">
+                <Card
+                  key={article.id}
+                  interactive
+                  as="article"
+                  className="overflow-hidden"
+                >
+                  <Link
+                    href={`/articles/${article.slug}`}
+                    className="block p-6"
+                  >
                     <span className="inline-flex rounded-full bg-navy-100 px-2.5 py-0.5 text-xs font-medium text-navy-700">
-                      {articleCategoryLabel[article.category] ?? article.category}
+                      {articleCategoryLabel[article.category] ??
+                        article.category}
                     </span>
                     <h2 className="mt-3 text-lg font-bold text-navy-800 line-clamp-2">
                       {article.title}

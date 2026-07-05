@@ -15,8 +15,15 @@ import { formatThaiDate, articleCategoryLabel } from "@/lib/format";
 type Props = { params: Promise<{ slug: string }> };
 
 /** Internal links per category — topic-cluster SEO + quote conversion. */
-const categoryLinks: Record<string, { infoHref: string; quoteHref: string; label: string }> = {
-  CAR_ACT: { infoHref: "/car-act", quoteHref: "/quote/car-act", label: "พ.ร.บ. รถยนต์" },
+const categoryLinks: Record<
+  string,
+  { infoHref: string; quoteHref: string; label: string }
+> = {
+  CAR_ACT: {
+    infoHref: "/car-act",
+    quoteHref: "/quote/car-act",
+    label: "พ.ร.บ. รถยนต์",
+  },
   ACCIDENT: {
     infoHref: "/accident-insurance",
     quoteHref: "/quote/accident",
@@ -105,7 +112,9 @@ export default async function ArticlePage({ params }: Props) {
             <h1 className="mt-4 text-3xl font-bold leading-snug text-navy-900 sm:text-4xl">
               {article.title}
             </h1>
-            <p className="mt-4 text-lg leading-relaxed text-navy-500">{article.excerpt}</p>
+            <p className="mt-4 text-lg leading-relaxed text-navy-500">
+              {article.excerpt}
+            </p>
             <p className="mt-4 text-sm text-navy-400">
               เผยแพร่เมื่อ{" "}
               <time dateTime={article.publishedAt.toISOString()}>
@@ -156,10 +165,17 @@ export default async function ArticlePage({ params }: Props) {
       {related.length > 0 && (
         <section className="bg-navy-50 py-16">
           <Container size="wide">
-            <h2 className="text-2xl font-bold text-navy-800">บทความที่เกี่ยวข้อง</h2>
+            <h2 className="text-2xl font-bold text-navy-800">
+              บทความที่เกี่ยวข้อง
+            </h2>
             <div className="mt-8 grid gap-6 md:grid-cols-3">
               {related.map((item) => (
-                <Card key={item.id} interactive as="article" className="overflow-hidden">
+                <Card
+                  key={item.id}
+                  interactive
+                  as="article"
+                  className="overflow-hidden"
+                >
                   <Link href={`/articles/${item.slug}`} className="block p-6">
                     <span className="inline-flex rounded-full bg-navy-100 px-2.5 py-0.5 text-xs font-medium text-navy-700">
                       {articleCategoryLabel[item.category] ?? item.category}

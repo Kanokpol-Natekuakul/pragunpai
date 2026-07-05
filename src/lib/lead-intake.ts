@@ -13,10 +13,20 @@ import type { UploadResult } from "@/lib/upload";
 
 export const baseLeadSchema = z.object({
   name: z.string().min(2, "กรุณากรอกชื่อ-นามสกุล ของท่าน"),
-  phone: z.string().regex(/^[0-9\-+\s]{9,15}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (9-15 หลัก)"),
+  phone: z
+    .string()
+    .regex(
+      /^[0-9\-+\s]{9,15}$/,
+      "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (9-15 หลัก)"
+    ),
   lineId: z.string().optional().nullable(),
   province: z.string().optional().nullable(),
-  email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง").or(z.literal("")).optional().nullable(),
+  email: z
+    .string()
+    .email("รูปแบบอีเมลไม่ถูกต้อง")
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
   note: z.string().optional().nullable(),
   gRecaptchaToken: z.string().optional().nullable(),
 });
@@ -94,7 +104,7 @@ export function parseLeadForm(formData: FormData) {
   };
 
   const files = (formData.getAll("attachments") as File[]).filter(
-    (file) => file && file.size > 0 && file.name,
+    (file) => file && file.size > 0 && file.name
   );
 
   return { formTypeStr, rawData, files };
@@ -106,7 +116,7 @@ export function parseLeadForm(formData: FormData) {
  */
 export function buildLeadDetails(
   formTypeStr: string,
-  rawData: RawLeadData,
+  rawData: RawLeadData
 ): { formType: LeadFormTypeValue; details: LeadDetails } {
   if (formTypeStr === "CAR_ACT") {
     const validated = carActSchema.parse(rawData);
@@ -189,14 +199,13 @@ export type LeadIntakeDeps = {
 };
 
 export type LeadIntakeResult =
-  | { success: true; leadId: string }
-  | { success: false; error: string };
+  { success: true; leadId: string } | { success: false; error: string };
 
 const LEAD_RETENTION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days (PDPA requirement)
 
 export async function processLead(
   formData: FormData,
-  deps: LeadIntakeDeps,
+  deps: LeadIntakeDeps
 ): Promise<LeadIntakeResult> {
   try {
     const { formTypeStr, rawData, files } = parseLeadForm(formData);
@@ -206,7 +215,10 @@ export async function processLead(
 
     const isCaptchaValid = await deps.verifyRecaptcha(rawData.gRecaptchaToken);
     if (!isCaptchaValid) {
-      return { success: false, error: "การตรวจสอบความปลอดภัย reCAPTCHA ล้มเหลว กรุณาลองใหม่อีกครั้ง" };
+      return {
+        success: false,
+        error: "การตรวจสอบความปลอดภัย reCAPTCHA ล้มเหลว กรุณาลองใหม่อีกครั้ง",
+      };
     }
 
     const { formType, details } = buildLeadDetails(formTypeStr, rawData);
@@ -217,7 +229,10 @@ export async function processLead(
         uploadedAttachments.push(await deps.uploadAttachment(file));
       } catch (uploadErr) {
         const err = uploadErr as Error;
-        return { success: false, error: err.message || "เกิดข้อผิดพลาดในการอัปเดตไฟล์" };
+        return {
+          success: false,
+          error: err.message || "เกิดข้อผิดพลาดในการอัปเดตไฟล์",
+        };
       }
     }
 
@@ -243,7 +258,10 @@ export async function processLead(
     });
 
     if (!emailResult.ok) {
-      await deps.markEmailFailed(lead.id, emailResult.error || "Failed to send email alert");
+      await deps.markEmailFailed(
+        lead.id,
+        emailResult.error || "Failed to send email alert"
+      );
     }
 
     return { success: true, leadId: lead.id };
@@ -254,6 +272,9 @@ export async function processLead(
       return { success: false, error: firstError };
     }
     const err = error as Error;
-    return { success: false, error: err.message || "เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง" };
+    return {
+      success: false,
+      error: err.message || "เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง",
+    };
   }
 }

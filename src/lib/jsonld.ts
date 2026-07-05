@@ -68,7 +68,9 @@ export function localBusinessJsonLd(): JsonLd {
   };
 }
 
-export function breadcrumbJsonLd(items: { name: string; url: string }[]): JsonLd {
+export function breadcrumbJsonLd(
+  items: { name: string; url: string }[]
+): JsonLd {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -81,7 +83,9 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]): JsonLd
   };
 }
 
-export function faqPageJsonLd(items: { question: string; answer: string }[]): JsonLd {
+export function faqPageJsonLd(
+  items: { question: string; answer: string }[]
+): JsonLd {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -112,7 +116,9 @@ export function articleJsonLd(article: {
     description: article.description,
     image: article.image ? absoluteUrl(article.image) : undefined,
     datePublished: new Date(article.datePublished).toISOString(),
-    dateModified: new Date(article.dateModified ?? article.datePublished).toISOString(),
+    dateModified: new Date(
+      article.dateModified ?? article.datePublished
+    ).toISOString(),
     inLanguage: "th-TH",
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     author: { "@id": `${siteConfig.url}/#organization` },
@@ -146,10 +152,7 @@ export function productJsonLd(plan: {
   };
 }
 
-export function howToJsonLd(step: {
-  name: string;
-  steps: string[];
-}): JsonLd {
+export function howToJsonLd(step: { name: string; steps: string[] }): JsonLd {
   return {
     "@context": "https://schema.org",
     "@type": "HowTo",

@@ -70,9 +70,10 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
 
     // Display client-side file size
     const sizeInKb = (file.size / 1024).toFixed(1);
-    const sizeString = file.size > 1024 * 1024 
-      ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` 
-      : `${sizeInKb} KB`;
+    const sizeString =
+      file.size > 1024 * 1024
+        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+        : `${sizeInKb} KB`;
     setFileSize(sizeString);
 
     // Display client-side image dimensions
@@ -99,8 +100,12 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
       setUploadingImage(false);
     }
   };
-  const [category, setCategory] = useState<ArticleCategory>(article?.category || "GENERAL");
-  const [insurancePageId, setInsurancePageId] = useState(article?.insurancePageId || "");
+  const [category, setCategory] = useState<ArticleCategory>(
+    article?.category || "GENERAL"
+  );
+  const [insurancePageId, setInsurancePageId] = useState(
+    article?.insurancePageId || ""
+  );
   const [publishedAt, setPublishedAt] = useState(
     article?.publishedAt
       ? new Date(article.publishedAt).toISOString().slice(0, 16)
@@ -109,7 +114,9 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
 
   // SEO Inputs
   const [seoTitle, setSeoTitle] = useState(article?.seoTitle || "");
-  const [metaDescription, setMetaDescription] = useState(article?.metaDescription || "");
+  const [metaDescription, setMetaDescription] = useState(
+    article?.metaDescription || ""
+  );
   const [keywords, setKeywords] = useState(article?.keywords || "");
 
   // Auto-generate slug from title
@@ -122,19 +129,21 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
   };
 
   const convertToSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      // replace spaces and special characters with hyphens
-      .replace(/[^a-zA-Z0-9\u0e00-\u0e7f\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
+    return (
+      text
+        .toLowerCase()
+        // replace spaces and special characters with hyphens
+        .replace(/[^a-zA-Z0-9\u0e00-\u0e7f\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+    );
   };
 
   const handleSave = () => {
     setErrorMessage(null);
     const slugTrimmed = slug.trim().toLowerCase();
-    
+
     if (!title.trim()) {
       setErrorMessage("กรุณากรอกหัวข้อบทความ");
       return;
@@ -206,7 +215,8 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
 
         <div>
           <label className="block text-sm font-bold text-navy-800 mb-1">
-            URL Slug (ภาษาอังกฤษ หรือภาษาไทย คั่นด้วยขีดกลาง) <span className="text-red-500">*</span>
+            URL Slug (ภาษาอังกฤษ หรือภาษาไทย คั่นด้วยขีดกลาง){" "}
+            <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -216,7 +226,8 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
             className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm font-mono focus:outline-none focus:border-orange-400"
           />
           <p className="text-[10px] text-navy-400 mt-1 font-semibold">
-            * URL ของหน้าบทความนี้จะเป็น: https://pragunpai.com/articles/{slug || "slug"}
+            * URL ของหน้าบทความนี้จะเป็น: https://pragunpai.com/articles/
+            {slug || "slug"}
           </p>
         </div>
 
@@ -269,11 +280,13 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
             <label className="block text-xs font-bold text-navy-600 uppercase">
               อัปโหลดไฟล์รูปภาพปก
             </label>
-            
-            <div 
+
+            <div
               onClick={() => fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 relative overflow-hidden bg-navy-50/50 hover:bg-navy-50 ${
-                coverImage ? 'border-navy-300 bg-white' : 'border-navy-200 hover:border-orange-400'
+                coverImage
+                  ? "border-navy-300 bg-white"
+                  : "border-navy-200 hover:border-orange-400"
               }`}
             >
               <input
@@ -288,7 +301,9 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
               {uploadingImage ? (
                 <div className="flex flex-col items-center space-y-2 py-4">
                   <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-sm text-navy-600 font-bold">กำลังอัปโหลดรูปภาพ...</span>
+                  <span className="text-sm text-navy-600 font-bold">
+                    กำลังอัปโหลดรูปภาพ...
+                  </span>
                 </div>
               ) : coverImage ? (
                 <div className="w-full flex flex-col sm:flex-row gap-4 items-center">
@@ -300,16 +315,25 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
                   />
                   <div className="flex-1 text-left space-y-1">
                     <p className="text-xs font-semibold text-navy-500 truncate max-w-70">
-                      ลิงก์: <span className="font-mono text-navy-700">{coverImage}</span>
+                      ลิงก์:{" "}
+                      <span className="font-mono text-navy-700">
+                        {coverImage}
+                      </span>
                     </p>
                     {dimensions && (
                       <p className="text-xs text-navy-600">
-                        📐 มิติรูปภาพ: <span className="font-bold text-navy-850">{dimensions}</span>
+                        📐 มิติรูปภาพ:{" "}
+                        <span className="font-bold text-navy-850">
+                          {dimensions}
+                        </span>
                       </p>
                     )}
                     {fileSize && (
                       <p className="text-xs text-navy-600">
-                        💾 ขนาดไฟล์: <span className="font-bold text-navy-850">{fileSize}</span>
+                        💾 ขนาดไฟล์:{" "}
+                        <span className="font-bold text-navy-850">
+                          {fileSize}
+                        </span>
                       </p>
                     )}
                     <button
@@ -318,7 +342,8 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
                         e.stopPropagation();
                         setCoverImage("");
                         setFileSize(null);
-                        if (fileInputRef.current) fileInputRef.current.value = "";
+                        if (fileInputRef.current)
+                          fileInputRef.current.value = "";
                       }}
                       className="mt-2 text-xs font-bold text-red-500 hover:text-red-700 hover:underline inline-flex items-center gap-1 cursor-pointer"
                     >
@@ -328,12 +353,26 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
                 </div>
               ) : (
                 <div className="flex flex-col items-center space-y-2 text-center py-4">
-                  <svg className="w-10 h-10 text-navy-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <svg
+                    className="w-10 h-10 text-navy-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
                   <div>
-                    <span className="text-sm font-bold text-navy-700">คลิกเพื่อเลือกไฟล์รูปภาพปก</span>
-                    <p className="text-xs text-navy-400 mt-1">รองรับ JPG, PNG, WEBP (ไม่เกิน 5MB)</p>
+                    <span className="text-sm font-bold text-navy-700">
+                      คลิกเพื่อเลือกไฟล์รูปภาพปก
+                    </span>
+                    <p className="text-xs text-navy-400 mt-1">
+                      รองรับ JPG, PNG, WEBP (ไม่เกิน 5MB)
+                    </p>
                   </div>
                 </div>
               )}
@@ -357,7 +396,8 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
 
             <div>
               <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
-                ข้อความอธิบายรูปปก (Cover Image Alt) <span className="text-orange-500 font-bold">(ดีต่อ SEO)</span>
+                ข้อความอธิบายรูปปก (Cover Image Alt){" "}
+                <span className="text-orange-500 font-bold">(ดีต่อ SEO)</span>
               </label>
               <input
                 type="text"
@@ -369,11 +409,14 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
             </div>
           </div>
         </div>
-        
+
         <div className="rounded-lg bg-orange-50/50 border border-orange-100 p-3 text-xs text-navy-600 flex gap-2">
           <span>💡</span>
           <span>
-            <strong>คำแนะนำสำหรับรูปปกบทความ:</strong> แนะนำขนาด <strong>1200 x 630 พิกเซล</strong> (อัตราส่วน 1.91:1 หรือ 16:9) เพื่อความคมชัดสูงสุดเมื่อแชร์ผ่าน Social Media เช่น Facebook หรือ LINE
+            <strong>คำแนะนำสำหรับรูปปกบทความ:</strong> แนะนำขนาด{" "}
+            <strong>1200 x 630 พิกเซล</strong> (อัตราส่วน 1.91:1 หรือ 16:9)
+            เพื่อความคมชัดสูงสุดเมื่อแชร์ผ่าน Social Media เช่น Facebook หรือ
+            LINE
           </span>
         </div>
       </div>
@@ -407,7 +450,8 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
 
       <div>
         <label className="block text-sm font-bold text-navy-800 mb-1">
-          เนื้อหาบทความแบบละเอียด (Content - รองรับ Markdown และภาษาไทย) <span className="text-red-500">*</span>
+          เนื้อหาบทความแบบละเอียด (Content - รองรับ Markdown และภาษาไทย){" "}
+          <span className="text-red-500">*</span>
         </label>
         <textarea
           rows={15}

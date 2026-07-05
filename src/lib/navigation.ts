@@ -20,9 +20,7 @@ export const mainMenu: NavItem[] = [
   { label: "ติดต่อเรา", href: "/contact" },
 ];
 
-export const ctaMenu: NavItem[] = [
-  { label: "ขอใบเสนอราคา", href: "/quote" },
-];
+export const ctaMenu: NavItem[] = [{ label: "ขอใบเสนอราคา", href: "/quote" }];
 
 /** Quote form routes keyed by form type. */
 export const quoteRoutes: Record<string, string> = {

@@ -12,7 +12,9 @@ interface BrochureDownloadButtonProps {
   brochures: BrochureItem[];
 }
 
-export function BrochureDownloadButton({ brochures }: BrochureDownloadButtonProps) {
+export function BrochureDownloadButton({
+  brochures,
+}: BrochureDownloadButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   if (!brochures || brochures.length === 0) return null;
@@ -56,7 +58,9 @@ export function BrochureDownloadButton({ brochures }: BrochureDownloadButtonProp
               <div className="mx-auto w-12 h-12 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-2xl mb-3 shadow-inner">
                 📄
               </div>
-              <h3 className="text-lg font-bold text-navy-900">ดาวน์โหลดเอกสารโบรชัวร์</h3>
+              <h3 className="text-lg font-bold text-navy-900">
+                ดาวน์โหลดเอกสารโบรชัวร์
+              </h3>
               <p className="text-xs text-navy-450 mt-1.5 font-medium">
                 กรุณาเลือกไฟล์โบรชัวร์ที่คุณต้องการดาวน์โหลด
               </p>

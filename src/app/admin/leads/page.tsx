@@ -19,13 +19,34 @@ type PageProps = {
 };
 
 const statusMap: Record<LeadStatus, { label: string; color: string }> = {
-  NEW: { label: "ใหม่", color: "bg-orange-100 text-orange-800 border border-orange-200" },
-  CONTACTED: { label: "ติดต่อแล้ว", color: "bg-blue-100 text-blue-800 border border-blue-200" },
-  AWAITING_DOCS: { label: "รอเอกสารเพิ่มเติม", color: "bg-yellow-100 text-yellow-800 border border-yellow-200" },
-  QUOTED: { label: "เสนอราคาแล้ว", color: "bg-indigo-100 text-indigo-800 border border-indigo-200" },
-  CLOSED: { label: "สำเร็จ (ปิดการขาย)", color: "bg-emerald-100 text-emerald-800 border border-emerald-200" },
-  NOT_INTERESTED: { label: "ไม่สนใจ", color: "bg-gray-100 text-gray-700 border border-gray-200" },
-  SPAM: { label: "สแปม/ข้อมูลเท็จ", color: "bg-red-100 text-red-800 border border-red-200" },
+  NEW: {
+    label: "ใหม่",
+    color: "bg-orange-100 text-orange-800 border border-orange-200",
+  },
+  CONTACTED: {
+    label: "ติดต่อแล้ว",
+    color: "bg-blue-100 text-blue-800 border border-blue-200",
+  },
+  AWAITING_DOCS: {
+    label: "รอเอกสารเพิ่มเติม",
+    color: "bg-yellow-100 text-yellow-800 border border-yellow-200",
+  },
+  QUOTED: {
+    label: "เสนอราคาแล้ว",
+    color: "bg-indigo-100 text-indigo-800 border border-indigo-200",
+  },
+  CLOSED: {
+    label: "สำเร็จ (ปิดการขาย)",
+    color: "bg-emerald-100 text-emerald-800 border border-emerald-200",
+  },
+  NOT_INTERESTED: {
+    label: "ไม่สนใจ",
+    color: "bg-gray-100 text-gray-700 border border-gray-200",
+  },
+  SPAM: {
+    label: "สแปม/ข้อมูลเท็จ",
+    color: "bg-red-100 text-red-800 border border-red-200",
+  },
 };
 
 export default async function LeadsAdminPage({ searchParams }: PageProps) {
@@ -38,7 +59,8 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
   const formType = resolvedParams.formType || "";
 
   // Build Prisma filter query
-  const whereClause: import("@/generated/prisma/client").Prisma.LeadWhereInput = {};
+  const whereClause: import("@/generated/prisma/client").Prisma.LeadWhereInput =
+    {};
 
   if (search) {
     whereClause.OR = [
@@ -68,7 +90,9 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
       {/* Header section */}
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-navy-800">จัดการข้อมูลลูกค้า (Leads)</h1>
+          <h1 className="text-2xl font-bold text-navy-800">
+            จัดการข้อมูลลูกค้า (Leads)
+          </h1>
           <p className="text-sm text-navy-500">
             ดูและอัปเดตสถานะผู้ติดต่อขอรับใบเสนอราคาประกันภัย
           </p>
@@ -130,7 +154,7 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
           </div>
 
           <div className="sm:col-span-4 flex justify-end gap-2 mt-2">
-            { (search || status || formType) && (
+            {(search || status || formType) && (
               <Link
                 href="/admin/leads"
                 className="rounded-lg border border-navy-100 px-4 py-2 text-sm text-navy-600 hover:bg-navy-50 font-medium"
@@ -169,9 +193,15 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {leads.map((lead) => {
-                  const statusInfo = statusMap[lead.status] || { label: lead.status, color: "bg-gray-100 text-gray-800" };
+                  const statusInfo = statusMap[lead.status] || {
+                    label: lead.status,
+                    color: "bg-gray-100 text-gray-800",
+                  };
                   return (
-                    <tr key={lead.id} className="hover:bg-navy-50/20 transition-colors">
+                    <tr
+                      key={lead.id}
+                      className="hover:bg-navy-50/20 transition-colors"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap text-navy-600 font-medium">
                         {formatThaiDate(lead.createdAt)}
                       </td>
@@ -184,10 +214,13 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-semibold text-navy-800">{lead.phone}</div>
+                        <div className="font-semibold text-navy-800">
+                          {lead.phone}
+                        </div>
                         {lead.lineId && (
                           <div className="text-xs text-navy-500 flex items-center gap-1 mt-0.5">
-                            <span className="text-[10px]">💬</span> LINE: {lead.lineId}
+                            <span className="text-[10px]">💬</span> LINE:{" "}
+                            {lead.lineId}
                           </div>
                         )}
                       </td>
@@ -195,7 +228,9 @@ export default async function LeadsAdminPage({ searchParams }: PageProps) {
                         {leadFormTypeLabel[lead.formType] || lead.formType}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusInfo.color}`}>
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusInfo.color}`}
+                        >
                           {statusInfo.label}
                         </span>
                       </td>

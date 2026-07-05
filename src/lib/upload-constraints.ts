@@ -14,7 +14,9 @@ export const UPLOAD_MIME_EXTENSIONS: Record<string, readonly string[]> = {
   "image/webp": [".webp"],
   "application/pdf": [".pdf"],
   "application/msword": [".doc"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+    ".docx",
+  ],
 };
 
 export const ALLOWED_MIME_TYPES = Object.keys(UPLOAD_MIME_EXTENSIONS);
@@ -36,7 +38,7 @@ export type UploadValidation = { ok: true } | { ok: false; error: string };
  */
 export function validateUpload(
   file: { name: string; type: string; size: number },
-  opts?: { allowedMimeTypes?: readonly string[] },
+  opts?: { allowedMimeTypes?: readonly string[] }
 ): UploadValidation {
   if (file.size > MAX_UPLOAD_BYTES) {
     return {

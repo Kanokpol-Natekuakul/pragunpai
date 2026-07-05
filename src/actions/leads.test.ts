@@ -82,7 +82,10 @@ describe("submitLeadAction", () => {
     expect(data.formType).toBe("CAR_ACT");
     expect(data.name).toBe("สมชาย ใจดี");
     expect(data.phone).toBe("0812345678");
-    expect(data.details).toMatchObject({ carBrand: "Toyota", carPlate: "กข 1234" });
+    expect(data.details).toMatchObject({
+      carBrand: "Toyota",
+      carPlate: "กข 1234",
+    });
     expect(data.expiresAt).toBeInstanceOf(Date);
     expect(mockSendLeadAlert).toHaveBeenCalledOnce();
   });
@@ -108,7 +111,7 @@ describe("submitLeadAction", () => {
       "fetch",
       vi.fn().mockResolvedValue({
         json: () => Promise.resolve({ success: false }),
-      }),
+      })
     );
 
     const fd = makeCarActForm();
@@ -124,7 +127,11 @@ describe("updateLeadAction", () => {
   it("refuses and touches nothing when unauthenticated", async () => {
     mockRequireAuth.mockRejectedValue(new AuthError());
 
-    const res = await updateLeadAction("lead-1", "CONTACTED" as LeadStatus, null);
+    const res = await updateLeadAction(
+      "lead-1",
+      "CONTACTED" as LeadStatus,
+      null
+    );
 
     expect(res.success).toBe(false);
     expect(mockPrisma.lead.update).not.toHaveBeenCalled();
@@ -134,7 +141,11 @@ describe("updateLeadAction", () => {
     mockRequireAuth.mockResolvedValue(session);
     mockPrisma.lead.update.mockResolvedValue({ id: "lead-1" } as never);
 
-    const res = await updateLeadAction("lead-1", "CONTACTED" as LeadStatus, "โทรแล้ว");
+    const res = await updateLeadAction(
+      "lead-1",
+      "CONTACTED" as LeadStatus,
+      "โทรแล้ว"
+    );
 
     expect(res).toEqual({ success: true, leadId: "lead-1" });
     expect(mockPrisma.lead.update).toHaveBeenCalledWith({
@@ -161,6 +172,8 @@ describe("deleteLeadAction", () => {
     const res = await deleteLeadAction("lead-1");
 
     expect(res).toEqual({ success: true });
-    expect(mockPrisma.lead.delete).toHaveBeenCalledWith({ where: { id: "lead-1" } });
+    expect(mockPrisma.lead.delete).toHaveBeenCalledWith({
+      where: { id: "lead-1" },
+    });
   });
 });

@@ -83,7 +83,9 @@ export function SiteSettingsEditor({
     }
   };
 
-  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFaviconUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingFavicon(true);
@@ -108,7 +110,9 @@ export function SiteSettingsEditor({
 
   // 1. Contact Settings State
   const [phone, setPhone] = useState(contactVal?.phone || "");
-  const [phoneDisplay, setPhoneDisplay] = useState(contactVal?.phoneDisplay || "");
+  const [phoneDisplay, setPhoneDisplay] = useState(
+    contactVal?.phoneDisplay || ""
+  );
   const [line, setLine] = useState(contactVal?.line || "");
   const [lineUrl, setLineUrl] = useState(contactVal?.lineUrl || "");
   const [email, setEmail] = useState(contactVal?.email || "");
@@ -122,11 +126,21 @@ export function SiteSettingsEditor({
 
   // 3. Hero Copy Settings State
   const [heroHeadline, setHeroHeadline] = useState(heroVal?.headline || "");
-  const [heroSubheadline, setHeroSubheadline] = useState(heroVal?.subheadline || "");
-  const [heroCta1Label, setHeroCta1Label] = useState(heroVal?.ctaPrimary?.label || "");
-  const [heroCta1Href, setHeroCta1Href] = useState(heroVal?.ctaPrimary?.href || "");
-  const [heroCta2Label, setHeroCta2Label] = useState(heroVal?.ctaSecondary?.label || "");
-  const [heroCta2Href, setHeroCta2Href] = useState(heroVal?.ctaSecondary?.href || "");
+  const [heroSubheadline, setHeroSubheadline] = useState(
+    heroVal?.subheadline || ""
+  );
+  const [heroCta1Label, setHeroCta1Label] = useState(
+    heroVal?.ctaPrimary?.label || ""
+  );
+  const [heroCta1Href, setHeroCta1Href] = useState(
+    heroVal?.ctaPrimary?.href || ""
+  );
+  const [heroCta2Label, setHeroCta2Label] = useState(
+    heroVal?.ctaSecondary?.label || ""
+  );
+  const [heroCta2Href, setHeroCta2Href] = useState(
+    heroVal?.ctaSecondary?.href || ""
+  );
 
   // 4. Floating Buttons State
   const [floatPhone, setFloatPhone] = useState(!!floatingButtonsVal?.phone);
@@ -161,7 +175,11 @@ export function SiteSettingsEditor({
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
           <span>🖼️ โลโก้และไอคอนของเว็บไซต์ (Web Logo & Favicon)</span>
-          {activeSection === "siteLogoConfig" && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+          {activeSection === "siteLogoConfig" && (
+            <span className="text-xs text-orange-500 font-semibold">
+              กำลังบันทึก...
+            </span>
+          )}
         </h2>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -172,7 +190,11 @@ export function SiteSettingsEditor({
                 โลโก้เว็บไซต์ (Header / Footer Logo)
               </span>
               <p className="text-[11px] text-navy-400 mb-2 leading-relaxed">
-                <strong className="text-orange-500">ขนาดแนะนำ: 200px x 48px</strong> (แนวนอน อัตราส่วนประมาณ 4:1) แนะนำใช้ไฟล์ภาพ PNG โปร่งใส (Transparent) หรือ SVG เพื่อให้กลมกลืนกับแถบเมนูและพื้นหลัง
+                <strong className="text-orange-500">
+                  ขนาดแนะนำ: 200px x 48px
+                </strong>{" "}
+                (แนวนอน อัตราส่วนประมาณ 4:1) แนะนำใช้ไฟล์ภาพ PNG โปร่งใส
+                (Transparent) หรือ SVG เพื่อให้กลมกลืนกับแถบเมนูและพื้นหลัง
               </p>
             </div>
 
@@ -180,9 +202,15 @@ export function SiteSettingsEditor({
             <div className="h-16 w-full max-w-62.5 overflow-hidden rounded-lg bg-navy-50 border border-gray-200 flex items-center justify-center p-2 relative">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt="โลโก้เว็บไซต์" className="max-h-full max-w-full object-contain" />
+                <img
+                  src={logoUrl}
+                  alt="โลโก้เว็บไซต์"
+                  className="max-h-full max-w-full object-contain"
+                />
               ) : (
-                <span className="text-xs text-navy-400 font-semibold">ยังไม่มีรูปโลโก้ (ใช้ชื่อข้อความแทน)</span>
+                <span className="text-xs text-navy-400 font-semibold">
+                  ยังไม่มีรูปโลโก้ (ใช้ชื่อข้อความแทน)
+                </span>
               )}
             </div>
 
@@ -194,9 +222,15 @@ export function SiteSettingsEditor({
                 disabled={uploadingLogo}
                 className="w-full text-xs text-navy-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-navy-50 file:text-navy-700 hover:file:bg-navy-100 cursor-pointer disabled:opacity-50"
               />
-              {uploadingLogo && <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลดโลโก้...</span>}
+              {uploadingLogo && (
+                <span className="text-[10px] text-orange-500 font-bold animate-pulse">
+                  กำลังอัปโหลดโลโก้...
+                </span>
+              )}
               <div>
-                <label className="block text-[10px] font-bold text-navy-500 uppercase mb-1">หรือป้อนลิงก์โลโก้โดยตรง</label>
+                <label className="block text-[10px] font-bold text-navy-500 uppercase mb-1">
+                  หรือป้อนลิงก์โลโก้โดยตรง
+                </label>
                 <input
                   type="text"
                   value={logoUrl}
@@ -215,7 +249,11 @@ export function SiteSettingsEditor({
                 ไอคอนเว็บสำหรับแท็บเบราว์เซอร์ (Favicon / Site Icon)
               </span>
               <p className="text-[11px] text-navy-400 mb-2 leading-relaxed">
-                <strong className="text-orange-500">ขนาดแนะนำ: 32px x 32px หรือ 48px x 48px</strong> (สี่เหลี่ยมจัตุรัส 1:1) คมชัดสัดส่วนจัตุรัส แนะนำไฟล์ประเภท ICO หรือ PNG
+                <strong className="text-orange-500">
+                  ขนาดแนะนำ: 32px x 32px หรือ 48px x 48px
+                </strong>{" "}
+                (สี่เหลี่ยมจัตุรัส 1:1) คมชัดสัดส่วนจัตุรัส แนะนำไฟล์ประเภท ICO
+                หรือ PNG
               </p>
             </div>
 
@@ -223,9 +261,15 @@ export function SiteSettingsEditor({
             <div className="h-16 w-16 overflow-hidden rounded-lg bg-navy-50 border border-gray-200 flex items-center justify-center p-2 relative">
               {faviconUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={faviconUrl} alt="Favicon" className="h-8 w-8 object-contain" />
+                <img
+                  src={faviconUrl}
+                  alt="Favicon"
+                  className="h-8 w-8 object-contain"
+                />
               ) : (
-                <span className="text-[10px] text-navy-400 font-semibold text-center leading-none">ไม่มีไอคอน</span>
+                <span className="text-[10px] text-navy-400 font-semibold text-center leading-none">
+                  ไม่มีไอคอน
+                </span>
               )}
             </div>
 
@@ -237,9 +281,15 @@ export function SiteSettingsEditor({
                 disabled={uploadingFavicon}
                 className="w-full text-xs text-navy-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-navy-50 file:text-navy-700 hover:file:bg-navy-100 cursor-pointer disabled:opacity-50"
               />
-              {uploadingFavicon && <span className="text-[10px] text-orange-500 font-bold animate-pulse">กำลังอัปโหลดไอคอน...</span>}
+              {uploadingFavicon && (
+                <span className="text-[10px] text-orange-500 font-bold animate-pulse">
+                  กำลังอัปโหลดไอคอน...
+                </span>
+              )}
               <div>
-                <label className="block text-[10px] font-bold text-navy-500 uppercase mb-1">หรือป้อนลิงก์ไอคอนโดยตรง</label>
+                <label className="block text-[10px] font-bold text-navy-500 uppercase mb-1">
+                  หรือป้อนลิงก์ไอคอนโดยตรง
+                </label>
                 <input
                   type="text"
                   value={faviconUrl}
@@ -254,7 +304,9 @@ export function SiteSettingsEditor({
 
         <div className="flex justify-end pt-2 border-t border-gray-50">
           <Button
-            onClick={() => saveSetting("siteLogoConfig", { logoUrl, faviconUrl })}
+            onClick={() =>
+              saveSetting("siteLogoConfig", { logoUrl, faviconUrl })
+            }
             disabled={isPending || uploadingLogo || uploadingFavicon}
             variant="secondary"
             className="text-xs py-1.5 px-6 font-semibold cursor-pointer"
@@ -268,7 +320,11 @@ export function SiteSettingsEditor({
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
           <span>📞 ข้อมูลการติดต่อหลัก (Brand Contact)</span>
-          {activeSection === "contact" && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+          {activeSection === "contact" && (
+            <span className="text-xs text-orange-500 font-semibold">
+              กำลังบันทึก...
+            </span>
+          )}
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -335,7 +391,15 @@ export function SiteSettingsEditor({
 
         <div className="flex justify-end pt-2 border-t border-gray-50">
           <Button
-            onClick={() => saveSetting("contact", { phone, phoneDisplay, line, lineUrl, email })}
+            onClick={() =>
+              saveSetting("contact", {
+                phone,
+                phoneDisplay,
+                line,
+                lineUrl,
+                email,
+              })
+            }
             disabled={isPending}
             variant="secondary"
             className="text-xs py-1.5 px-6 font-semibold cursor-pointer"
@@ -349,7 +413,11 @@ export function SiteSettingsEditor({
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
           <span>🎨 แบนเนอร์ต้อนรับหน้าแรก (Homepage Hero Copy)</span>
-          {activeSection === "hero" && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+          {activeSection === "hero" && (
+            <span className="text-xs text-orange-500 font-semibold">
+              กำลังบันทึก...
+            </span>
+          )}
         </h2>
 
         <div className="space-y-4">
@@ -449,7 +517,11 @@ export function SiteSettingsEditor({
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
           <span>🏢 ข้อมูลสถานที่ตั้ง Local SEO (NAP Consistency)</span>
-          {activeSection === "nap" && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+          {activeSection === "nap" && (
+            <span className="text-xs text-orange-500 font-semibold">
+              กำลังบันทึก...
+            </span>
+          )}
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -539,7 +611,11 @@ export function SiteSettingsEditor({
       <Card className="p-6 bg-white border border-gray-200 space-y-4">
         <h2 className="text-base font-bold text-navy-800 border-b border-gray-100 pb-3 mb-2 flex items-center justify-between">
           <span>📱 ปุ่มติดต่อลอยบนมือถือ (Floating Contact Buttons)</span>
-          {activeSection === "floatingButtons" && <span className="text-xs text-orange-500 font-semibold">กำลังบันทึก...</span>}
+          {activeSection === "floatingButtons" && (
+            <span className="text-xs text-orange-500 font-semibold">
+              กำลังบันทึก...
+            </span>
+          )}
         </h2>
 
         <div className="space-y-3 mt-2">
@@ -552,7 +628,7 @@ export function SiteSettingsEditor({
             />
             <span>เปิดใช้งานปุ่ม โทรสายด่วน (Phone Call)</span>
           </label>
-          
+
           <label className="flex items-center gap-3 cursor-pointer text-sm font-semibold text-navy-750">
             <input
               type="checkbox"
@@ -576,7 +652,13 @@ export function SiteSettingsEditor({
 
         <div className="flex justify-end pt-2 border-t border-gray-50">
           <Button
-            onClick={() => saveSetting("floatingButtons", { phone: floatPhone, line: floatLine, quote: floatQuote })}
+            onClick={() =>
+              saveSetting("floatingButtons", {
+                phone: floatPhone,
+                line: floatLine,
+                quote: floatQuote,
+              })
+            }
             disabled={isPending}
             variant="secondary"
             className="text-xs py-1.5 px-6 font-semibold cursor-pointer"

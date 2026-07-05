@@ -13,13 +13,24 @@ export function CallToAction() {
           พร้อมเลือกแผนประกันที่เหมาะกับคุณแล้วหรือยัง?
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-orange-50">
-          ขอใบเสนอราคาฟรีวันนี้ เจ้าหน้าที่ของเราพร้อมให้คำปรึกษาและเปรียบเทียบแผนที่เหมาะสม
+          ขอใบเสนอราคาฟรีวันนี้
+          เจ้าหน้าที่ของเราพร้อมให้คำปรึกษาและเปรียบเทียบแผนที่เหมาะสม
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button href="/quote" variant="primary" size="lg" className="w-full sm:w-auto">
+          <Button
+            href="/quote"
+            variant="primary"
+            size="lg"
+            className="w-full sm:w-auto"
+          >
             ขอใบเสนอราคาฟรี
           </Button>
-          <Button href={siteConfig.telUrl} variant="secondary" size="lg" className="w-full sm:w-auto">
+          <Button
+            href={siteConfig.telUrl}
+            variant="secondary"
+            size="lg"
+            className="w-full sm:w-auto"
+          >
             📞 {siteConfig.phoneDisplay}
           </Button>
         </div>

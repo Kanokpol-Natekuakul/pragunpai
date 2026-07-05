@@ -38,7 +38,8 @@ export default async function SettingsAdminPage() {
 
   const defaultHero = {
     headline: "เปรียบเทียบแผนประกันภัย เลือกความคุ้มครองที่เหมาะกับคุณ",
-    subheadline: "ให้คำปรึกษาและเปรียบเทียบแผนประกัน พ.ร.บ. รถยนต์ ประกันอุบัติเหตุ และประกันบ้าน/คอนโด ก่อนตัดสินใจ",
+    subheadline:
+      "ให้คำปรึกษาและเปรียบเทียบแผนประกัน พ.ร.บ. รถยนต์ ประกันอุบัติเหตุ และประกันบ้าน/คอนโด ก่อนตัดสินใจ",
     ctaPrimary: { label: "ขอใบเสนอราคาฟรี", href: "/quote" },
     ctaSecondary: { label: "โทรปรึกษา", href: "tel:0819416620" },
   };
@@ -54,18 +55,24 @@ export default async function SettingsAdminPage() {
     faviconUrl: "",
   };
 
-  const contactVal = (settingsMap.get("contact") ?? defaultContact) as ContactVal;
+  const contactVal = (settingsMap.get("contact") ??
+    defaultContact) as ContactVal;
   const napVal = (settingsMap.get("nap") ?? defaultNap) as NapVal;
   const heroVal = (settingsMap.get("hero") ?? defaultHero) as HeroVal;
-  const floatingButtonsVal = (settingsMap.get("floatingButtons") ?? defaultFloatingButtons) as FloatingButtonsVal;
-  const logoConfigVal = (settingsMap.get("siteLogoConfig") ?? defaultLogoConfig) as { logoUrl?: string; faviconUrl?: string };
+  const floatingButtonsVal = (settingsMap.get("floatingButtons") ??
+    defaultFloatingButtons) as FloatingButtonsVal;
+  const logoConfigVal = (settingsMap.get("siteLogoConfig") ??
+    defaultLogoConfig) as { logoUrl?: string; faviconUrl?: string };
 
   return (
     <Container size="wide" className="py-4">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-navy-800">ตั้งค่าระบบเว็บไซต์หลัก (Site Settings)</h1>
+        <h1 className="text-2xl font-bold text-navy-800">
+          ตั้งค่าระบบเว็บไซต์หลัก (Site Settings)
+        </h1>
         <p className="text-sm text-navy-500 font-medium mt-1">
-          ปรับแต่งโลโก้/Favicon ข้อมูลการติดต่อเบอร์โทร/LINE ปุ่มลอยบนมือถือ คำแบนเนอร์หน้าแรก และรายละเอียดที่ตั้งร้านค้าตามหลัก Local SEO (NAP)
+          ปรับแต่งโลโก้/Favicon ข้อมูลการติดต่อเบอร์โทร/LINE ปุ่มลอยบนมือถือ
+          คำแบนเนอร์หน้าแรก และรายละเอียดที่ตั้งร้านค้าตามหลัก Local SEO (NAP)
         </p>
       </div>
 

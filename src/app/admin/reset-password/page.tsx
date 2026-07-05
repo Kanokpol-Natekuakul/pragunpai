@@ -14,16 +14,19 @@ export default function ResetPasswordPage() {
       <Container size="prose">
         <div className="rounded-xl border border-navy-100 bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <h1 className="text-xl font-bold text-navy-800">ตั้งรหัสผ่านใหม่</h1>
-            <p className="mt-1 text-sm text-navy-500">
-              กรอกรหัสผ่านใหม่ของคุณ
-            </p>
+            <h1 className="text-xl font-bold text-navy-800">
+              ตั้งรหัสผ่านใหม่
+            </h1>
+            <p className="mt-1 text-sm text-navy-500">กรอกรหัสผ่านใหม่ของคุณ</p>
           </div>
           <form action="/api/auth/reset-password" method="POST">
             <input type="hidden" name="token" id="reset-token" />
             <div className="space-y-4">
               <div>
-                <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-navy-700">
+                <label
+                  htmlFor="password"
+                  className="mb-1.5 block text-sm font-medium text-navy-700"
+                >
                   รหัสผ่านใหม่
                 </label>
                 <input
@@ -37,7 +40,10 @@ export default function ResetPasswordPage() {
                 />
               </div>
               <div>
-                <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium text-navy-700">
+                <label
+                  htmlFor="confirmPassword"
+                  className="mb-1.5 block text-sm font-medium text-navy-700"
+                >
                   ยืนยันรหัสผ่านใหม่
                 </label>
                 <input
@@ -59,7 +65,10 @@ export default function ResetPasswordPage() {
             </div>
           </form>
           <p className="mt-4 text-center text-sm">
-            <a href="/admin/login" className="text-navy-500 hover:text-navy-700">
+            <a
+              href="/admin/login"
+              className="text-navy-500 hover:text-navy-700"
+            >
               กลับหน้าเข้าสู่ระบบ
             </a>
           </p>

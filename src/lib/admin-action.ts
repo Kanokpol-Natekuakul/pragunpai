@@ -14,7 +14,7 @@ export type AdminActionFailure = { success: false; error: string };
 export async function runAdminAction<T extends { success: boolean }>(
   label: string,
   fallbackError: string,
-  fn: () => Promise<T>,
+  fn: () => Promise<T>
 ): Promise<(T & { error?: string }) | (Partial<T> & AdminActionFailure)> {
   try {
     await requireAuth();

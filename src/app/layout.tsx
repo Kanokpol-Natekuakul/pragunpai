@@ -90,7 +90,11 @@ export default async function RootLayout({
     const setting = await prisma.siteSetting.findUnique({
       where: { key: "siteLogoConfig" },
     });
-    if (setting && typeof setting.value === "object" && setting.value !== null) {
+    if (
+      setting &&
+      typeof setting.value === "object" &&
+      setting.value !== null
+    ) {
       const val = setting.value as { logoUrl?: string; faviconUrl?: string };
       logoUrl = val.logoUrl || "";
       faviconUrl = val.faviconUrl || "/favicon.ico";
@@ -100,7 +104,11 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="th" data-scroll-behavior="smooth" className={`${notoThai.variable} h-full`}>
+    <html
+      lang="th"
+      data-scroll-behavior="smooth"
+      className={`${notoThai.variable} h-full`}
+    >
       <head>
         <link rel="icon" href={faviconUrl} />
         <link rel="shortcut icon" href={faviconUrl} />

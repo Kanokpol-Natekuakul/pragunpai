@@ -14,10 +14,15 @@ function formatPhone(phone: string): string {
 export const siteConfig = {
   name: process.env.NEXT_PUBLIC_SITE_NAME || "Pragunpai",
   domain: "pragunpai.com",
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(
+    /\/$/,
+    ""
+  ),
   // NAP — name, address, phone (Local SEO consistency)
   phone: process.env.NEXT_PUBLIC_PHONE || "0819416620",
-  phoneDisplay: process.env.NEXT_PUBLIC_PHONE ? formatPhone(process.env.NEXT_PUBLIC_PHONE) : "081 941 6620",
+  phoneDisplay: process.env.NEXT_PUBLIC_PHONE
+    ? formatPhone(process.env.NEXT_PUBLIC_PHONE)
+    : "081 941 6620",
   line: process.env.NEXT_PUBLIC_LINE || "0819416620",
   email: process.env.NEXT_PUBLIC_EMAIL || "service@pragunpai.com",
   serviceArea: "ทั่วประเทศ",

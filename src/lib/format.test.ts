@@ -64,7 +64,9 @@ describe("truncate", () => {
   });
 
   it("truncates text and appends ellipsis", () => {
-    expect(truncate("This is a much longer text that should be truncated", 20)).toBe("This is a much long…");
+    expect(
+      truncate("This is a much longer text that should be truncated", 20)
+    ).toBe("This is a much long…");
   });
 });
 

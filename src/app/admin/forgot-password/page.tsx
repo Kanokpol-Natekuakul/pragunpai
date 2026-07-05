@@ -20,7 +20,10 @@ export default function ForgotPasswordPage() {
           <form action="/api/auth/forgot-password" method="POST">
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-navy-700">
+                <label
+                  htmlFor="email"
+                  className="mb-1.5 block text-sm font-medium text-navy-700"
+                >
                   อีเมล
                 </label>
                 <input
@@ -41,7 +44,10 @@ export default function ForgotPasswordPage() {
             </div>
           </form>
           <p className="mt-4 text-center text-sm">
-            <a href="/admin/login" className="text-navy-500 hover:text-navy-700">
+            <a
+              href="/admin/login"
+              className="text-navy-500 hover:text-navy-700"
+            >
               กลับหน้าเข้าสู่ระบบ
             </a>
           </p>

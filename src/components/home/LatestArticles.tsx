@@ -27,7 +27,10 @@ export async function LatestArticles() {
     <section className="bg-navy-50 py-20">
       <Container size="wide">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-          <SectionHeading eyebrow="บทความล่าสุด" title="ความรู้ประกันภัยที่คุณควรรู้" />
+          <SectionHeading
+            eyebrow="บทความล่าสุด"
+            title="ความรู้ประกันภัยที่คุณควรรู้"
+          />
           <Button href="/articles" variant="outline" size="sm">
             ดูบทความทั้งหมด
           </Button>
@@ -35,9 +38,7 @@ export async function LatestArticles() {
 
         {articles.length === 0 ? (
           <Card className="mt-10 p-8 text-center">
-            <p className="text-navy-500">
-              บทความกำลังจะเปิดตัวเร็วๆ นี้
-            </p>
+            <p className="text-navy-500">บทความกำลังจะเปิดตัวเร็วๆ นี้</p>
             <p className="mt-1 text-sm text-navy-400">
               ติดตามความรู้และคำแนะนำเกี่ยวกับประกันภัย
             </p>
@@ -45,7 +46,12 @@ export async function LatestArticles() {
         ) : (
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {articles.map((article) => (
-              <Card key={article.id} interactive as="article" className="overflow-hidden">
+              <Card
+                key={article.id}
+                interactive
+                as="article"
+                className="overflow-hidden"
+              >
                 <Link href={`/articles/${article.slug}`} className="block p-6">
                   <span className="inline-flex rounded-full bg-navy-100 px-2.5 py-0.5 text-xs font-medium text-navy-700">
                     {articleCategoryLabel[article.category] ?? article.category}

@@ -16,18 +16,25 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
             <div className="flex items-center gap-2">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl} alt={siteConfig.name} className="h-9 w-auto max-w-45 object-contain brightness-0 invert" />
+                <img
+                  src={logoUrl}
+                  alt={siteConfig.name}
+                  className="h-9 w-auto max-w-45 object-contain brightness-0 invert"
+                />
               ) : (
                 <>
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-500 text-white font-bold">
                     P
                   </span>
-                  <span className="text-lg font-bold text-white">{siteConfig.name}</span>
+                  <span className="text-lg font-bold text-white">
+                    {siteConfig.name}
+                  </span>
                 </>
               )}
             </div>
             <p className="mt-3 text-sm leading-relaxed text-navy-200">
-              ที่ปรึกษาและเปรียบเทียบแผนประกันภัย เพื่อช่วยให้คุณเลือกความคุ้มครองที่เหมาะสมก่อนตัดสินใจ
+              ที่ปรึกษาและเปรียบเทียบแผนประกันภัย
+              เพื่อช่วยให้คุณเลือกความคุ้มครองที่เหมาะสมก่อนตัดสินใจ
               บริการทั่วประเทศ
             </p>
             <ul className="mt-4 space-y-1.5 text-sm">
@@ -62,7 +69,10 @@ export function Footer({ logoUrl }: { logoUrl?: string }) {
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
               {footerLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-navy-200 hover:text-white">
+                  <Link
+                    href={link.href}
+                    className="text-navy-200 hover:text-white"
+                  >
                     {link.label}
                   </Link>
                 </li>
