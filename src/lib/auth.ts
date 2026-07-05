@@ -12,7 +12,7 @@
  * 3. OTP sent via Resend email.
  * 4. Admin enters OTP → server verifies against hashed OTP.
  * 5. On success, server sets a signed session cookie (iron + jose).
- * 6. Middleware checks the cookie on every /admin/* request.
+ * 6. Proxy (src/proxy.ts) checks the cookie on every /admin/* request.
  * 7. Forgot password: server generates a reset token, emails a link,
  *    admin clicks link → sets new password.
  *

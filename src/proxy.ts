@@ -4,7 +4,7 @@ import { jwtVerify } from "jose";
 const SESSION_KEY = "pragunpai.session";
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/reset-password"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Only intercept /admin/* routes.
