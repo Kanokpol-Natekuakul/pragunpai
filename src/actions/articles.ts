@@ -1,10 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import { runAdminAction } from "@/lib/admin-action";
 import { revalidatePath } from "next/cache";
 import { ArticleCategory } from "@/generated/prisma/client";
-import { uploadAttachment } from "@/lib/upload";
 
 interface ArticleInput {
   title: string;
@@ -22,9 +21,7 @@ interface ArticleInput {
 }
 
 export async function createArticleAction(data: ArticleInput) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("createArticleAction", "เกิดข้อผิดพลาดในการบันทึกข้อมูล", async () => {
     // Check slug uniqueness
     const existing = await prisma.article.findUnique({
       where: { slug: data.slug },
@@ -54,18 +51,13 @@ export async function createArticleAction(data: ArticleInput) {
     revalidatePath("/articles");
     revalidatePath(`/articles/${article.slug}`);
     revalidatePath("/");
-    
+
     return { success: true, articleId: article.id };
-  } catch (error) {
-    console.error("[createArticleAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
-  }
+  });
 }
 
 export async function updateArticleAction(id: string, data: ArticleInput) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateArticleAction", "เกิดข้อผิดพลาดในการบันทึกข้อมูล", async () => {
     // Check slug uniqueness on other records
     const existing = await prisma.article.findFirst({
       where: { slug: data.slug, NOT: { id } },
@@ -99,16 +91,11 @@ export async function updateArticleAction(id: string, data: ArticleInput) {
     revalidatePath("/");
 
     return { success: true, articleId: article.id };
-  } catch (error) {
-    console.error("[updateArticleAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
-  }
+  });
 }
 
 export async function deleteArticleAction(id: string) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("deleteArticleAction", "เกิดข้อผิดพลาดในการลบข้อมูล", async () => {
     const article = await prisma.article.delete({
       where: { id },
     });
@@ -119,25 +106,5 @@ export async function deleteArticleAction(id: string) {
     revalidatePath("/");
 
     return { success: true };
-  } catch (error) {
-    console.error("[deleteArticleAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการลบข้อมูล" };
-  }
-}
-
-export async function uploadArticleImageAction(formData: FormData) {
-  try {
-    await requireAuth();
-
-    const file = formData.get("file") as File;
-    if (!file) {
-      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
-    }
-
-    const result = await uploadAttachment(file);
-    return { success: true, url: result.url };
-  } catch (error) {
-    console.error("[uploadArticleImageAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
-  }
+  });
 }

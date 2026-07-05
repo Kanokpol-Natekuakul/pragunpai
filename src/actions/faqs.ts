@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { FAQ_CATEGORIES, type FaqCategory, parseFaqSectionSettings } from "@/lib/faqs";
-import { requireAuth } from "@/lib/auth";
+import { runAdminAction } from "@/lib/admin-action";
 import { prisma } from "@/lib/prisma";
 
 export type FaqEditorItemInput = {
@@ -21,9 +21,7 @@ export async function updateFaqSectionAction(
     items: FaqEditorItemInput[];
   },
 ) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateFaqSectionAction", "เกิดข้อผิดพลาดในการบันทึก FAQ", async () => {
     if (!validCategories.has(category)) {
       return { success: false, error: "หมวด FAQ ไม่ถูกต้อง" };
     }
@@ -102,11 +100,5 @@ export async function updateFaqSectionAction(
     }
 
     return { success: true };
-  } catch (error) {
-    console.error("[updateFaqSectionAction] Error:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึก FAQ",
-    };
-  }
+  });
 }

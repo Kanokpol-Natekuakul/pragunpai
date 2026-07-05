@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "@google-recaptcha/react";
 import { submitLeadAction } from "@/actions/leads";
+import { carActSchema, accidentSchema, propertySchema, otherSchema } from "@/lib/lead-intake";
+import { validateUpload } from "@/lib/upload-constraints";
 import { provinces } from "@/lib/provinces";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -22,50 +24,19 @@ const FORM_METADATA: Record<FormType, { label: string; icon: string; path: strin
 };
 
 // ---------------------------------------------------------------------------
-// Client validation schemas matching Server Action
+// Validation schemas — shared with the server action via lib/lead-intake.
+// Client-side the province select is required; the shared schema leaves it
+// optional, so that one rule is overridden here.
 // ---------------------------------------------------------------------------
 
-const baseClientSchema = {
-  name: z.string().min(2, "กรุณากรอกชื่อ-นามสกุล ของท่าน"),
-  phone: z.string().regex(/^[0-9\-+\s]{9,15}$/, "กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (9-15 หลัก)"),
-  lineId: z.string().optional(),
+const clientProvince = {
   province: z.string().min(1, "กรุณาเลือกจังหวัดของท่าน"),
-  email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง").or(z.literal("")).optional(),
-  note: z.string().optional(),
 };
 
-const carActClientSchema = z.object({
-  ...baseClientSchema,
-  carType: z.string().min(1, "กรุณาเลือกประเภทรถยนต์"),
-  carBrand: z.string().min(1, "กรุณากรอกยี่ห้อรถยนต์"),
-  carModel: z.string().min(1, "กรุณากรอกรุ่นรถยนต์"),
-  carYear: z.string().min(1, "กรุณาเลือกปีจดทะเบียน"),
-  carPlate: z.string().min(1, "กรุณากรอกเลขทะเบียนรถยนต์"),
-});
-
-const accidentClientSchema = z.object({
-  ...baseClientSchema,
-  age: z.string().min(1, "กรุณากรอกอายุ"),
-  occupation: z.string().min(1, "กรุณากรอกอาชีพ"),
-  hasExistingIllness: z.string().min(1, "กรุณาระบุประวัติสุขภาพ"),
-  illnessDetails: z.string().optional(),
-  selectedPlan: z.string().optional(),
-});
-
-const propertyClientSchema = z.object({
-  ...baseClientSchema,
-  propertyType: z.string().min(1, "กรุณาเลือกประเภทสิ่งปลูกสร้าง"),
-  constructionType: z.string().min(1, "กรุณาเลือกประเภทโครงสร้าง"),
-  floorsCount: z.string().min(1, "กรุณากรอกจำนวนชั้น"),
-  propertyValue: z.string().min(1, "กรุณากรอกมูลค่าทรัพย์สิน"),
-  securitySystems: z.array(z.string()).optional(),
-});
-
-const otherClientSchema = z.object({
-  ...baseClientSchema,
-  requestType: z.string().min(1, "กรุณาเลือกหรือระบุประเภทประกัน"),
-  description: z.string().min(1, "กรุณากรอกรายละเอียดความต้องการ"),
-});
+const carActClientSchema = carActSchema.extend(clientProvince);
+const accidentClientSchema = accidentSchema.extend(clientProvince);
+const propertyClientSchema = propertySchema.extend(clientProvince);
+const otherClientSchema = otherSchema.extend(clientProvince);
 
 interface QuoteFormProps {
   initialType?: FormType;
@@ -132,23 +103,10 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
     const selectedFiles = Array.from(e.target.files);
     const validFiles: File[] = [];
 
-    const allowedMimes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/webp",
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
     for (const file of selectedFiles) {
-      if (file.size > 5 * 1024 * 1024) {
-        setFileError(`ไฟล์ "${file.name}" มีขนาดเกิน 5MB`);
-        return;
-      }
-      if (!allowedMimes.includes(file.type)) {
-        setFileError(`ประเภทไฟล์ "${file.name}" ไม่รองรับ (อัปโหลดได้เฉพาะรูปภาพ, PDF, หรือเอกสาร Word)`);
+      const validation = validateUpload(file);
+      if (!validation.ok) {
+        setFileError(validation.error);
         return;
       }
       validFiles.push(file);

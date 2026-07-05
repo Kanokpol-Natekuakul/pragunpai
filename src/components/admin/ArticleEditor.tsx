@@ -3,7 +3,8 @@
 import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createArticleAction, updateArticleAction, uploadArticleImageAction } from "@/actions/articles";
+import { createArticleAction, updateArticleAction } from "@/actions/articles";
+import { uploadImageAction } from "@/actions/uploads";
 import { ArticleCategory } from "@/generated/prisma/client";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -83,7 +84,7 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await uploadArticleImageAction(formData);
+      const res = await uploadImageAction(formData);
       if (res.success && res.url) {
         setCoverImage(res.url);
       } else {

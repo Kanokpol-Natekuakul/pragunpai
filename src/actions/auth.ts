@@ -1,12 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 import {
-  loginStep1,
-  loginStep2,
-  requestPasswordReset,
-  resetPassword,
   changePassword,
   logout,
   requireAuth,
@@ -14,120 +9,12 @@ import {
 } from "@/lib/auth";
 import { AuthError } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit, recordFailedAttempt, resetRateLimit } from "@/lib/rate-limit";
 
 // ---------------------------------------------------------------------------
-// Login Step 1: email + password → send OTP
+// NOTE: Login / forgot-password / reset-password go through the API routes
+// under src/app/api/auth/* (called via fetch from the login pages).
+// Rate limiting lives inside lib/auth.ts loginStep1/loginStep2.
 // ---------------------------------------------------------------------------
-export async function actionLoginStep1(
-  _prevState: unknown,
-  formData: FormData,
-) {
-  const email = (formData.get("email") as string)?.trim();
-  const password = formData.get("password") as string;
-
-  if (!email || !password) {
-    return { error: "กรุณากรอกอีเมลและรหัสผ่าน" };
-  }
-
-  const headersList = await headers();
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
-
-  // Check rate limit
-  const rateLimitStatus = checkRateLimit(ip, email);
-  if (!rateLimitStatus.ok) {
-    return { error: rateLimitStatus.error };
-  }
-
-  const result = await loginStep1(email, password);
-  if (!result.ok) {
-    recordFailedAttempt(ip, email);
-    return { error: result.error };
-  }
-
-  // Do not reset rate limit here yet since we need OTP verification in step 2.
-  return { success: true, email };
-}
-
-// ---------------------------------------------------------------------------
-// Login Step 2: OTP verification
-// ---------------------------------------------------------------------------
-export async function actionLoginStep2(
-  _prevState: unknown,
-  formData: FormData,
-) {
-  const email = (formData.get("email") as string)?.trim();
-  const otp = (formData.get("otp") as string)?.trim();
-
-  if (!email || !otp) {
-    return { error: "กรุณากรอกรหัส OTP" };
-  }
-
-  const headersList = await headers();
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1";
-
-  // Check rate limit
-  const rateLimitStatus = checkRateLimit(ip, email);
-  if (!rateLimitStatus.ok) {
-    return { error: rateLimitStatus.error };
-  }
-
-  const result = await loginStep2(email, otp);
-  if (!result.ok) {
-    recordFailedAttempt(ip, email);
-    return { error: result.error };
-  }
-
-  // Auth successful, reset the attempts counter
-  resetRateLimit(ip, email);
-
-  const callbackUrl = "/admin/dashboard";
-  redirect(callbackUrl);
-}
-
-// ---------------------------------------------------------------------------
-// Forgot password
-// ---------------------------------------------------------------------------
-export async function actionForgotPassword(
-  _prevState: unknown,
-  formData: FormData,
-) {
-  const email = (formData.get("email") as string)?.trim();
-  if (!email) {
-    return { error: "กรุณากรอกอีเมล" };
-  }
-
-  const result = await requestPasswordReset(email);
-  if (!result.ok) return { error: result.error };
-  return { success: true };
-}
-
-// ---------------------------------------------------------------------------
-// Reset password (from email link)
-// ---------------------------------------------------------------------------
-export async function actionResetPassword(
-  _prevState: unknown,
-  formData: FormData,
-) {
-  const token = (formData.get("token") as string)?.trim();
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-
-  if (!token || !password || !confirmPassword) {
-    return { error: "กรุณากรอกข้อมูลให้ครบ" };
-  }
-  if (password.length < 8) {
-    return { error: "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร" };
-  }
-  if (password !== confirmPassword) {
-    return { error: "รหัสผ่านไม่ตรงกัน" };
-  }
-
-  const result = await resetPassword(token, password);
-  if (!result.ok) return { error: result.error };
-
-  redirect("/admin/login?reset=success");
-}
 
 // ---------------------------------------------------------------------------
 // Change password (logged-in admin)
@@ -206,4 +93,3 @@ export async function actionLogout() {
   await logout();
   redirect("/admin/login");
 }
-

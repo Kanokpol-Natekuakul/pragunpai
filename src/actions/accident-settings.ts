@@ -1,9 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import { runAdminAction } from "@/lib/admin-action";
 import { revalidatePath } from "next/cache";
 import { uploadAttachment } from "@/lib/upload";
+import { IMAGE_MIME_TYPES } from "@/lib/upload-constraints";
 
 export async function updateAccidentPlansConfigAction(config: {
   viewMode: string;
@@ -11,9 +12,7 @@ export async function updateAccidentPlansConfigAction(config: {
   planNames: string[];
   comparisonPlans: Array<{ id: string; feature: string; plan1: string; plan2: string; plan3: string }>;
 }) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateAccidentPlansConfigAction", "เกิดข้อผิดพลาดในการบันทึกข้อมูล", async () => {
     await prisma.siteSetting.upsert({
       where: { key: "accidentPlansConfig" },
       update: { value: config },
@@ -24,24 +23,19 @@ export async function updateAccidentPlansConfigAction(config: {
     revalidatePath("/accident-insurance");
 
     return { success: true };
-  } catch (error) {
-    console.error("[updateAccidentPlansConfigAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" };
-  }
+  });
 }
 
 export async function uploadAccidentPlanImageAction(formData: FormData) {
-  try {
-    await requireAuth();
-
-    const file = formData.get("file") as File;
+  return runAdminAction("uploadAccidentPlanImageAction", "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ", async () => {
+    const file = formData.get("file");
     const planIndexStr = formData.get("planIndex") as string;
-    
-    if (!file) {
+
+    if (!(file instanceof File) || file.size === 0) {
       return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
     }
 
-    const result = await uploadAttachment(file);
+    const result = await uploadAttachment(file, { allowedMimeTypes: IMAGE_MIME_TYPES });
     const planIndex = parseInt(planIndexStr, 10);
 
     // Get current config
@@ -89,8 +83,5 @@ export async function uploadAccidentPlanImageAction(formData: FormData) {
     revalidatePath("/accident-insurance");
 
     return { success: true, url: result.url };
-  } catch (error) {
-    console.error("[uploadAccidentPlanImageAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
-  }
+  });
 }

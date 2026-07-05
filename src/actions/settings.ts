@@ -1,15 +1,12 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import { runAdminAction } from "@/lib/admin-action";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
-import { uploadAttachment } from "@/lib/upload";
 
 export async function updateSiteSettingAction(key: string, value: unknown) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateSiteSettingAction", "เกิดข้อผิดพลาดในการอัปเดตข้อมูลการตั้งค่า", async () => {
     const jsonValue = value as Prisma.InputJsonValue;
 
     await prisma.siteSetting.upsert({
@@ -29,47 +26,5 @@ export async function updateSiteSettingAction(key: string, value: unknown) {
     revalidatePath("/", "layout");
 
     return { success: true };
-  } catch (error) {
-    console.error("[updateSiteSettingAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปเดตข้อมูลการตั้งค่า" };
-  }
-}
-
-export async function uploadHeroBannerAction(formData: FormData) {
-  try {
-    await requireAuth();
-
-    const file = formData.get("file") as File;
-    if (!file) {
-      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
-    }
-
-    const allowedImageTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    if (!allowedImageTypes.includes(file.type)) {
-      return { success: false, error: "รองรับเฉพาะไฟล์รูปภาพ JPG, PNG, WEBP เท่านั้น" };
-    }
-
-    const result = await uploadAttachment(file);
-    return { success: true, url: result.url };
-  } catch (error) {
-    console.error("[uploadHeroBannerAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
-  }
-}
-
-export async function uploadSiteLogoAction(formData: FormData) {
-  try {
-    await requireAuth();
-
-    const file = formData.get("file") as File;
-    if (!file) {
-      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
-    }
-
-    const result = await uploadAttachment(file);
-    return { success: true, url: result.url };
-  } catch (error) {
-    console.error("[uploadSiteLogoAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ" };
-  }
+  });
 }

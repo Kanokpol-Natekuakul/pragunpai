@@ -32,6 +32,7 @@ import {
 } from "@/lib/crypto";
 import { sendOtpEmail, sendPasswordResetEmail } from "@/lib/email";
 import { absoluteUrl } from "@/lib/site";
+import { checkRateLimit, recordFailedAttempt, resetRateLimit } from "@/lib/rate-limit";
 
 // ---------------------------------------------------------------------------
 // Session cookie helpers
@@ -116,15 +117,24 @@ export async function deleteSessionCookie() {
 export async function loginStep1(
   email: string,
   password: string,
+  ip: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  // Rate limiting lives inside the auth module so no entry point can skip it.
+  const rateLimitStatus = checkRateLimit("login", ip, email);
+  if (!rateLimitStatus.ok) {
+    return { ok: false, error: rateLimitStatus.error };
+  }
+
   const admin = await prisma.admin.findUnique({ where: { email } });
   if (!admin) {
     // Don't reveal if email exists (security).
+    recordFailedAttempt("login", ip, email);
     return { ok: false, error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" };
   }
 
   const valid = await verifyPassword(password, admin.passwordHash);
   if (!valid) {
+    recordFailedAttempt("login", ip, email);
     return { ok: false, error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" };
   }
 
@@ -151,9 +161,17 @@ export async function loginStep1(
 export async function loginStep2(
   email: string,
   otp: string,
+  ip: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  // Rate limiting lives inside the auth module so no entry point can skip it.
+  const rateLimitStatus = checkRateLimit("login", ip, email);
+  if (!rateLimitStatus.ok) {
+    return { ok: false, error: rateLimitStatus.error };
+  }
+
   const admin = await prisma.admin.findUnique({ where: { email } });
   if (!admin || !admin.otpCodeHash || !admin.otpExpiresAt) {
+    recordFailedAttempt("login", ip, email);
     return { ok: false, error: "กรุณาเริ่มการเข้าสู่ระบบใหม่" };
   }
 
@@ -163,8 +181,12 @@ export async function loginStep2(
 
   const valid = await verifySecret(otp, admin.otpCodeHash);
   if (!valid) {
+    recordFailedAttempt("login", ip, email);
     return { ok: false, error: "รหัส OTP ไม่ถูกต้อง" };
   }
+
+  // Auth successful — reset the failed-attempts counter.
+  resetRateLimit("login", ip, email);
 
   // Clear OTP after successful verification.
   await prisma.admin.update({
@@ -183,7 +205,17 @@ export async function loginStep2(
 
 export async function requestPasswordReset(
   email: string,
+  ip: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  // Every request counts (not just failures) — this throttles email bombing
+  // and reset-token churn, and applies whether or not the email exists so it
+  // leaks nothing.
+  const rateLimitStatus = checkRateLimit("password-reset", ip, email);
+  if (!rateLimitStatus.ok) {
+    return { ok: false, error: rateLimitStatus.error };
+  }
+  recordFailedAttempt("password-reset", ip, email);
+
   const admin = await prisma.admin.findUnique({ where: { email } });
   if (!admin) {
     return { ok: true }; // Don't reveal if email exists.

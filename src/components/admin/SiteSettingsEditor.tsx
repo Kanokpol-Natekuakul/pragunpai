@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { updateSiteSettingAction, uploadSiteLogoAction } from "@/actions/settings";
+import { updateSiteSettingAction } from "@/actions/settings";
+import { uploadImageAction } from "@/actions/uploads";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
@@ -66,7 +67,7 @@ export function SiteSettingsEditor({
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await uploadSiteLogoAction(formData);
+      const res = await uploadImageAction(formData);
       if (res.success && res.url) {
         setLogoUrl(res.url);
         setSuccessMsg("อัปโหลดโลโก้สำเร็จแล้ว (อย่าลืมกดบันทึกข้อมูล)");
@@ -89,7 +90,7 @@ export function SiteSettingsEditor({
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await uploadSiteLogoAction(formData);
+      const res = await uploadImageAction(formData);
       if (res.success && res.url) {
         setFaviconUrl(res.url);
         setSuccessMsg("อัปโหลด Favicon สำเร็จแล้ว (อย่าลืมกดบันทึกข้อมูล)");

@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { updateInsurancePageAction, uploadInsurancePdfAction } from "@/actions/insurance-pages";
+import { updateInsurancePageAction } from "@/actions/insurance-pages";
+import { uploadPdfAction } from "@/actions/uploads";
+import { validateUpload, PDF_MIME_TYPES } from "@/lib/upload-constraints";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
@@ -79,13 +81,9 @@ export function InsurancePageEditor({ page }: InsurancePageEditorProps) {
 
   const handleUploadFile = async (idx: number, file: File) => {
     if (!file) return;
-    if (file.type !== "application/pdf") {
-      alert("กรุณาเลือกไฟล์ PDF เท่านั้น");
-      return;
-    }
-    const maxBytes = 5 * 1024 * 1024;
-    if (file.size > maxBytes) {
-      alert("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 5MB)");
+    const validation = validateUpload(file, { allowedMimeTypes: PDF_MIME_TYPES });
+    if (!validation.ok) {
+      alert(validation.error);
       return;
     }
 
@@ -93,7 +91,7 @@ export function InsurancePageEditor({ page }: InsurancePageEditorProps) {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await uploadInsurancePdfAction(formData);
+      const res = await uploadPdfAction(formData);
       if (res.success && res.url) {
         setBrochures(prev =>
           prev.map((b, i) => (i === idx ? { ...b, url: res.url! } : b))

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import { runAdminAction } from "@/lib/admin-action";
 import { revalidatePath } from "next/cache";
 
 interface SeoMetaInput {
@@ -11,9 +11,7 @@ interface SeoMetaInput {
 }
 
 export async function updateSeoMetaAction(pageKey: string, data: SeoMetaInput) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateSeoMetaAction", "เกิดข้อผิดพลาดในการบันทึกข้อมูล SEO", async () => {
     await prisma.seoMeta.upsert({
       where: { pageKey },
       update: {
@@ -44,8 +42,5 @@ export async function updateSeoMetaAction(pageKey: string, data: SeoMetaInput) {
     }
 
     return { success: true };
-  } catch (error) {
-    console.error("[updateSeoMetaAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล SEO" };
-  }
+  });
 }

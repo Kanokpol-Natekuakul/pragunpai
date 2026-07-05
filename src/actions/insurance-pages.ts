@@ -1,9 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import { runAdminAction } from "@/lib/admin-action";
 import { revalidatePath } from "next/cache";
-import { uploadAttachment } from "@/lib/upload";
 
 interface InsurancePageUpdateInput {
   name: string;
@@ -19,9 +18,7 @@ interface InsurancePageUpdateInput {
 }
 
 export async function updateInsurancePageAction(id: string, data: InsurancePageUpdateInput) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateInsurancePageAction", "เกิดข้อผิดพลาดในการอัปเดตข้อมูล", async () => {
     const page = await prisma.insurancePage.update({
       where: { id },
       data: {
@@ -42,12 +39,9 @@ export async function updateInsurancePageAction(id: string, data: InsurancePageU
     revalidatePath(`/admin/insurance-pages/${id}`);
     revalidatePath(`/${page.slug}`);
     revalidatePath(`/`);
-    
+
     return { success: true };
-  } catch (error) {
-    console.error("[updateInsurancePageAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" };
-  }
+  });
 }
 
 interface PlanRowInput {
@@ -57,9 +51,7 @@ interface PlanRowInput {
 }
 
 export async function updateComparisonTableAction(pageId: string, rows: PlanRowInput[]) {
-  try {
-    await requireAuth();
-
+  return runAdminAction("updateComparisonTableAction", "เกิดข้อผิดพลาดในการบันทึกตารางเปรียบเทียบ", async () => {
     // Find page to check if it exists and to get slug
     const page = await prisma.insurancePage.findUnique({
       where: { id: pageId },
@@ -101,25 +93,5 @@ export async function updateComparisonTableAction(pageId: string, rows: PlanRowI
     revalidatePath(`/`);
 
     return { success: true };
-  } catch (error) {
-    console.error("[updateComparisonTableAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการบันทึกตารางเปรียบเทียบ" };
-  }
-}
-
-export async function uploadInsurancePdfAction(formData: FormData) {
-  try {
-    await requireAuth();
-
-    const file = formData.get("file") as File;
-    if (!file) {
-      return { success: false, error: "ไม่พบไฟล์อัปโหลด" };
-    }
-
-    const result = await uploadAttachment(file);
-    return { success: true, url: result.url };
-  } catch (error) {
-    console.error("[uploadInsurancePdfAction] Error:", error);
-    return { success: false, error: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการอัปโหลดไฟล์ PDF" };
-  }
+  });
 }

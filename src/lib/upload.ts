@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import crypto from "crypto";
+import { validateUpload } from "@/lib/upload-constraints";
 
 export type UploadResult = {
   url: string;
@@ -11,40 +12,21 @@ export type UploadResult = {
 
 /**
  * Saves a file attachment locally in the public/uploads directory.
- * Falls back to local disk storage if object storage is not configured.
+ * Validation (size, mimetype, extension) comes from lib/upload-constraints —
+ * the single source of truth shared with client-side checks.
+ * `allowedMimeTypes` narrows the allowlist (e.g. images only).
  */
-export async function uploadAttachment(file: File): Promise<UploadResult> {
+export async function uploadAttachment(
+  file: File,
+  opts?: { allowedMimeTypes?: readonly string[] },
+): Promise<UploadResult> {
+  const validation = validateUpload(file, opts);
+  if (!validation.ok) {
+    throw new Error(validation.error);
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
-  const size = file.size;
-  const mimeType = file.type;
-  const originalName = file.name;
-
-  // Validate file size (max 5MB)
-  const maxBytes = 5 * 1024 * 1024;
-  if (size > maxBytes) {
-    throw new Error(`ไฟล์ "${originalName}" มีขนาดใหญ่เกินไป (จำกัดไม่เกิน 5MB)`);
-  }
-
-  // Validate allowed extensions / mimetypes (images and documents)
-  const allowedMimeTypes = [
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/webp",
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  ];
-  if (!allowedMimeTypes.includes(mimeType)) {
-    throw new Error(`ไม่รองรับประเภทไฟล์ "${originalName}" (รองรับเฉพาะ JPG, PNG, WEBP, PDF, DOC, DOCX)`);
-  }
-
-  // Validate extension strictly
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".pdf", ".doc", ".docx"];
-  const origExt = path.extname(originalName).toLowerCase();
-  if (!allowedExtensions.includes(origExt)) {
-    throw new Error(`ไม่รองรับนามสกุลไฟล์ของ "${originalName}" (รองรับเฉพาะ .jpg, .jpeg, .png, .webp, .pdf, .doc, .docx)`);
-  }
+  const origExt = path.extname(file.name).toLowerCase();
 
   // Create local folder if it doesn't exist
   const uploadDir = path.join(process.cwd(), "public", "uploads");
@@ -65,28 +47,8 @@ export async function uploadAttachment(file: File): Promise<UploadResult> {
   // Return public URL path
   return {
     url: `/uploads/${safeFilename}`,
-    filename: originalName,
-    size,
-    mimeType,
+    filename: file.name,
+    size: file.size,
+    mimeType: file.type,
   };
-}
-
-function getExtFromMime(mime: string): string {
-  switch (mime) {
-    case "image/jpeg":
-    case "image/jpg":
-      return ".jpg";
-    case "image/png":
-      return ".png";
-    case "image/webp":
-      return ".webp";
-    case "application/pdf":
-      return ".pdf";
-    case "application/msword":
-      return ".doc";
-    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-      return ".docx";
-    default:
-      return ".bin";
-  }
 }

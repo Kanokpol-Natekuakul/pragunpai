@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { updateSiteSettingAction, uploadHeroBannerAction } from "@/actions/settings";
+import { updateSiteSettingAction } from "@/actions/settings";
+import { uploadImageAction } from "@/actions/uploads";
+import { validateUpload, IMAGE_MIME_TYPES } from "@/lib/upload-constraints";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
@@ -85,9 +87,9 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
 
   const handleUpload = async (kind: ImageKind, idx: number, file: File) => {
     if (!file) return;
-    const maxBytes = 5 * 1024 * 1024;
-    if (file.size > maxBytes) {
-      alert("ขนาดไฟล์ใหญ่เกินไป (จำกัดไม่เกิน 5MB)");
+    const validation = validateUpload(file, { allowedMimeTypes: IMAGE_MIME_TYPES });
+    if (!validation.ok) {
+      alert(validation.error);
       return;
     }
 
@@ -95,7 +97,7 @@ export function PageBannersEditor({ pages, initialBanners }: PageBannersEditorPr
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await uploadHeroBannerAction(formData);
+      const res = await uploadImageAction(formData);
       if (res.success && res.url) {
         setList(kind, (prev) => prev.map((s, i) => (i === idx ? { ...s, imageUrl: res.url! } : s)));
         setSuccessMsg("อัปโหลดรูปสำเร็จแล้ว (อย่าลืมกดบันทึก)");
