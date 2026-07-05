@@ -184,30 +184,11 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
     window.history.pushState(null, "", newPath);
   };
 
-  if (submitSuccess) {
-    return (
-      <Container size="prose" className="py-16">
-        <Card className="p-8 text-center shadow-xl border border-navy-100 bg-white">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 text-4xl animate-bounce">
-            ✓
-          </div>
-          <h2 className="mt-6 text-2xl font-bold text-navy-800">ส่งข้อมูลขอใบเสนอราคาเรียบร้อยแล้ว</h2>
-          <p className="mt-4 text-navy-600 leading-relaxed">
-            ขอบคุณที่ไว้วางใจให้ <strong>Pragunpai (ประกันภัย)</strong> ดูแลท่าน เจ้าหน้าที่กำลังตรวจสอบข้อมูล
-            และจะติดต่อกลับเพื่อนำเสนอแผนประกันภัยที่ดีที่สุดผ่านทางโทรศัพท์ หรือ LINE ที่ท่านระบุ ภายใน 24 ชั่วโมง
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="/" variant="primary" size="lg">
-              กลับสู่หน้าแรก
-            </Button>
-            <Button href="/contact" variant="secondary" size="lg">
-              ติดต่อเราเพิ่มเติม
-            </Button>
-          </div>
-        </Card>
-      </Container>
-    );
-  }
+  const handleCloseSuccessModal = () => {
+    setSubmitSuccess(false);
+    activeForm.reset();
+    setFiles([]);
+  };
 
   return (
     <Container size="prose" className="py-12">
@@ -802,6 +783,33 @@ export default function QuoteForm({ initialType = "CAR_ACT", selectedPlan = "" }
           </div>
         </form>
       </Card>
+
+      {submitSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl border border-navy-100/50 text-center animate-scaleUp">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-500 text-4xl animate-bounce">
+              ✓
+            </div>
+            <h2 className="mt-6 text-2xl font-bold text-navy-800">ส่งข้อมูลขอใบเสนอราคาสำเร็จ!</h2>
+            <p className="mt-4 text-navy-600 leading-relaxed text-sm">
+              ขอบคุณที่ไว้วางใจให้ <strong>Pragunpai (ประกันภัย)</strong> ดูแลท่าน เจ้าหน้าที่กำลังตรวจสอบข้อมูล
+              และจะติดต่อกลับเพื่อนำเสนอแผนประกันภัยที่ดีที่สุดผ่านทางโทรศัพท์ หรือ LINE ที่ท่านระบุ ภายใน 24 ชั่วโมง
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <button
+                onClick={handleCloseSuccessModal}
+                type="button"
+                className="w-full sm:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-md transition-colors cursor-pointer text-sm"
+              >
+                ตกลง (ปิดหน้าต่าง)
+              </button>
+              <Button href="/" variant="secondary" size="md" className="w-full sm:w-auto">
+                กลับสู่หน้าแรก
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Container>
   );
 }
