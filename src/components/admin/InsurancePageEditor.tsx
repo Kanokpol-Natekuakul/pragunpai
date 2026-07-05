@@ -280,7 +280,7 @@ export function InsurancePageEditor({ page }: InsurancePageEditorProps) {
                       />
                     </div>
 
-                    <div className="w-full sm:w-auto sm:min-w-[300px] space-y-1.5">
+                    <div className="w-full sm:w-auto sm:min-w-75 space-y-1.5">
                       <label className="block text-xs font-bold text-navy-500 uppercase">
                         ไฟล์โบรชัวร์ (PDF เท่านั้น)
                       </label>

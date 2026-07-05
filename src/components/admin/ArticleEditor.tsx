@@ -299,7 +299,7 @@ export function ArticleEditor({ article, insurancePages }: ArticleEditorProps) {
                     className="h-24 w-40 object-cover rounded-lg border border-navy-100 shadow-sm bg-white"
                   />
                   <div className="flex-1 text-left space-y-1">
-                    <p className="text-xs font-semibold text-navy-500 truncate max-w-[280px]">
+                    <p className="text-xs font-semibold text-navy-500 truncate max-w-70">
                       ลิงก์: <span className="font-mono text-navy-700">{coverImage}</span>
                     </p>
                     {dimensions && (
