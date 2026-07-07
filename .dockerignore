@@ -1,0 +1,57 @@
+# Dependencies
+node_modules
+
+# Next.js build output
+.next
+
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Nginx and deployment configs
+nginx
+data
+
+# Tests
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+coverage
+jest.config.*
+vitest.config.*
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+
+# Misc
+*.log
+npm-debug.log*

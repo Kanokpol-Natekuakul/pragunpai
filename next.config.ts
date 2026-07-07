@@ -2,11 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: "standalone",
   allowedDevOrigins: ["172.16.0.105"],
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/:path*{/}?",
         headers: [
           {
             key: "X-Frame-Options",
@@ -23,6 +24,10 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
+          },
+          {
+            key: "X-Accel-Buffering",
+            value: "no",
           },
         ],
       },
