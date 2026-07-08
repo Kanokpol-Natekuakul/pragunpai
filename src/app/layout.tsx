@@ -9,6 +9,13 @@ import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 import { siteConfig } from "@/lib/site";
 import { prisma } from "@/lib/prisma";
 
+// The whole site renders from the database per request: this layout reads the
+// logo from `siteSetting`, and public pages read their content (insurance
+// pages, articles, banners) from the DB. No database is reachable during
+// `next build` (it runs inside the Docker image build), so render dynamically
+// instead of prerendering at build time. Pages render when the DB is available.
+export const dynamic = "force-dynamic";
+
 const notoThai = Noto_Sans_Thai({
   variable: "--font-noto-thai",
   subsets: ["thai", "latin"],
