@@ -58,6 +58,12 @@ COPY --from=builder /app/prisma ./prisma
 # Copy node_modules/.prisma for the generated client
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copy prisma CLI for runtime migrations
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+
+# Copy entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Create uploads directory as a volume mount point
 RUN mkdir -p /app/public/uploads && chown -R nextjs:nodejs /app/public/uploads
@@ -76,4 +82,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 # Enable graceful shutdown (Next.js listens for SIGTERM)
 STOPSIGNAL SIGTERM
 
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server.js"]
