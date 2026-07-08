@@ -25,6 +25,12 @@ COPY . .
 # Generate Prisma Client
 RUN npx prisma generate
 
+# Next.js "Collecting page data" imports src/lib/prisma.ts, which throws if
+# DATABASE_URL is unset. The build never connects — the real URL is injected
+# at runtime by docker-compose. This throwaway value only satisfies the check.
+# (Not an ENV in the runner stage, so it never reaches the running container.)
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?sslmode=disable"
+
 # Build Next.js in standalone mode
 RUN npm run build
 
