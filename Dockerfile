@@ -59,13 +59,17 @@ COPY --from=builder /app/.next/static ./.next/static
 # Copy public folder (favicon, images, etc.)
 COPY --from=builder /app/public ./public
 
-# Copy Prisma schema for runtime migrations
+# Prisma toolchain for runtime `prisma migrate deploy` (see docker-entrypoint.sh):
+# schema + migrations, prisma.config.ts (supplies the datasource URL from
+# DATABASE_URL), the CLI, its engines/adapter, and dotenv (imported by the config).
+# The generated client (generator "prisma-client") outputs to src/generated/prisma
+# and is bundled into .next, and the driver adapter uses no native engine — so
+# there is no node_modules/.prisma to copy.
 COPY --from=builder /app/prisma ./prisma
-# Copy node_modules/.prisma for the generated client
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-# Copy prisma CLI for runtime migrations
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
 
 # Copy entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
