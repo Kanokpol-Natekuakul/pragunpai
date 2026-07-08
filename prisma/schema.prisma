@@ -11,7 +11,7 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Admin (single owner account)
+// Admin accounts (client owner + support)
 // ---------------------------------------------------------------------------
 model Admin {
   id             String    @id @default(cuid())

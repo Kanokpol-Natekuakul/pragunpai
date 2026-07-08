@@ -30,22 +30,34 @@ async function main() {
   console.log("🌱 Seeding Pragunpai database...");
 
   // -------------------------------------------------------------------------
-  // Admin
+  // Admin accounts (client + support)
   // -------------------------------------------------------------------------
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@pragunpai.com";
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "ChangeMe123!";
-  const passwordHash = await bcrypt.hash(adminPassword, 12);
-
-  await prisma.admin.upsert({
-    where: { email: adminEmail },
-    update: {},
-    create: {
-      email: adminEmail,
+  const admins = [
+    {
+      email: process.env.SEED_ADMIN_EMAIL ?? "admin@pragunpai.com",
+      password: process.env.SEED_ADMIN_PASSWORD ?? "ChangeMe123!",
       name: "ผู้ดูแลระบบ Pragunpai",
-      passwordHash,
     },
-  });
-  console.log(`  ✓ Admin: ${adminEmail}`);
+    {
+      email: process.env.SEED_SUPPORT_EMAIL ?? "support@pragunpai.com",
+      password: process.env.SEED_SUPPORT_PASSWORD ?? "ChangeMe123!",
+      name: "ฝ่ายสนับสนุน Pragunpai",
+    },
+  ];
+
+  for (const admin of admins) {
+    const hash = await bcrypt.hash(admin.password, 12);
+    await prisma.admin.upsert({
+      where: { email: admin.email },
+      update: {},
+      create: {
+        email: admin.email,
+        name: admin.name,
+        passwordHash: hash,
+      },
+    });
+    console.log(`  ✓ Admin: ${admin.email}`);
+  }
 
   // -------------------------------------------------------------------------
   // SEO meta for static pages
