@@ -59,17 +59,19 @@ COPY --from=builder /app/.next/static ./.next/static
 # Copy public folder (favicon, images, etc.)
 COPY --from=builder /app/public ./public
 
-# Prisma toolchain for runtime `prisma migrate deploy` (see docker-entrypoint.sh):
-# schema + migrations, prisma.config.ts (supplies the datasource URL from
-# DATABASE_URL), the CLI, its engines/adapter, and dotenv (imported by the config).
-# The generated client (generator "prisma-client") outputs to src/generated/prisma
-# and is bundled into .next, and the driver adapter uses no native engine — so
-# there is no node_modules/.prisma to copy.
+# Prisma schema + config for runtime `prisma migrate deploy` (see docker-entrypoint.sh).
+# The generated client (generator "prisma-client") outputs to src/generated/prisma and
+# is bundled into .next; @prisma (the pg driver adapter) is copied for the app runtime.
+# There is no node_modules/.prisma to copy (driver adapter, no native query engine).
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+
+# Install the Prisma CLI plus its full dependency tree (effect, c12, @prisma/engines, …)
+# for runtime migrations. Copying node_modules/prisma alone failed at runtime because
+# these transitive deps live at the node_modules root and are absent from the slim
+# standalone output. dotenv is imported by prisma.config.ts.
+RUN npm install prisma@7.8.0 dotenv@^17 && rm -rf /root/.npm
 
 # Copy entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
