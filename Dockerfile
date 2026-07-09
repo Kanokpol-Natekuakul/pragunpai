@@ -88,8 +88,11 @@ USER nextjs
 EXPOSE 3000
 
 # Healthcheck: verify the app responds on /
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+# Use 127.0.0.1, not localhost: inside the container localhost resolves to ::1
+# (IPv6) but the Next.js server listens on 0.0.0.0 (IPv4 only), so a localhost
+# probe is refused and the container is wrongly marked unhealthy.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1
 
 # Enable graceful shutdown (Next.js listens for SIGTERM)
 STOPSIGNAL SIGTERM
