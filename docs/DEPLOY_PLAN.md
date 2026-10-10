@@ -1,6 +1,6 @@
 # แผน Deploy — Pragunpai (บันทึกไว้ 10 ต.ค. 2026 · สถานะ: ยังไม่เริ่ม)
 
-> อัปเดต 10 ต.ค. 2026: **DEPLOYED แล้ว** — Railway project `pragunpai` (region Singapore) → https://pragunpai-production.up.railway.app
+> อัปเดต 10 ต.ค. 2026: **DEPLOYED แล้ว** — Railway project `pragunpai` (region Singapore) → https://pragunpai24.up.railway.app
 
 ---
 
@@ -56,7 +56,7 @@
 - Railway project `pragunpai` + service แอป + Postgres (region Singapore ทั้งคู่)
 - Volume `pragunpai-volume` mount `/app/public/uploads` (uploads อยู่รอด redeploy)
 - Env vars ครบ (secrets สุ่มใหม่, `DATABASE_URL=${{Postgres.DATABASE_URL}}`, `RAILWAY_RUN_UID=0` สำหรับเขียน volume, `PORT=3000`)
-- Domain: https://pragunpai-production.up.railway.app (target port 3000)
+- Domain: https://pragunpai24.up.railway.app (target port 3000 — เปลี่ยนชื่อจาก pragunpai-production เมื่อ 10 ต.ค. 2026)
 - Migrate + seed ครบ (แอดมิน Gmail, SEO, settings, insurance pages, FAQ)
 - ทดสอบ E2E จริงแล้ว: ล็อกอินแอดมิน (OTP ทาง log ชั่วคราว), ฟอร์มขอใบเสนอราคา + แนบไฟล์ → lead + ไฟล์เข้า volume ✓
 - แก้ 2 บั๊กที่เจอตอน deploy: (1) Next 16 standalone ไม่ serve ไฟล์ public ที่เขียนตอน runtime → เพิ่ม route handler `src/app/uploads/[filename]/route.ts` (2) Dockerfile เพิ่ม `ARG` รับ NEXT_PUBLIC_* ตอน build

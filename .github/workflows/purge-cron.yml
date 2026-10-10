@@ -23,4 +23,4 @@ jobs:
         run: |
           curl -fsS --max-time 60 \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://pragunpai-production.up.railway.app/api/cron/purge"
+            "https://pragunpai24.up.railway.app/api/cron/purge"
