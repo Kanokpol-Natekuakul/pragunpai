@@ -1,7 +1,7 @@
 # ============================================================
 # Stage 1: Install dependencies
 # ============================================================
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 
 RUN apk add --no-cache libc6-compat
 
@@ -15,7 +15,7 @@ RUN npm ci
 # ============================================================
 # Stage 2: Build the application
 # ============================================================
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -55,9 +55,25 @@ ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?sslmode=disable"
 RUN npm run build
 
 # ============================================================
+# Stage 2b: Prisma CLI for runtime migrations (clean tree)
+# ============================================================
+# Installed in its own clean directory on purpose: running `npm install prisma`
+# inside the slim standalone node_modules crashes arborist's peer resolution
+# ("Cannot read properties of null (reading 'edgesOut')" at #loadPeerSet).
+# The runner merges this tree in — the only overlapping packages (@prisma/*,
+# react, react-dom) resolve to matching versions, verified before switching.
+FROM node:22-alpine AS prisma-cli
+
+WORKDIR /cli
+
+RUN npm init -y > /dev/null \
+    && npm install --no-audit --no-fund prisma@7.10.0 dotenv@^17 \
+    && rm -rf /root/.npm
+
+# ============================================================
 # Stage 3: Production runner
 # ============================================================
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 WORKDIR /app
 
@@ -87,11 +103,10 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Install the Prisma CLI plus its full dependency tree (effect, c12, @prisma/engines, …)
-# for runtime migrations. Copying node_modules/prisma alone failed at runtime because
-# these transitive deps live at the node_modules root and are absent from the slim
-# standalone output. dotenv is imported by prisma.config.ts.
-RUN npm install prisma@7.8.0 dotenv@^17 && rm -rf /root/.npm
+# Prisma CLI + its full dependency tree (effect, c12, @prisma/engines, …) for
+# runtime `prisma migrate deploy` (see docker-entrypoint.sh), merged in from the
+# clean prisma-cli stage. dotenv comes with it (imported by prisma.config.ts).
+COPY --from=prisma-cli /cli/node_modules ./node_modules
 
 # Copy entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
