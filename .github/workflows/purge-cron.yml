@@ -1,0 +1,26 @@
+name: PDPA Purge (daily)
+
+# Calls the app's purge endpoint, which removes leads and their attachment
+# files once they pass the 30-day PDPA retention window.
+# 19:00 UTC = 02:00 Asia/Bangkok.
+#
+# Requires the repo secret CRON_SECRET (Settings -> Secrets and variables ->
+# Actions). Can also be run on demand from the Actions tab (Run workflow).
+#
+# Note: GitHub pauses scheduled workflows after ~60 days without repo
+# activity; the Railway "purge-cron" service is kept as a secondary trigger.
+
+on:
+  schedule:
+    - cron: "0 19 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call /api/cron/purge
+        run: |
+          curl -fsS --max-time 60 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://pragunpai-production.up.railway.app/api/cron/purge"
