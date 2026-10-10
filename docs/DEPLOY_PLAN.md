@@ -84,8 +84,8 @@
 - [ ] 11) Backlinks / รีวิว / Pantip-Facebook presence
 - [ ] 12) Uptime monitoring (เช่น UptimeRobot ฟรี) + Railway alerts
 
-**PDPA Purge cron (เสร็จแล้ว):**
+**Maintenance cron (เสร็จแล้ว — backup + purge รวมตัว):**
 
-- ตัวหลัก: GitHub Actions workflow `.github/workflows/purge-cron.yml` — ทุกวัน 02:00 น. (ไทย), ใช้ secret `CRON_SECRET` ของ repo, มีปุ่ม Run workflow ให้ทดสอบเอง — **ทดสอบยิงจริงแล้ว endpoint ตอบ 200 ✓**
-- ตัวสำรอง: Railway service `purge-cron` (image alpine, cron `0 19 * * *` UTC = 02:00 ไทย, เรียก purge ด้วย Bearer secret) — เช็ค/กดรันเองได้จาก dashboard → Run now
+- ตัวหลัก (purge): GitHub Actions workflow `.github/workflows/purge-cron.yml` — ทุกวัน 02:00 น. (ไทย), ใช้ secret `CRON_SECRET` ของ repo, มีปุ่ม Run workflow ให้ทดสอบเอง — **ทดสอบยิงจริงแล้ว endpoint ตอบ 200 ✓**
+- Railway service `purge-cron` (อัปเดต 10 ต.ค. 2026): image `postgres:18-alpine + rclone` (build จาก `backup/Dockerfile`, entrypoint `scripts/cron-maintenance.sh`), cron `0 20 * * *` UTC = **03:00 ไทย รายวัน** → backup DB → อัป B2 → prune 30 วัน → เรียก purge endpoint ซ้ำ — **ทดสอบยิงจริงผ่าน 2 รอบ ✓** (ดูได้จาก Railway logs ของ service นี้)
 - หมายเหตุ: GitHub ปิด scheduled workflow เองถ้า repo ไม่มี activity ~60 วัน — Railway cron สำรองช่วยครอบจุดนี้
