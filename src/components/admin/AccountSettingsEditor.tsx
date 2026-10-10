@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { actionUpdateProfile, actionChangePassword } from "@/actions/auth";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 interface AccountSettingsEditorProps {
   initialName: string;
@@ -159,8 +160,7 @@ export function AccountSettingsEditor({
                 <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
                   รหัสผ่านปัจจุบัน
                 </label>
-                <input
-                  type="password"
+                <PasswordInput
                   required
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
@@ -173,8 +173,7 @@ export function AccountSettingsEditor({
                 <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
                   รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)
                 </label>
-                <input
-                  type="password"
+                <PasswordInput
                   required
                   minLength={8}
                   value={newPassword}
@@ -188,8 +187,7 @@ export function AccountSettingsEditor({
                 <label className="block text-xs font-bold text-navy-600 uppercase mb-1">
                   ยืนยันรหัสผ่านใหม่
                 </label>
-                <input
-                  type="password"
+                <PasswordInput
                   required
                   minLength={8}
                   value={confirmPassword}

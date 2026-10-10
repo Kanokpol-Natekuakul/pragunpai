@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 const SESSION_KEY = "pragunpai.session";
-const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/reset-password"];
+const PUBLIC_ADMIN_PATHS = [
+  "/admin/login",
+  "/admin/forgot-password",
+  "/admin/reset-password",
+];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

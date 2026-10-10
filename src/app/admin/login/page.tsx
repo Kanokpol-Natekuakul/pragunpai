@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { siteConfig } from "@/lib/site";
 
 export default function AdminLoginPage() {
@@ -89,10 +90,9 @@ export default function AdminLoginPage() {
                 >
                   รหัสผ่าน
                 </label>
-                <input
+                <PasswordInput
                   id="password"
                   name="password"
-                  type="password"
                   required
                   autoComplete="current-password"
                   minLength={8}

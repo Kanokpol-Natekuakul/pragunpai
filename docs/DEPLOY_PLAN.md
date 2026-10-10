@@ -1,0 +1,48 @@
+# แผน Deploy — Pragunpai (บันทึกไว้ 10 ต.ค. 2026 · สถานะ: ยังไม่เริ่ม)
+
+> เอกสารนี้บันทึกข้อสรุปการวางแผน deploy ไว้ทำต่อภายหลัง — ตัดสินใจไว้: **Railway** (ยังไม่ดำเนินการ)
+
+---
+
+## แนวทางที่เลือก: Railway (รัน Docker image เดิม)
+
+**ทำไม:** repo นี้มี `Dockerfile` (standalone) + `docker-entrypoint.sh` (รัน migrate อัตโนมัติ) พร้อมอยู่แล้ว → deploy จาก GitHub ได้เลย **แก้โค้ด 0 บรรทัด** ไม่ต้องใช้ nginx/certbot ใน compose (Railway ออก HTTPS + custom domain ให้)
+
+- **ค่าใช้จ่าย:** Hobby $5/เดือน (รวม $5 usage) → จริงราว **$5-8/เดือน** (app + Postgres)
+- **ข้อจำกัดที่ต้องรู้:** Hobby volume รวม ~5GB (uploads + PG) — พอช่วงแรก ไฟล์ลูกค้าถูกลบตาม PDPA ใน 30 วันอยู่แล้ว; ถ้าโตอัป Pro ($20)
+- **ข้อดีสำคัญ:** Docker image เป็นมาตรฐาน → ย้าย provider ได้ทุกเมื่อ (Fly.io / VPS / อื่น ๆ) โดยไม่แก้โค้ด
+
+## ทางเลือกสำรอง (เทียบไว้)
+
+| ทาง                  | ต่อเดือน | แก้โค้ด        | หมายเหตุ                                                                                                  |
+| -------------------- | -------- | -------------- | --------------------------------------------------------------------------------------------------------- |
+| **Railway** (เลือก)  | ~$5-8    | 0              | managed PG + cron + GitHub deploy                                                                         |
+| Fly.io               | ~$4-6    | 0              | ถูกกว่า แต่ Managed PG แพง ($38) → ต้องรัน PG เอง                                                         |
+| VPS + docker-compose | ~$4-12   | 0              | ถูกสุด/ควบคุมสุด แต่ดูแล OS เอง (สคริปต์ `scripts/setup-hetzner.sh` มีแล้ว)                               |
+| Vercel + Supabase    | ~$45     | ต้องแก้ ~3 จุด | Hobby ห้ามใช้เชิงพาณิชย์; Supabase Free pause 7 วัน; uploads ต้องทำ storage adapter + purge + vercel.json |
+
+---
+
+## สิ่งที่ต้องขอจาก Pol ก่อนเริ่ม
+
+1. [ ] สมัคร Railway (railway.com) ด้วย GitHub + ผูกบัตร
+2. [ ] ตัดสินใจโดเมน (scripts เผื่อ `pragunpai.online` ไว้) + DNS อยู่ที่ไหน — หรือเริ่มด้วย subdomain ฟรีของ Railway ก่อน
+3. [ ] Resend: สมัคร + API key + **verify โดเมนส่งอีเมล (SPF/DKIM 3 records)** — จำเป็นมาก ไม่งั้น OTP แอดมินส่งไม่ได้
+4. [ ] Google reCAPTCHA v3: site key + secret key
+5. [ ] วิธี deploy: (ก) Railway CLI — Pol รัน `railway login` ครั้งเดียว แล้ว Hermes ขับ CLI ต่อ หรือ (ข) ชี้ตำแหน่งทีละคลิกบน dashboard
+
+## งานฝั่ง Hermes (หลังได้ข้อบน)
+
+- สร้าง project + Postgres + volume (`/app/public/uploads`) + ตั้ง env ทุกตัว + deploy
+- ⚠️ Railway volume mount เป็น root — ต้องเช็คสิทธิ์เขียนของ user `nextjs` (มี env `RAILWAY_RUN_UID=0` เป็นทางแก้)
+- รัน migrate + seed อัตโนมัติ (entrypoint ทำอยู่แล้ว)
+- ตั้ง cron: purge PDPA รายวัน (`/api/cron/purge` + `Bearer CRON_SECRET` — fail-closed แล้ว) + **backup pg_dump รายวัน** (ยังไม่มีสคริปต์ — ต้องเขียนเพิ่ม + offsite เช่น Cloudflare R2 / Backblaze B2)
+- ผูก custom domain + SSL + ทดสอบ E2E (ฟอร์มจริง → อีเมลเข้า, ล็อกอินแอดมิน, purge)
+
+## หมายเหตุสำคัญ
+
+- **แอดมินใช้ Gmail จริง** (ตั้งใน DB/seed ของเครื่อง dev แล้ว) — เปลี่ยนรหัสทันทีหลัง login แรกที่ `/admin/account`
+- ⚠️ **Repo นี้เป็น public** — ห้าม commit รหัสผ่าน อีเมลจริง หรือคีย์ใด ๆ ลงไฟล์ในโปรเจกต์/เอกสารนี้
+- โปรดักชันต้อง verify โดเมนใน Resend ถึงจะส่ง OTP/แจ้งเตือนได้ (ทดสอบเบื้องต้นใช้ `onboarding@resend.dev` ส่งเข้า gmail ตัวเองได้)
+- เครื่อง dev ต้องรันด้วย `NODE_ENV=development` (shell ตั้ง production ติดมา — npm จะข้าม devDeps)
+- Backup DB ก่อน go-live เสมอ + เก็บ `.env` production แยกจาก repo

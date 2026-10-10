@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 export const metadata: Metadata = {
   title: "ตั้งรหัสผ่านใหม่",
@@ -29,10 +30,9 @@ export default function ResetPasswordPage() {
                 >
                   รหัสผ่านใหม่
                 </label>
-                <input
+                <PasswordInput
                   id="password"
                   name="password"
-                  type="password"
                   required
                   minLength={8}
                   placeholder="••••••••"
@@ -46,10 +46,9 @@ export default function ResetPasswordPage() {
                 >
                   ยืนยันรหัสผ่านใหม่
                 </label>
-                <input
+                <PasswordInput
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
                   required
                   minLength={8}
                   placeholder="••••••••"
