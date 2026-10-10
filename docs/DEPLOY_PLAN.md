@@ -66,6 +66,12 @@
 - [ ] Resend: สมัครด้วย Gmail แอดมิน + API key → เปิด OTP/แจ้งเตือน lead ทางอีเมล (ตอนนี้ OTP โผล่ใน Railway logs ชั่วคราว)
 - [ ] reCAPTCHA v3 keys → กันสแปมฟอร์ม
 - [ ] Custom domain + SSL (เมื่อได้โดเมน) → อัปเดต `AUTH_URL` + `NEXT_PUBLIC_SITE_URL` แล้ว redeploy
-- [ ] PDPA purge cron (`/api/cron/purge` + `CRON_SECRET`) — ตั้ง Railway cron หรือ external cron
 - [ ] Backup อัตโนมัติ: `pg_dump` รายวัน + offsite (R2/B2) — ยังไม่มี สคริปต์ยังต้องเขียน
 - [ ] เปลี่ยนรหัสแอดมินจากชั่วคราว + ลบ lead ทดสอบ "ทดสอบระบบ Hermes" ในหลังบ้าน
+- [ ] ลบไฟล์ทดสอบทิ้งเอง (Railway CLI ห้าม agent ลบไฟล์) — รัน 2 คำสั่ง: `railway volume files delete --volume pragunpai-volume /app/public/uploads/probe.txt` และ `.../probe2.txt`
+
+**PDPA Purge cron (เสร็จแล้ว):**
+
+- ตัวหลัก: GitHub Actions workflow `.github/workflows/purge-cron.yml` — ทุกวัน 02:00 น. (ไทย), ใช้ secret `CRON_SECRET` ของ repo, มีปุ่ม Run workflow ให้ทดสอบเอง — **ทดสอบยิงจริงแล้ว endpoint ตอบ 200 ✓**
+- ตัวสำรอง: Railway service `purge-cron` (image alpine, cron `0 19 * * *` UTC = 02:00 ไทย, เรียก purge ด้วย Bearer secret) — เช็ค/กดรันเองได้จาก dashboard → Run now
+- หมายเหตุ: GitHub ปิด scheduled workflow เองถ้า repo ไม่มี activity ~60 วัน — Railway cron สำรองช่วยครอบจุดนี้
