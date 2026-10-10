@@ -1,0 +1,8 @@
+# Keep `railway up` uploads lean — the Docker build regenerates all of this.
+node_modules
+.next
+.git
+coverage
+test-results
+data
+*.log

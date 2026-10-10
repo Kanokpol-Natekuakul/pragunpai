@@ -22,6 +22,26 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Public (client) config baked into the build — Next.js inlines NEXT_PUBLIC_*
+# at build time. Railway passes service variables as Docker build args, so we
+# declare them explicitly; unset ones fall back to the app defaults.
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_SITE_NAME
+ARG NEXT_PUBLIC_PHONE
+ARG NEXT_PUBLIC_LINE
+ARG NEXT_PUBLIC_EMAIL
+ARG NEXT_PUBLIC_GA_ID
+ARG NEXT_PUBLIC_GSC_VERIFICATION
+ARG NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL} \
+    NEXT_PUBLIC_SITE_NAME=${NEXT_PUBLIC_SITE_NAME} \
+    NEXT_PUBLIC_PHONE=${NEXT_PUBLIC_PHONE} \
+    NEXT_PUBLIC_LINE=${NEXT_PUBLIC_LINE} \
+    NEXT_PUBLIC_EMAIL=${NEXT_PUBLIC_EMAIL} \
+    NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID} \
+    NEXT_PUBLIC_GSC_VERIFICATION=${NEXT_PUBLIC_GSC_VERIFICATION} \
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+
 # Generate Prisma Client
 RUN npx prisma generate
 

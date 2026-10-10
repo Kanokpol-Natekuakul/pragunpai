@@ -1,6 +1,6 @@
 # แผน Deploy — Pragunpai (บันทึกไว้ 10 ต.ค. 2026 · สถานะ: ยังไม่เริ่ม)
 
-> เอกสารนี้บันทึกข้อสรุปการวางแผน deploy ไว้ทำต่อภายหลัง — ตัดสินใจไว้: **Railway** (ยังไม่ดำเนินการ)
+> อัปเดต 10 ต.ค. 2026: **DEPLOYED แล้ว** — Railway project `pragunpai` (region Singapore) → https://pragunpai-production.up.railway.app
 
 ---
 
@@ -46,3 +46,26 @@
 - โปรดักชันต้อง verify โดเมนใน Resend ถึงจะส่ง OTP/แจ้งเตือนได้ (ทดสอบเบื้องต้นใช้ `onboarding@resend.dev` ส่งเข้า gmail ตัวเองได้)
 - เครื่อง dev ต้องรันด้วย `NODE_ENV=development` (shell ตั้ง production ติดมา — npm จะข้าม devDeps)
 - Backup DB ก่อน go-live เสมอ + เก็บ `.env` production แยกจาก repo
+
+---
+
+## สถานะหลัง deploy (10 ต.ค. 2026)
+
+**เสร็จแล้ว:**
+
+- Railway project `pragunpai` + service แอป + Postgres (region Singapore ทั้งคู่)
+- Volume `pragunpai-volume` mount `/app/public/uploads` (uploads อยู่รอด redeploy)
+- Env vars ครบ (secrets สุ่มใหม่, `DATABASE_URL=${{Postgres.DATABASE_URL}}`, `RAILWAY_RUN_UID=0` สำหรับเขียน volume, `PORT=3000`)
+- Domain: https://pragunpai-production.up.railway.app (target port 3000)
+- Migrate + seed ครบ (แอดมิน Gmail, SEO, settings, insurance pages, FAQ)
+- ทดสอบ E2E จริงแล้ว: ล็อกอินแอดมิน (OTP ทาง log ชั่วคราว), ฟอร์มขอใบเสนอราคา + แนบไฟล์ → lead + ไฟล์เข้า volume ✓
+- แก้ 2 บั๊กที่เจอตอน deploy: (1) Next 16 standalone ไม่ serve ไฟล์ public ที่เขียนตอน runtime → เพิ่ม route handler `src/app/uploads/[filename]/route.ts` (2) Dockerfile เพิ่ม `ARG` รับ NEXT_PUBLIC_* ตอน build
+
+**เหลือทำ (ค่อยใส่ตามที่ตกลง):**
+
+- [ ] Resend: สมัครด้วย Gmail แอดมิน + API key → เปิด OTP/แจ้งเตือน lead ทางอีเมล (ตอนนี้ OTP โผล่ใน Railway logs ชั่วคราว)
+- [ ] reCAPTCHA v3 keys → กันสแปมฟอร์ม
+- [ ] Custom domain + SSL (เมื่อได้โดเมน) → อัปเดต `AUTH_URL` + `NEXT_PUBLIC_SITE_URL` แล้ว redeploy
+- [ ] PDPA purge cron (`/api/cron/purge` + `CRON_SECRET`) — ตั้ง Railway cron หรือ external cron
+- [ ] Backup อัตโนมัติ: `pg_dump` รายวัน + offsite (R2/B2) — ยังไม่มี สคริปต์ยังต้องเขียน
+- [ ] เปลี่ยนรหัสแอดมินจากชั่วคราว + ลบ lead ทดสอบ "ทดสอบระบบ Hermes" ในหลังบ้าน
