@@ -61,14 +61,28 @@
 - ทดสอบ E2E จริงแล้ว: ล็อกอินแอดมิน (OTP ทาง log ชั่วคราว), ฟอร์มขอใบเสนอราคา + แนบไฟล์ → lead + ไฟล์เข้า volume ✓
 - แก้ 2 บั๊กที่เจอตอน deploy: (1) Next 16 standalone ไม่ serve ไฟล์ public ที่เขียนตอน runtime → เพิ่ม route handler `src/app/uploads/[filename]/route.ts` (2) Dockerfile เพิ่ม `ARG` รับ NEXT_PUBLIC_* ตอน build
 
-**เหลือทำ (ค่อยใส่ตามที่ตกลง):**
+**งานที่เหลือ — เรียงตามลำดับความสำคัญ (อัปเดต 10 ต.ค. 2026):**
 
-- [ ] Resend: สมัครด้วย Gmail แอดมิน + API key → เปิด OTP/แจ้งเตือน lead ทางอีเมล (ตอนนี้ OTP โผล่ใน Railway logs ชั่วคราว)
-- [ ] reCAPTCHA v3 keys → กันสแปมฟอร์ม
-- [ ] Custom domain + SSL (เมื่อได้โดเมน) → อัปเดต `AUTH_URL` + `NEXT_PUBLIC_SITE_URL` แล้ว redeploy
-- [ ] Backup อัตโนมัติ: `pg_dump` รายวัน + offsite (R2/B2) — ยังไม่มี สคริปต์ยังต้องเขียน
-- [ ] เปลี่ยนรหัสแอดมินจากชั่วคราว + ลบ lead ทดสอบ "ทดสอบระบบ Hermes" ในหลังบ้าน
-- [ ] ลบไฟล์ทดสอบทิ้งเอง (Railway CLI ห้าม agent ลบไฟล์) — รัน 2 คำสั่ง: `railway volume files delete --volume pragunpai-volume /app/public/uploads/probe.txt` และ `.../probe2.txt`
+**A. ก่อนเปิดใช้จริง / รับ lead จริง**
+
+- [ ] 1) เปลี่ยนรหัสแอดมินจาก `12345678` ที่หน้า `/admin/account` (1 นาที — ทำได้ทันที)
+- [ ] 2) Resend (ฟรี, ไม่มีบัตร): สมัครด้วย Gmail แอดมิน → API key → OTP ล็อกอิน + แจ้งเตือน lead ทางอีเมล (ตอนนี้ OTP โผล่ใน Railway logs — ควรปิดช่องนี้ไว)
+- [ ] 3) reCAPTCHA v3 keys (ฟรี, ~5 นาที, ใน Google account) → กันสแปมฟอร์มสาธารณะ
+- [ ] 4) Backup อัตโนมัติ: `pg_dump` รายวัน + offsite (Cloudflare R2 / Backblaze B2 free tier) — ยังไม่มี สคริปต์ยังต้องเขียน
+- [ ] 5) โดเมนจริง (whois 10 ต.ค.: `.co.th` / `.in.th` / `thepragunpai.com` / `pragunpai24.net` ว่าง — `.com/.net/.org` ถูกจดตั้งแต่ 2006) → จดแล้วแจ้งเพื่อผูก + SSL + อัปเดต env + rebuild (playbook พร้อม)
+
+**B. ก่อนทำการตลาด / ยิงแอด**
+
+- [ ] 6) GA4 (`NEXT_PUBLIC_GA_ID` รองรับแล้ว) + Google Search Console (หลังมีโดเมน)
+- [ ] 7) Google Business Profile (local SEO / Maps / รีวิว) + LINE OA
+- [ ] 8) ลบ lead ทดสอบ "ทดสอบระบบ Hermes" (จากหลังบ้าน) + ลบไฟล์ probe (Railway CLI ห้าม agent ลบ — รันเอง): `railway volume files delete --volume pragunpai-volume /app/public/uploads/probe.txt` และ `...probe2.txt`
+- [ ] 9) Railway Hobby $5/เดือน เมื่อใกล้ครบ trial (~9 พ.ย. 2026) — ใส่บัตรใน dashboard
+
+**C. ระยะยาว (ทำต่อเนื่อง)**
+
+- [ ] 10) SEO: วิจัยคีย์เวิร์ด long-tail → เขียนบทความ 20–50 ชิ้น (ระบบบทความหลังบ้านพร้อม) + อัดหน้า product + E-E-A-T (เลขใบอนุญาตนายหน้า/รีวิว)
+- [ ] 11) Backlinks / รีวิว / Pantip-Facebook presence
+- [ ] 12) Uptime monitoring (เช่น UptimeRobot ฟรี) + Railway alerts
 
 **PDPA Purge cron (เสร็จแล้ว):**
 
