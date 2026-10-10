@@ -67,8 +67,8 @@
 
 - [ ] 1) เปลี่ยนรหัสแอดมินจาก `12345678` ที่หน้า `/admin/account` (1 นาที — ทำได้ทันที)
 - [ ] 2) Resend (ฟรี, ไม่มีบัตร): สมัครด้วย Gmail แอดมิน → API key → OTP ล็อกอิน + แจ้งเตือน lead ทางอีเมล (ตอนนี้ OTP โผล่ใน Railway logs — ควรปิดช่องนี้ไว)
-- [ ] 3) reCAPTCHA v3 keys (ฟรี, ~5 นาที, ใน Google account) → กันสแปมฟอร์มสาธารณะ
-- [ ] 4) Backup อัตโนมัติ: `pg_dump` รายวัน + offsite (Cloudflare R2 / Backblaze B2 free tier) — ยังไม่มี สคริปต์ยังต้องเขียน
+- [x] 3) reCAPTCHA v3 — **ใส่คีย์ + deploy แล้ว** (10 ต.ค.) เหลือ E2E ยืนยันรอบสุดท้ายบนฟอร์มจริง
+- [x] 4) Backup อัตโนมัติ — **เสร็จ + ทดสอบยิงจริง 2 รอบผ่าน ✓** (10 ต.ค.): service `purge-cron` กลายเป็น maintenance cron รายวัน 03:00 น. (ไทย) → `pg_dump | gzip` → อัปโหลด **Backblaze B2** (bucket `pragunpai-backup`, เก็บ 30 วัน + prune อัตโนมัติ) → เรียก purge endpoint ซ้ำเป็นตัวสำรอง (โค้ด: `scripts/backup-db.sh`, `scripts/cron-maintenance.sh`, `backup/Dockerfile`)
 - [ ] 5) โดเมนจริง (whois 10 ต.ค.: `.co.th` / `.in.th` / `thepragunpai.com` / `pragunpai24.net` ว่าง — `.com/.net/.org` ถูกจดตั้งแต่ 2006) → จดแล้วแจ้งเพื่อผูก + SSL + อัปเดต env + rebuild (playbook พร้อม)
 
 **B. ก่อนทำการตลาด / ยิงแอด**
